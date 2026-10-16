@@ -1,0 +1,34 @@
+databases:
+  - name: zalpro-db
+    plan: free
+    databaseName: zalpro
+    user: zalpro
+
+services:
+  - type: web
+    name: zalpro-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./src/api/Dockerfile
+    dockerContext: ./src/api
+    dockerCommand: sh -c "alembic upgrade head && uvicorn zalpro_api.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1 --proxy-headers --forwarded-allow-ips=*"
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: zalpro-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GYM_TIMEZONE
+        value: Asia/Tashkent
+      - key: MIN_APP_BUILD
+        value: "0"
+      - key: R2_ENDPOINT_URL
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET
+        sync: false

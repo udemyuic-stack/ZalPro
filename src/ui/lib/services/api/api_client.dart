@@ -15,8 +15,8 @@ class ApiClient {
     String baseUrl = apiUrl,
     HttpClientAdapter? adapter,
   })  : _store = store,
-        _dio = Dio(BaseOptions(baseUrl: baseUrl, connectTimeout: const Duration(seconds: 15))),
-        _bare = Dio(BaseOptions(baseUrl: baseUrl, connectTimeout: const Duration(seconds: 15))),
+        _dio = Dio(BaseOptions(baseUrl: baseUrl, connectTimeout: const Duration(seconds: 60))),
+        _bare = Dio(BaseOptions(baseUrl: baseUrl, connectTimeout: const Duration(seconds: 60))),
         _upload = Dio(BaseOptions(connectTimeout: const Duration(seconds: 15))) {
     if (adapter != null) {
       _dio.httpClientAdapter = adapter;

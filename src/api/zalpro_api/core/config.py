@@ -59,6 +59,15 @@ class Settings(BaseSettings):
     def legacy_scrypt_configured(self) -> bool:
         return bool(self.legacy_scrypt_signer_key and self.legacy_scrypt_salt_separator)
 
+    @field_validator("database_url")
+    @classmethod
+    def normalize_database_url(cls, value: str) -> str:
+        for prefix in ("postgres://", "postgresql://"):
+            if value.startswith(prefix):
+                value = "postgresql+asyncpg://" + value[len(prefix) :]
+                break
+        return value.replace("sslmode=", "ssl=")
+
     @field_validator("gym_timezone")
     @classmethod
     def validate_timezone(cls, value: str) -> str:

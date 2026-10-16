@@ -7,6 +7,7 @@
     <application
         android:label="Aura Fit"
         android:name="${applicationName}"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <!-- flutter_local_notifications: rejalashtirilgan eslatmalarni ko'rsatish va qayta tiklash -->
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />

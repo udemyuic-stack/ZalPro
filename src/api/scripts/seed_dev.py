@@ -1,4 +1,5 @@
 import asyncio
+import os
 import sys
 import uuid
 from dataclasses import dataclass, field
@@ -96,13 +97,14 @@ def new_id() -> str:
     return uuid.uuid4().hex
 
 
-def assert_local_database(database_url: str) -> None:
+def assert_local_database(database_url: str, allowed_host: str | None = None) -> None:
     host = make_url(database_url).host
-    if host not in LOCAL_HOSTS:
-        raise SystemExit(
-            f"Refusing to seed: database host {host!r} is not local "
-            f"(allowed: {', '.join(sorted(LOCAL_HOSTS))})."
-        )
+    if host in LOCAL_HOSTS or (allowed_host and host == allowed_host):
+        return
+    raise SystemExit(
+        f"Refusing to seed: database host {host!r} is not local "
+        f"(allowed: {', '.join(sorted(LOCAL_HOSTS))}) and does not match SEED_ALLOW_HOST."
+    )
 
 
 async def get_or_create_gym(session: AsyncSession, name: str, address: str) -> Gym:
@@ -229,7 +231,7 @@ def print_accounts(accounts: list[AccountSpec]) -> None:
 
 async def main() -> None:
     settings = Settings()
-    assert_local_database(settings.database_url)
+    assert_local_database(settings.database_url, os.environ.get("SEED_ALLOW_HOST"))
     engine = create_engine(settings.database_url)
     try:
         async with create_sessionmaker(engine)() as session:

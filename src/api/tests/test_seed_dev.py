@@ -54,3 +54,12 @@ def test_refuses_non_local_database(url: str) -> None:
 def test_accepts_local_database() -> None:
     assert_local_database("postgresql+asyncpg://u:p@127.0.0.1:5433/x")
     assert_local_database("postgresql+asyncpg://u:p@localhost/x")
+
+
+def test_accepts_explicitly_allowed_host() -> None:
+    assert_local_database("postgresql+asyncpg://u:p@db.example.com/x", "db.example.com")
+
+
+def test_allowed_host_must_match() -> None:
+    with pytest.raises(SystemExit):
+        assert_local_database("postgresql+asyncpg://u:p@db.example.com/x", "other.example.com")
