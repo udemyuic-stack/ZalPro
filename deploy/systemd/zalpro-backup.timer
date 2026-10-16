@@ -1,0 +1,10 @@
+[Unit]
+Description=ZalPro daily database backup
+
+[Timer]
+OnCalendar=*-*-* 03:30:00 Asia/Tashkent
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

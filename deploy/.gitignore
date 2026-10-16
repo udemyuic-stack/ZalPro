@@ -1,0 +1,4 @@
+.env
+firebase/test/node_modules/
+firebase/*.log
+firebase/.firebase/

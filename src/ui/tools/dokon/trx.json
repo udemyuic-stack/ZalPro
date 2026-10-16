@@ -1,0 +1,17 @@
+[
+  {
+    "category": "Anjomlar",
+    "name": "TRX petlyalari (osma trenajor)",
+    "note": "Eshik yoki turnikka osiladi, tana vazni bilan mashq qilish uchun.",
+    "sizes": [],
+    "price": 490000,
+    "currency": "UZS",
+    "stock": 5,
+    "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/anjom-trx-1.jpg",
+    "images": [
+      "https://kotta-qani-09111753.web.app/img/tovar/anjom-trx-2.jpg",
+      "https://kotta-qani-09111753.web.app/img/tovar/anjom-trx-3.jpg"
+    ]
+  }
+]

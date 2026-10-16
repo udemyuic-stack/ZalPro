@@ -1,0 +1,850 @@
+{
+  "nomlar": {
+    "Boks lapasi (Venum / Reebok)": {
+      "ru": "Боксёрские лапы (Venum / Reebok)",
+      "en": "Boxing focus mitts (Venum / Reebok)"
+    },
+    "Devor turnigi (2 in 1)": {
+      "ru": "Настенный турник (2 в 1)",
+      "en": "Wall-mounted pull-up bar (2 in 1)"
+    },
+    "Ekspander (oyoq pedalli)": {
+      "ru": "Эспандер (с ножными педалями)",
+      "en": "Resistance expander (with foot pedals)"
+    },
+    "Elektron tarozi (180 kg gacha)": {
+      "ru": "Электронные весы (до 180 кг)",
+      "en": "Digital scale (up to 180 kg)"
+    },
+    "Kik lapasi (Everlast)": {
+      "ru": "Кик-лапа (Everlast)",
+      "en": "Kick pad (Everlast)"
+    },
+    "Otjimaniya tayanchi (juft)": {
+      "ru": "Упоры для отжиманий (пара)",
+      "en": "Push-up bars (pair)"
+    },
+    "Press roller (4 g'ildirakli)": {
+      "ru": "Ролик для пресса (4 колеса)",
+      "en": "Ab roller (4 wheels)"
+    },
+    "Press roller (qorin uchun g'ildirak)": {
+      "ru": "Ролик для пресса (колесо для живота)",
+      "en": "Ab roller (ab wheel)"
+    },
+    "TRX petlyalari (osma trenajor)": {
+      "ru": "Петли TRX (подвесной тренажёр)",
+      "en": "TRX straps (suspension trainer)"
+    },
+    "Turnik palka (eshik uchun, 1 m)": {
+      "ru": "Турник-распорка (в дверной проём, 1 м)",
+      "en": "Doorway pull-up bar (1 m)"
+    },
+    "Turnik palka (eshik uchun, 1,2 m)": {
+      "ru": "Турник-распорка (в дверной проём, 1,2 м)",
+      "en": "Doorway pull-up bar (1.2 m)"
+    },
+    "Turnik palka (eshik uchun, 1,5 m)": {
+      "ru": "Турник-распорка (в дверной проём, 1,5 м)",
+      "en": "Doorway pull-up bar (1.5 m)"
+    },
+    "Yoga mat (173 x 61 sm)": {
+      "ru": "Коврик для йоги (173 x 61 см)",
+      "en": "Yoga mat (173 x 61 cm)"
+    },
+    "Animal Flex (bo'g'imlar uchun)": {
+      "ru": "Animal Flex (для суставов)",
+      "en": "Animal Flex (for joints)"
+    },
+    "BSN Amino X (katta)": {
+      "ru": "BSN Amino X (большой)",
+      "en": "BSN Amino X (large)"
+    },
+    "GAT Sport Mens Multi+Test (150 tabletka)": {
+      "ru": "GAT Sport Mens Multi+Test (150 таблеток)",
+      "en": "GAT Sport Mens Multi+Test (150 tablets)"
+    },
+    "GAT Sport Mens Multi+Test Essentials (60 tabletka)": {
+      "ru": "GAT Sport Mens Multi+Test Essentials (60 таблеток)",
+      "en": "GAT Sport Mens Multi+Test Essentials (60 tablets)"
+    },
+    "Insane Labz Psychotic (220 g)": {
+      "ru": "Insane Labz Psychotic (220 г)",
+      "en": "Insane Labz Psychotic (220 g)"
+    },
+    "Insane Labz Psychotic (360 g)": {
+      "ru": "Insane Labz Psychotic (360 г)",
+      "en": "Insane Labz Psychotic (360 g)"
+    },
+    "Maxler 100% Golden BCAA (apelsin)": {
+      "ru": "Maxler 100% Golden BCAA (апельсин)",
+      "en": "Maxler 100% Golden BCAA (orange)"
+    },
+    "Maxler Max Motion (1 kg)": {
+      "ru": "Maxler Max Motion (1 кг)",
+      "en": "Maxler Max Motion (1 kg)"
+    },
+    "Maxler Max Motion (500 g)": {
+      "ru": "Maxler Max Motion (500 г)",
+      "en": "Maxler Max Motion (500 g)"
+    },
+    "MuscleTech Platinum Multivitamin (katta)": {
+      "ru": "MuscleTech Platinum Multivitamin (большой)",
+      "en": "MuscleTech Platinum Multivitamin (large)"
+    },
+    "Ultimate Nutrition BCAA Powder 12000 (tarvuz)": {
+      "ru": "Ultimate Nutrition BCAA Powder 12000 (арбуз)",
+      "en": "Ultimate Nutrition BCAA Powder 12000 (watermelon)"
+    },
+    "Ultimate Nutrition BCAA Powder 12000 (uzum)": {
+      "ru": "Ultimate Nutrition BCAA Powder 12000 (виноград)",
+      "en": "Ultimate Nutrition BCAA Powder 12000 (grape)"
+    },
+    "Kapyushonli kofta (kulrang)": {
+      "ru": "Кофта с капюшоном (серая)",
+      "en": "Hooded sweatshirt (grey)"
+    },
+    "Kapyushonli mayka (och kulrang)": {
+      "ru": "Майка с капюшоном (светло-серая)",
+      "en": "Hooded tank top (light grey)"
+    },
+    "Mayka (kulrang)": {
+      "ru": "Майка (серая)",
+      "en": "Tank top (grey)"
+    },
+    "Mayka (qora-kulrang)": {
+      "ru": "Майка (чёрно-серая)",
+      "en": "Tank top (black-grey)"
+    },
+    "Mayka (salat rang)": {
+      "ru": "Майка (салатовая)",
+      "en": "Tank top (lime green)"
+    },
+    "Nike komplekt (4-5 qismli)": {
+      "ru": "Комплект Nike (4–5 предметов)",
+      "en": "Nike set (4–5 pieces)"
+    },
+    "Nike mayka (qora)": {
+      "ru": "Майка Nike (чёрная)",
+      "en": "Nike tank top (black)"
+    },
+    "Pro Combat komplekt (2 qismli)": {
+      "ru": "Комплект Pro Combat (2 предмета)",
+      "en": "Pro Combat set (2 pieces)"
+    },
+    "Pro Combat komplekt (5 qismli)": {
+      "ru": "Комплект Pro Combat (5 предметов)",
+      "en": "Pro Combat set (5 pieces)"
+    },
+    "Reebok komplekt (R-615)": {
+      "ru": "Комплект Reebok (R-615)",
+      "en": "Reebok set (R-615)"
+    },
+    "UFC komplekt (VM202101)": {
+      "ru": "Комплект UFC (VM202101)",
+      "en": "UFC set (VM202101)"
+    },
+    "Under Armour komplekt (4-5 qismli)": {
+      "ru": "Комплект Under Armour (4–5 предметов)",
+      "en": "Under Armour set (4–5 pieces)"
+    },
+    "Under Armour mayka \"Earn Greatness\" (oq)": {
+      "ru": "Майка Under Armour «Earn Greatness» (белая)",
+      "en": "Under Armour tank top “Earn Greatness” (white)"
+    },
+    "Under Armour mayka \"Earn Greatness\" (qora)": {
+      "ru": "Майка Under Armour «Earn Greatness» (чёрная)",
+      "en": "Under Armour tank top “Earn Greatness” (black)"
+    },
+    "Under Armour mayka (oq)": {
+      "ru": "Майка Under Armour (белая)",
+      "en": "Under Armour tank top (white)"
+    },
+    "Under Armour Project Rock kapyushonli mayka": {
+      "ru": "Майка с капюшоном Under Armour Project Rock",
+      "en": "Under Armour Project Rock hooded tank top"
+    },
+    "Venum komplekt (Logos, oq-qora)": {
+      "ru": "Комплект Venum (Logos, бело-чёрный)",
+      "en": "Venum set (Logos, white-black)"
+    },
+    "Venum komplekt (Technical, yashil-qora)": {
+      "ru": "Комплект Venum (Technical, зелёно-чёрный)",
+      "en": "Venum set (Technical, green-black)"
+    },
+    "Venum komplekt (VM2008)": {
+      "ru": "Комплект Venum (VM2008)",
+      "en": "Venum set (VM2008)"
+    },
+    "Basic Supplements Mass (shokolad)": {
+      "ru": "Basic Supplements Mass (шоколад)",
+      "en": "Basic Supplements Mass (chocolate)"
+    },
+    "Dymatize Super Mass Gainer (vanil)": {
+      "ru": "Dymatize Super Mass Gainer (ваниль)",
+      "en": "Dymatize Super Mass Gainer (vanilla)"
+    },
+    "FA Core Mass (7 kg)": {
+      "ru": "FA Core Mass (7 кг)",
+      "en": "FA Core Mass (7 kg)"
+    },
+    "Gainer Pro (3 kg)": {
+      "ru": "Gainer Pro (3 кг)",
+      "en": "Gainer Pro (3 kg)"
+    },
+    "Mass Gainer (qizil qop)": {
+      "ru": "Mass Gainer (красный мешок)",
+      "en": "Mass Gainer (red bag)"
+    },
+    "Rule 1 Mass Gainer (shokolad)": {
+      "ru": "Rule 1 Mass Gainer (шоколад)",
+      "en": "Rule 1 Mass Gainer (chocolate)"
+    },
+    "ON Micronized Creatine (oq, ta'msiz)": {
+      "ru": "ON Micronized Creatine (белая, без вкуса)",
+      "en": "ON Micronized Creatine (white, unflavored)"
+    },
+    "ON Micronized Creatine (qora, kichik)": {
+      "ru": "ON Micronized Creatine (чёрная, маленькая)",
+      "en": "ON Micronized Creatine (black, small)"
+    },
+    "ON Micronized Creatine Powder (1,2 kg)": {
+      "ru": "ON Micronized Creatine Powder (1,2 кг)",
+      "en": "ON Micronized Creatine Powder (1.2 kg)"
+    },
+    "ON Micronized Creatine Powder (kichik)": {
+      "ru": "ON Micronized Creatine Powder (маленькая)",
+      "en": "ON Micronized Creatine Powder (small)"
+    },
+    "ON Micronized Creatine Powder (ta'msiz)": {
+      "ru": "ON Micronized Creatine Powder (без вкуса)",
+      "en": "ON Micronized Creatine Powder (unflavored)"
+    },
+    "Ultimate Nutrition Creatine Monohydrate (apelsin)": {
+      "ru": "Ultimate Nutrition Creatine Monohydrate (апельсин)",
+      "en": "Ultimate Nutrition Creatine Monohydrate (orange)"
+    },
+    "Army Arginine Powder (6000 mg)": {
+      "ru": "Army Arginine Powder (6000 мг)",
+      "en": "Army Arginine Powder (6000 mg)"
+    },
+    "GAT L-Arginine 1000 mg": {
+      "ru": "GAT L-Arginine 1000 мг",
+      "en": "GAT L-Arginine 1000 mg"
+    },
+    "L-Arginine 1000 mg (oltin banka)": {
+      "ru": "L-Arginine 1000 мг (золотая банка)",
+      "en": "L-Arginine 1000 mg (gold jar)"
+    },
+    "MR L-Arginine 1000 mg": {
+      "ru": "MR L-Arginine 1000 мг",
+      "en": "MR L-Arginine 1000 mg"
+    },
+    "MR L-Carnitine Liquid 3000 mg": {
+      "ru": "MR L-Carnitine Liquid 3000 мг",
+      "en": "MR L-Carnitine Liquid 3000 mg"
+    },
+    "Ronnie Coleman L-Carnitine XS 3000 (mango-ananas)": {
+      "ru": "Ronnie Coleman L-Carnitine XS 3000 (манго-ананас)",
+      "en": "Ronnie Coleman L-Carnitine XS 3000 (mango-pineapple)"
+    },
+    "Dymatize ISO100 Hydrolyzed (shokolad)": {
+      "ru": "Dymatize ISO100 Hydrolyzed (шоколад)",
+      "en": "Dymatize ISO100 Hydrolyzed (chocolate)"
+    },
+    "Labrada 100% Whey (vanil)": {
+      "ru": "Labrada 100% Whey (ваниль)",
+      "en": "Labrada 100% Whey (vanilla)"
+    },
+    "ON Gold Standard 100% Whey (cookies & cream, 4,54 kg)": {
+      "ru": "ON Gold Standard 100% Whey (cookies & cream, 4,54 кг)",
+      "en": "ON Gold Standard 100% Whey (cookies & cream, 4.54 kg)"
+    },
+    "ON Gold Standard 100% Whey (double rich chocolate, kichik)": {
+      "ru": "ON Gold Standard 100% Whey (double rich chocolate, маленькая)",
+      "en": "ON Gold Standard 100% Whey (double rich chocolate, small)"
+    },
+    "Ultimate Nutrition Whey Gold (shokolad)": {
+      "ru": "Ultimate Nutrition Whey Gold (шоколад)",
+      "en": "Ultimate Nutrition Whey Gold (chocolate)"
+    },
+    "Applied Nutrition shaker (shaffof)": {
+      "ru": "Шейкер Applied Nutrition (прозрачный)",
+      "en": "Applied Nutrition shaker (clear)"
+    },
+    "Applied Nutrition sport shishasi (ko'k)": {
+      "ru": "Спортивная бутылка Applied Nutrition (синяя)",
+      "en": "Applied Nutrition sports bottle (blue)"
+    },
+    "Applied Nutrition termo-stakan (ko'k)": {
+      "ru": "Термостакан Applied Nutrition (синий)",
+      "en": "Applied Nutrition thermo cup (blue)"
+    },
+    "Applied Nutrition termos (ko'k)": {
+      "ru": "Термос Applied Nutrition (синий)",
+      "en": "Applied Nutrition thermos (blue)"
+    },
+    "Butilka 1 L (dastali, trubkali)": {
+      "ru": "Бутылка 1 л (с ручкой и трубочкой)",
+      "en": "Bottle 1 L (with handle and straw)"
+    },
+    "Butilka 1 L (meva solinadigan)": {
+      "ru": "Бутылка 1 л (с отделением для фруктов)",
+      "en": "Bottle 1 L (fruit infuser)"
+    },
+    "Butilka 2 L (gradient)": {
+      "ru": "Бутылка 2 л (градиент)",
+      "en": "Bottle 2 L (gradient)"
+    },
+    "Butilka 2 L (motivatsion belgilar)": {
+      "ru": "Бутылка 2 л (с мотивационными отметками)",
+      "en": "Bottle 2 L (motivational markers)"
+    },
+    "Butilka 3 L (motivatsion belgilar)": {
+      "ru": "Бутылка 3 л (с мотивационными отметками)",
+      "en": "Bottle 3 L (motivational markers)"
+    },
+    "Fight Mode butilka 0,9 L": {
+      "ru": "Бутылка Fight Mode 0,9 л",
+      "en": "Fight Mode bottle 0.9 L"
+    },
+    "Herbalife shaker 700 ml": {
+      "ru": "Шейкер Herbalife 700 мл",
+      "en": "Herbalife shaker 700 ml"
+    },
+    "Shaker (oq, bodibilder rasmli)": {
+      "ru": "Шейкер (белый, с рисунком бодибилдера)",
+      "en": "Shaker (white, bodybuilder print)"
+    },
+    "Shaker 400 ml (shaffof)": {
+      "ru": "Шейкер 400 мл (прозрачный)",
+      "en": "Shaker 400 ml (clear)"
+    },
+    "Shaker 500 ml (bo'limli, qora)": {
+      "ru": "Шейкер 500 мл (с отделением, чёрный)",
+      "en": "Shaker 500 ml (with compartment, black)"
+    },
+    "Shaker 700 ml (qora, \"Training\")": {
+      "ru": "Шейкер 700 мл (чёрный, «Training»)",
+      "en": "Shaker 700 ml (black, “Training”)"
+    },
+    "Shaker 700 ml (shaffof)": {
+      "ru": "Шейкер 700 мл (прозрачный)",
+      "en": "Shaker 700 ml (clear)"
+    },
+    "Shaker 700 ml (sharikli, dastali)": {
+      "ru": "Шейкер 700 мл (с шариком и ручкой)",
+      "en": "Shaker 700 ml (with ball and handle)"
+    },
+    "Spider shaker 500 ml": {
+      "ru": "Шейкер Spider 500 мл",
+      "en": "Spider shaker 500 ml"
+    },
+    "Sport butilka (juft)": {
+      "ru": "Спортивные бутылки (пара)",
+      "en": "Sports bottles (pair)"
+    },
+    "Sport butilka 700 ml (Adidas / Nike)": {
+      "ru": "Спортивная бутылка 700 мл (Adidas / Nike)",
+      "en": "Sports bottle 700 ml (Adidas / Nike)"
+    },
+    "Suv idishlari to'plami (3 ta)": {
+      "ru": "Набор бутылок для воды (3 шт.)",
+      "en": "Water bottle set (3 pcs)"
+    },
+    "Suv idishlari to'plami (4 ta)": {
+      "ru": "Набор бутылок для воды (4 шт.)",
+      "en": "Water bottle set (4 pcs)"
+    },
+    "UFC suv shishasi (turli rang)": {
+      "ru": "Бутылка для воды UFC (разные цвета)",
+      "en": "UFC water bottle (assorted colors)"
+    }
+  },
+  "izohlar": {
+    "Juft, qo'l zarbalari uchun.": {
+      "ru": "Пара, для ударов руками.",
+      "en": "Pair, for punches."
+    },
+    "Devorga mahkamlanadi, tortilish va brusya uchun.": {
+      "ru": "Крепится к стене, для подтягиваний и брусьев.",
+      "en": "Mounts to the wall, for pull-ups and dips."
+    },
+    "Rezina, qo'l dastali va oyoq pedali bilan.": {
+      "ru": "Резиновый, с ручками и ножными педалями.",
+      "en": "Rubber, with hand grips and foot pedals."
+    },
+    "Shisha, raqamli displey.": {
+      "ru": "Стеклянные, с цифровым дисплеем.",
+      "en": "Glass, with a digital display."
+    },
+    "Oyoq zarbalari uchun katta lapa.": {
+      "ru": "Большая лапа для ударов ногами.",
+      "en": "Large pad for kicks."
+    },
+    "Metall, zanglamaydi, yumshoq dastali.": {
+      "ru": "Металлические, не ржавеют, с мягкими ручками.",
+      "en": "Metal, rust-proof, with soft grips."
+    },
+    "Ikki juft g'ildirak, tizza yostig'i bilan.": {
+      "ru": "Две пары колёс, с подушкой под колени.",
+      "en": "Two pairs of wheels, with a knee pad."
+    },
+    "Qorin va yelka mushaklari uchun. Tizza ostiga qo'yiladigan gilamcha bilan.": {
+      "ru": "Для мышц живота и плеч. С ковриком под колени.",
+      "en": "For abs and shoulders. Comes with a knee mat."
+    },
+    "Eshik yoki turnikka osiladi, tana vazni bilan mashq qilish uchun.": {
+      "ru": "Вешаются на дверь или турник, для тренировок с весом тела.",
+      "en": "Hang on a door or pull-up bar, for bodyweight training."
+    },
+    "Eshik o'rniga tirab qo'yiladi, burg'ulash shart emas.": {
+      "ru": "Ставится враспор в дверной проём, сверлить не нужно.",
+      "en": "Braces in a doorway, no drilling needed."
+    },
+    "Keng, qalinligi 1 sm.": {
+      "ru": "Широкий, толщина 1 см.",
+      "en": "Wide, 1 cm thick."
+    },
+    "Bo'g'im va payni qo'llab-quvvatlash, pill pack.": {
+      "ru": "Поддержка суставов и связок, pill pack.",
+      "en": "Joint and tendon support, pill pack."
+    },
+    "Sportchilar uchun vitamin kompleksi, pill pack.": {
+      "ru": "Витаминный комплекс для спортсменов, pill pack.",
+      "en": "Vitamin complex for athletes, pill pack."
+    },
+    "Chidamlilik va tiklanish uchun amino.": {
+      "ru": "Аминокислоты для выносливости и восстановления.",
+      "en": "Amino acids for endurance and recovery."
+    },
+    "Muhim amino kislotalar.": {
+      "ru": "Незаменимые аминокислоты.",
+      "en": "Essential amino acids."
+    },
+    "Mashqdan oldingi kompleks.": {
+      "ru": "Предтренировочный комплекс.",
+      "en": "Pre-workout complex."
+    },
+    "Multivitamin va testosteron qo'llab-quvvatlash.": {
+      "ru": "Мультивитамины и поддержка тестостерона.",
+      "en": "Multivitamin and testosterone support."
+    },
+    "Multivitamin.": {
+      "ru": "Мультивитамины.",
+      "en": "Multivitamin."
+    },
+    "Mashqdan oldingi kompleks, 35 porsiya.": {
+      "ru": "Предтренировочный комплекс, 35 порций.",
+      "en": "Pre-workout complex, 35 servings."
+    },
+    "Mashqdan oldingi kompleks, 60 porsiya.": {
+      "ru": "Предтренировочный комплекс, 60 порций.",
+      "en": "Pre-workout complex, 60 servings."
+    },
+    "BCAA, vegan.": {
+      "ru": "BCAA, веган.",
+      "en": "BCAA, vegan."
+    },
+    "Izotonik ichimlik kukuni.": {
+      "ru": "Порошок изотонического напитка.",
+      "en": "Isotonic drink powder."
+    },
+    "Mashqdan oldingi kompleks, vegan.": {
+      "ru": "Предтренировочный комплекс, веган.",
+      "en": "Pre-workout complex, vegan."
+    },
+    "Ta'msiz, 300 g.": {
+      "ru": "Без вкуса, 300 г.",
+      "en": "Unflavored, 300 g."
+    },
+    "Kunlik multivitamin, 90 tabletka.": {
+      "ru": "Ежедневные мультивитамины, 90 таблеток.",
+      "en": "Daily multivitamin, 90 tablets."
+    },
+    "Kunlik multivitamin.": {
+      "ru": "Ежедневные мультивитамины.",
+      "en": "Daily multivitamin."
+    },
+    "14 g amino kislota, 30 porsiya.": {
+      "ru": "14 г аминокислот, 30 порций.",
+      "en": "14 g amino acids, 30 servings."
+    },
+    "Glutamin, ta'msiz kukun.": {
+      "ru": "Глютамин, порошок без вкуса.",
+      "en": "Glutamine, unflavored powder."
+    },
+    "Tiklanish uchun BCAA.": {
+      "ru": "BCAA для восстановления.",
+      "en": "BCAA for recovery."
+    },
+    "50+ tarkib, 24 vitamin va mineral.": {
+      "ru": "50+ компонентов, 24 витамина и минерала.",
+      "en": "50+ ingredients, 24 vitamins and minerals."
+    },
+    "BCAA kukuni.": {
+      "ru": "Порошок BCAA.",
+      "en": "BCAA powder."
+    },
+    "Amino kislota kompleksi.": {
+      "ru": "Комплекс аминокислот.",
+      "en": "Amino acid complex."
+    },
+    "Shakarsiz, elektrolitlar bilan.": {
+      "ru": "Без сахара, с электролитами.",
+      "en": "Sugar-free, with electrolytes."
+    },
+    "Kapyushonli, cho'ntakli. Jason's Heart.": {
+      "ru": "С капюшоном и карманами. Jason's Heart.",
+      "en": "Hooded, with pockets. Jason's Heart."
+    },
+    "Yengsiz, kapyushonli. Jason's Heart.": {
+      "ru": "Без рукавов, с капюшоном. Jason's Heart.",
+      "en": "Sleeveless, hooded. Jason's Heart."
+    },
+    "Yengsiz, keng qiyiqli. Jason's Heart.": {
+      "ru": "Без рукавов, с широкой проймой. Jason's Heart.",
+      "en": "Sleeveless, wide-cut armholes. Jason's Heart."
+    },
+    "Yengsiz. Old tomoni qora, orqasi kulrang yo'lli. Jason's Heart.": {
+      "ru": "Без рукавов. Перед чёрный, спина в серую полоску. Jason's Heart.",
+      "en": "Sleeveless. Black front, grey-striped back. Jason's Heart."
+    },
+    "Yengsiz. Old tomoni salat rang, orqasi qora yo'lli. Jason's Heart.": {
+      "ru": "Без рукавов. Перед салатовый, спина в чёрную полоску. Jason's Heart.",
+      "en": "Sleeveless. Lime front, black-striped back. Jason's Heart."
+    },
+    "Qalpoqli kofta, uzun yengli rashgard, futbolka, tayts va shortik.": {
+      "ru": "Кофта с капюшоном, рашгард с длинным рукавом, футболка, тайтсы и шорты.",
+      "en": "Hoodie, long-sleeve rash guard, T-shirt, tights and shorts."
+    },
+    "Yengsiz, to'r mato.": {
+      "ru": "Без рукавов, сетчатая ткань.",
+      "en": "Sleeveless, mesh fabric."
+    },
+    "Uzun yengli rashgard va tayts. Ranglari: qora (kulrang chok), qora (yashil chok), sof qora.": {
+      "ru": "Рашгард с длинным рукавом и тайтсы. Цвета: чёрный (серый шов), чёрный (зелёный шов), чистый чёрный.",
+      "en": "Long-sleeve rash guard and tights. Colors: black (grey stitching), black (green stitching), solid black."
+    },
+    "Qalpoqli kofta, uzun yengli rashgard, futbolka, tayts va shortik. Ranglari: qora, kulrang, ko'k (kulrang va ko'k variantlar ichi momiqli — issiq).": {
+      "ru": "Кофта с капюшоном, рашгард с длинным рукавом, футболка, тайтсы и шорты. Цвета: чёрный, серый, синий (серый и синий варианты с начёсом — тёплые).",
+      "en": "Hoodie, long-sleeve rash guard, T-shirt, tights and shorts. Colors: black, grey, blue (the grey and blue versions are fleece-lined — warm)."
+    },
+    "Uzun yengli rashgard, tayts va shortik. Ranglari: qora, haki, ko'k (ko'k variantda qalpoqli kofta va futbolka ham bor).": {
+      "ru": "Рашгард с длинным рукавом, тайтсы и шорты. Цвета: чёрный, хаки, синий (в синем варианте есть также кофта с капюшоном и футболка).",
+      "en": "Long-sleeve rash guard, tights and shorts. Colors: black, khaki, blue (the blue version also includes a hoodie and T-shirt)."
+    },
+    "Venum x UFC, 3 qismli: uzun yengli rashgard, tayts va shortik. Ranglari: haki-kamuflyaj, qora-kamuflyaj.": {
+      "ru": "Venum x UFC, 3 предмета: рашгард с длинным рукавом, тайтсы и шорты. Цвета: хаки-камуфляж, чёрный камуфляж.",
+      "en": "Venum x UFC, 3 pieces: long-sleeve rash guard, tights and shorts. Colors: khaki camo, black camo."
+    },
+    "Qalpoqli kofta, uzun yengli rashgard, futbolka, tayts va shortik. Ranglari: qora, qora-yashil.": {
+      "ru": "Кофта с капюшоном, рашгард с длинным рукавом, футболка, тайтсы и шорты. Цвета: чёрный, чёрно-зелёный.",
+      "en": "Hoodie, long-sleeve rash guard, T-shirt, tights and shorts. Colors: black, black-green."
+    },
+    "Yengsiz, Project Rock nashri.": {
+      "ru": "Без рукавов, серия Project Rock.",
+      "en": "Sleeveless, Project Rock edition."
+    },
+    "Yengsiz, Project Rock nashri, CoolSwitch.": {
+      "ru": "Без рукавов, серия Project Rock, CoolSwitch.",
+      "en": "Sleeveless, Project Rock edition, CoolSwitch."
+    },
+    "Yengsiz, CoolSwitch to'r mato.": {
+      "ru": "Без рукавов, сетчатая ткань CoolSwitch.",
+      "en": "Sleeveless, CoolSwitch mesh fabric."
+    },
+    "Yengsiz, kapyushonli, buqa nishoni.": {
+      "ru": "Без рукавов, с капюшоном, эмблема быка.",
+      "en": "Sleeveless, hooded, bull emblem."
+    },
+    "4 qismli: uzun yengli rashgard, futbolka, uzun tayts va shortik.": {
+      "ru": "4 предмета: рашгард с длинным рукавом, футболка, длинные тайтсы и шорты.",
+      "en": "4 pieces: long-sleeve rash guard, T-shirt, long tights and shorts."
+    },
+    "4 qismli mashq to'plami: uzun yengli rashgard, futbolka, uzun tayts va shortik. Ranglari: sariq, kulrang, yashil, oq-qora.": {
+      "ru": "Тренировочный набор из 4 предметов: рашгард с длинным рукавом, футболка, длинные тайтсы и шорты. Цвета: жёлтый, серый, зелёный, бело-чёрный.",
+      "en": "4-piece training set: long-sleeve rash guard, T-shirt, long tights and shorts. Colors: yellow, grey, green, white-black."
+    },
+    "Yuqori kaloriyali, 50 g oqsil.": {
+      "ru": "Высококалорийный, 50 г белка.",
+      "en": "High-calorie, 50 g protein."
+    },
+    "50 g oqsil, 1030 kkal.": {
+      "ru": "50 г белка, 1030 ккал.",
+      "en": "50 g protein, 1030 kcal."
+    },
+    "50 g oqsil, 1200 kkal.": {
+      "ru": "50 г белка, 1200 ккал.",
+      "en": "50 g protein, 1200 kcal."
+    },
+    "15 lb, cookies & cream.": {
+      "ru": "15 lb, cookies & cream.",
+      "en": "15 lb, cookies & cream."
+    },
+    "52 g oqsil, 1280 kkal.": {
+      "ru": "52 г белка, 1280 ккал.",
+      "en": "52 g protein, 1280 kcal."
+    },
+    "Ko'p oqsilli kompleks.": {
+      "ru": "Многокомпонентный белковый комплекс.",
+      "en": "Multi-protein complex."
+    },
+    "50 g oqsil, 1250 kkal.": {
+      "ru": "50 г белка, 1250 ккал.",
+      "en": "50 g protein, 1250 kcal."
+    },
+    "Yuqori oqsilli gainer.": {
+      "ru": "Гейнер с высоким содержанием белка.",
+      "en": "High-protein gainer."
+    },
+    "30 g oqsil, 2500 kkal.": {
+      "ru": "30 г белка, 2500 ккал.",
+      "en": "30 g protein, 2500 kcal."
+    },
+    "60 g oqsil, 650 kkal.": {
+      "ru": "60 г белка, 650 ккал.",
+      "en": "60 g protein, 650 kcal."
+    },
+    "50 g oqsil, 10,5 g BCAA.": {
+      "ru": "50 г белка, 10,5 г BCAA.",
+      "en": "50 g protein, 10.5 g BCAA."
+    },
+    "40 g oqsil, 1260 kkal.": {
+      "ru": "40 г белка, 1260 ккал.",
+      "en": "40 g protein, 1260 kcal."
+    },
+    "Optimum Nutrition, kuchaytirilgan formula.": {
+      "ru": "Optimum Nutrition, усиленная формула.",
+      "en": "Optimum Nutrition, enhanced formula."
+    },
+    "Optimum Nutrition, 120 porsiya.": {
+      "ru": "Optimum Nutrition, 120 порций.",
+      "en": "Optimum Nutrition, 120 servings."
+    },
+    "Optimum Nutrition, 5 g / porsiya.": {
+      "ru": "Optimum Nutrition, 5 г на порцию.",
+      "en": "Optimum Nutrition, 5 g per serving."
+    },
+    "Optimum Nutrition, ta'msiz, katta banka.": {
+      "ru": "Optimum Nutrition, без вкуса, большая банка.",
+      "en": "Optimum Nutrition, unflavored, large jar."
+    },
+    "Optimum Nutrition.": {
+      "ru": "Optimum Nutrition.",
+      "en": "Optimum Nutrition."
+    },
+    "Kreatin monogidrat.": {
+      "ru": "Креатин моногидрат.",
+      "en": "Creatine monohydrate."
+    },
+    "Kreatin kapsulalari.": {
+      "ru": "Креатин в капсулах.",
+      "en": "Creatine capsules."
+    },
+    "Kukun, ta'msiz.": {
+      "ru": "Порошок, без вкуса.",
+      "en": "Powder, unflavored."
+    },
+    "180 tabletka.": {
+      "ru": "180 таблеток.",
+      "en": "180 tablets."
+    },
+    "Tabletka, erkin shakl.": {
+      "ru": "Таблетки, свободная форма.",
+      "en": "Tablets, free form."
+    },
+    "Kukun.": {
+      "ru": "Порошок.",
+      "en": "Powder."
+    },
+    "Suyuq, 3500 mg.": {
+      "ru": "Жидкий, 3500 мг.",
+      "en": "Liquid, 3500 mg."
+    },
+    "Suyuq, 3000 mg.": {
+      "ru": "Жидкий, 3000 мг.",
+      "en": "Liquid, 3000 mg."
+    },
+    "Suyuq, amino kislotalar bilan.": {
+      "ru": "Жидкий, с аминокислотами.",
+      "en": "Liquid, with amino acids."
+    },
+    "Suyuq L-karnitin, 500 ml.": {
+      "ru": "Жидкий L-карнитин, 500 мл.",
+      "en": "Liquid L-carnitine, 500 ml."
+    },
+    "Suyuq, yog' yoqish formulasi.": {
+      "ru": "Жидкий, жиросжигающая формула.",
+      "en": "Liquid, fat-burning formula."
+    },
+    "Suyuq.": {
+      "ru": "Жидкий.",
+      "en": "Liquid."
+    },
+    "22 g oqsil.": {
+      "ru": "22 г белка.",
+      "en": "22 g protein."
+    },
+    "24 g oqsil.": {
+      "ru": "24 г белка.",
+      "en": "24 g protein."
+    },
+    "Izolyat aralashmasi.": {
+      "ru": "Смесь изолятов.",
+      "en": "Isolate blend."
+    },
+    "5 lb (2,3 kg), 71 porsiya, izolyat.": {
+      "ru": "5 lb (2,3 кг), 71 порция, изолят.",
+      "en": "5 lb (2.3 kg), 71 servings, isolate."
+    },
+    "Uglevodsiz izolyat, 25 g oqsil, 3 lb.": {
+      "ru": "Изолят без углеводов, 25 г белка, 3 lb.",
+      "en": "Zero-carb isolate, 25 g protein, 3 lb."
+    },
+    "Uglevodsiz izolyat, 25 g oqsil, 7,5 lb.": {
+      "ru": "Изолят без углеводов, 25 г белка, 7,5 lb.",
+      "en": "Zero-carb isolate, 25 g protein, 7.5 lb."
+    },
+    "4,13 lb (1,87 kg), 50 porsiya.": {
+      "ru": "4,13 lb (1,87 кг), 50 порций.",
+      "en": "4.13 lb (1.87 kg), 50 servings."
+    },
+    "5 lb (2,28 kg), 24 g oqsil.": {
+      "ru": "5 lb (2,28 кг), 24 г белка.",
+      "en": "5 lb (2.28 kg), 24 g protein."
+    },
+    "Izolyat, 25 g oqsil.": {
+      "ru": "Изолят, 25 г белка.",
+      "en": "Isolate, 25 g protein."
+    },
+    "2,27 kg, 24 g oqsil.": {
+      "ru": "2,27 кг, 24 г белка.",
+      "en": "2.27 kg, 24 g protein."
+    },
+    "10 lb, 137 porsiya.": {
+      "ru": "10 lb, 137 порций.",
+      "en": "10 lb, 137 servings."
+    },
+    "0,9 kg, 24 g oqsil.": {
+      "ru": "0,9 кг, 24 г белка.",
+      "en": "0.9 kg, 24 g protein."
+    },
+    "Kichik banka, 24 g oqsil.": {
+      "ru": "Маленькая банка, 24 г белка.",
+      "en": "Small jar, 24 g protein."
+    },
+    "Gidrolizat, 30 g oqsil.": {
+      "ru": "Гидролизат, 30 г белка.",
+      "en": "Hydrolysate, 30 g protein."
+    },
+    "Mol go'shti oqsili izolyati.": {
+      "ru": "Изолят говяжьего белка.",
+      "en": "Beef protein isolate."
+    },
+    "Izolyat, shakarsiz va yog'siz.": {
+      "ru": "Изолят, без сахара и жира.",
+      "en": "Isolate, sugar-free and fat-free."
+    },
+    "Izolyat, glutamin kompleksi bilan.": {
+      "ru": "Изолят с глютаминовым комплексом.",
+      "en": "Isolate with glutamine complex."
+    },
+    "5,10 lb (2,3 kg).": {
+      "ru": "5,10 lb (2,3 кг).",
+      "en": "5.10 lb (2.3 kg)."
+    },
+    "600 ml, ko'k qopqoq, aralashtirgichli.": {
+      "ru": "600 мл, синяя крышка, с венчиком.",
+      "en": "600 ml, blue lid, with mixer."
+    },
+    "Klipsali qopqoq, 1 litr.": {
+      "ru": "Крышка с клипсой, 1 литр.",
+      "en": "Clip lid, 1 liter."
+    },
+    "Metall, issiq va sovuqni ushlaydi.": {
+      "ru": "Металлический, держит тепло и холод.",
+      "en": "Metal, keeps drinks hot and cold."
+    },
+    "Metall termos shisha.": {
+      "ru": "Металлическая термобутылка.",
+      "en": "Metal thermos bottle."
+    },
+    "Herbalife, trubkali qopqoq. Ranglari: havorang, yashil.": {
+      "ru": "Herbalife, крышка с трубочкой. Цвета: голубой, зелёный.",
+      "en": "Herbalife, straw lid. Colors: light blue, green."
+    },
+    "Ichida meva uchun to'r bor. Ranglari: binafsha, havorang.": {
+      "ru": "Внутри сетка для фруктов. Цвета: фиолетовый, голубой.",
+      "en": "Fruit infuser inside. Colors: purple, light blue."
+    },
+    "Ko'k-pushti gradient, dastali, vaqt belgilari bilan.": {
+      "ru": "Сине-розовый градиент, с ручкой и отметками времени.",
+      "en": "Blue-pink gradient, with handle and time markers."
+    },
+    "Soat bo'yicha ichish belgilari, dastali.": {
+      "ru": "Отметки питья по часам, с ручкой.",
+      "en": "Hourly drinking markers, with handle."
+    },
+    "Katta, soat bo'yicha ichish belgilari, dastali.": {
+      "ru": "Большая, отметки питья по часам, с ручкой.",
+      "en": "Large, hourly drinking markers, with handle."
+    },
+    "Vaqt belgilari bilan, tasmali. Ranglari: qizil, ko'k.": {
+      "ru": "С отметками времени и ремешком. Цвета: красный, синий.",
+      "en": "With time markers and a strap. Colors: red, blue."
+    },
+    "Shaffof, aralashtirgichli. Qopqoq: ko'k, qora.": {
+      "ru": "Прозрачный, с венчиком. Крышка: синяя, чёрная.",
+      "en": "Clear, with mixer. Lid: blue, black."
+    },
+    "600 ml, aralashtirgichli qopqoq.": {
+      "ru": "600 мл, крышка с венчиком.",
+      "en": "600 ml, lid with mixer."
+    },
+    "Kichik, sharikli aralashtirgich bilan. Ranglari: sariq, yashil.": {
+      "ru": "Маленький, с шариком для смешивания. Цвета: жёлтый, зелёный.",
+      "en": "Small, with a mixing ball. Colors: yellow, green."
+    },
+    "Pastida kukun uchun bo'lim. Ranglari: oq chiziq, ko'k.": {
+      "ru": "Внизу отделение для порошка. Цвета: белая полоса, синий.",
+      "en": "Powder compartment at the bottom. Colors: white stripe, blue."
+    },
+    "Qora, aralashtirgichli qopqoq.": {
+      "ru": "Чёрный, крышка с венчиком.",
+      "en": "Black, lid with mixer."
+    },
+    "Aralashtirgich to'ri bilan. Qopqoq: yashil, ko'k.": {
+      "ru": "С сеткой для смешивания. Крышка: зелёная, синяя.",
+      "en": "With a mixing mesh. Lid: green, blue."
+    },
+    "Aralashtirish sharigi va pastki bo'limi bor. Ranglari: qizil, yashil.": {
+      "ru": "С шариком для смешивания и нижним отделением. Цвета: красный, зелёный.",
+      "en": "With a mixing ball and bottom compartment. Colors: red, green."
+    },
+    "3 bo'limli: shaker + kukun va tabletka uchun idish. Ranglari: yashil, ko'k.": {
+      "ru": "3 отделения: шейкер + контейнеры для порошка и таблеток. Цвета: зелёный, синий.",
+      "en": "3 compartments: shaker + containers for powder and tablets. Colors: green, blue."
+    },
+    "Ikki rangli to'plam: binafsha, qora.": {
+      "ru": "Двухцветный набор: фиолетовый, чёрный.",
+      "en": "Two-color set: purple, black."
+    },
+    "Plastik, ichish moslamali qopqoq.": {
+      "ru": "Пластиковая, крышка с носиком для питья.",
+      "en": "Plastic, lid with drinking spout."
+    },
+    "Ko'k-pushti gradient: 2 L + 0,9 L + 0,3 L.": {
+      "ru": "Сине-розовый градиент: 2 л + 0,9 л + 0,3 л.",
+      "en": "Blue-pink gradient: 2 L + 0.9 L + 0.3 L."
+    },
+    "Qora gradient: 2,2 L + 0,8 L + 0,5 L + 0,2 L.": {
+      "ru": "Чёрный градиент: 2,2 л + 0,8 л + 0,5 л + 0,2 л.",
+      "en": "Black gradient: 2.2 L + 0.8 L + 0.5 L + 0.2 L."
+    },
+    "Ko'k, qora, sariq va qizil rangda.": {
+      "ru": "В синем, чёрном, жёлтом и красном цвете.",
+      "en": "Available in blue, black, yellow and red."
+    }
+  }
+}

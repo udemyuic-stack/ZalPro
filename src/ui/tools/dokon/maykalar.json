@@ -1,0 +1,92 @@
+[
+  {
+    "category": "Forma",
+    "name": "Kapyushonli mayka (och kulrang)",
+    "note": "Yengsiz, kapyushonli. Jason's Heart.",
+    "sizes": ["XL", "XXL", "3XL", "4XL"],
+    "price": 17, "currency": "USD", "stock": 10, "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/mayka-kapyushonli-och-kulrang.jpg",
+    "images": []
+  },
+  {
+    "category": "Forma",
+    "name": "Kapyushonli kofta (kulrang)",
+    "note": "Kapyushonli, cho'ntakli. Jason's Heart.",
+    "sizes": ["XL", "XXL", "3XL", "4XL"],
+    "price": 23, "currency": "USD", "stock": 10, "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/kofta-kapyushonli-kulrang.jpg",
+    "images": []
+  },
+  {
+    "category": "Forma",
+    "name": "Mayka (qora-kulrang)",
+    "note": "Yengsiz. Old tomoni qora, orqasi kulrang yo'lli. Jason's Heart.",
+    "sizes": ["XL", "XXL", "3XL", "4XL"],
+    "price": 15, "currency": "USD", "stock": 10, "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/mayka-qora.jpg",
+    "images": ["https://kotta-qani-09111753.web.app/img/tovar/mayka-qora-orqa.jpg"]
+  },
+  {
+    "category": "Forma",
+    "name": "Mayka (salat rang)",
+    "note": "Yengsiz. Old tomoni salat rang, orqasi qora yo'lli. Jason's Heart.",
+    "sizes": ["XL", "XXL", "3XL", "4XL"],
+    "price": 15, "currency": "USD", "stock": 10, "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/mayka-salat.jpg",
+    "images": ["https://kotta-qani-09111753.web.app/img/tovar/mayka-salat-orqa.jpg"]
+  },
+  {
+    "category": "Forma",
+    "name": "Mayka (kulrang)",
+    "note": "Yengsiz, keng qiyiqli. Jason's Heart.",
+    "sizes": ["XL", "XXL", "3XL", "4XL"],
+    "price": 15, "currency": "USD", "stock": 10, "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/mayka-kulrang.jpg",
+    "images": []
+  },
+  {
+    "category": "Forma",
+    "name": "Under Armour mayka (oq)",
+    "note": "Yengsiz, CoolSwitch to'r mato.",
+    "sizes": ["XL", "XXL", "3XL", "4XL"],
+    "price": 15, "currency": "USD", "stock": 10, "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/ua-mayka-oq.jpg",
+    "images": []
+  },
+  {
+    "category": "Forma",
+    "name": "Under Armour Project Rock kapyushonli mayka",
+    "note": "Yengsiz, kapyushonli, buqa nishoni.",
+    "sizes": ["XL", "XXL", "3XL", "4XL"],
+    "price": 14, "currency": "USD", "stock": 10, "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/ua-project-rock-kapyushonli.jpg",
+    "images": []
+  },
+  {
+    "category": "Forma",
+    "name": "Under Armour mayka \"Earn Greatness\" (oq)",
+    "note": "Yengsiz, Project Rock nashri.",
+    "sizes": ["XL", "XXL", "3XL", "4XL"],
+    "price": 14, "currency": "USD", "stock": 10, "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/ua-earn-greatness-oq.jpg",
+    "images": []
+  },
+  {
+    "category": "Forma",
+    "name": "Under Armour mayka \"Earn Greatness\" (qora)",
+    "note": "Yengsiz, Project Rock nashri, CoolSwitch.",
+    "sizes": ["XL", "XXL", "3XL", "4XL"],
+    "price": 14, "currency": "USD", "stock": 10, "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/ua-earn-greatness-qora.jpg",
+    "images": []
+  },
+  {
+    "category": "Forma",
+    "name": "Nike mayka (qora)",
+    "note": "Yengsiz, to'r mato.",
+    "sizes": ["XL", "XXL", "3XL", "4XL"],
+    "price": 14, "currency": "USD", "stock": 10, "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/nike-mayka-qora.jpg",
+    "images": []
+  }
+]

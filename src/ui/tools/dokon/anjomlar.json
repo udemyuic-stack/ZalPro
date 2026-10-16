@@ -1,0 +1,98 @@
+[
+  {
+    "category": "Suv idishlari",
+    "name": "Shaker (oq, bodibilder rasmli)",
+    "note": "600 ml, aralashtirgichli qopqoq.",
+    "sizes": [],
+    "price": 40000,
+    "currency": "UZS",
+    "stock": 5,
+    "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/anjom-shaker-oq.jpg",
+    "images": []
+  },
+  {
+    "category": "Suv idishlari",
+    "name": "Applied Nutrition shaker (shaffof)",
+    "note": "600 ml, ko'k qopqoq, aralashtirgichli.",
+    "sizes": [],
+    "price": 60000,
+    "currency": "UZS",
+    "stock": 5,
+    "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/anjom-shaker-shaffof.jpg",
+    "images": []
+  },
+  {
+    "category": "Suv idishlari",
+    "name": "Applied Nutrition termo-stakan (ko'k)",
+    "note": "Metall, issiq va sovuqni ushlaydi.",
+    "sizes": [],
+    "price": 100000,
+    "currency": "UZS",
+    "stock": 5,
+    "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/anjom-stakan-kok.jpg",
+    "images": []
+  },
+  {
+    "category": "Suv idishlari",
+    "name": "Applied Nutrition sport shishasi (ko'k)",
+    "note": "Klipsali qopqoq, 1 litr.",
+    "sizes": [],
+    "price": 65000,
+    "currency": "UZS",
+    "stock": 5,
+    "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/anjom-shisha-kok.jpg",
+    "images": []
+  },
+  {
+    "category": "Suv idishlari",
+    "name": "Applied Nutrition termos (ko'k)",
+    "note": "Metall termos shisha.",
+    "sizes": [],
+    "price": 90000,
+    "currency": "UZS",
+    "stock": 5,
+    "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/anjom-termos-kok.jpg",
+    "images": []
+  },
+  {
+    "category": "L-Karnitin",
+    "name": "Liquid Carni-X 100 000",
+    "note": "Suyuq L-karnitin, 500 ml.",
+    "sizes": [],
+    "price": 270000,
+    "currency": "UZS",
+    "stock": 5,
+    "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/karnitin-liquid-carni-x.jpg",
+    "images": []
+  },
+  {
+    "category": "Anjomlar",
+    "name": "Press roller (qorin uchun g'ildirak)",
+    "note": "Qorin va yelka mushaklari uchun. Tizza ostiga qo'yiladigan gilamcha bilan.",
+    "sizes": [],
+    "price": 200000,
+    "currency": "UZS",
+    "stock": 5,
+    "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/anjom-press-roller.jpg",
+    "images": []
+  },
+  {
+    "category": "Suv idishlari",
+    "name": "UFC suv shishasi (turli rang)",
+    "note": "Ko'k, qora, sariq va qizil rangda.",
+    "sizes": [],
+    "price": 40000,
+    "currency": "UZS",
+    "stock": 5,
+    "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/anjom-ufc-shisha.jpg",
+    "images": []
+  }
+]

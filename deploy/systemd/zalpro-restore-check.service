@@ -1,0 +1,10 @@
+[Unit]
+Description=ZalPro backup restore check
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/zalpro/deploy
+ExecStart=/usr/bin/docker compose run --rm backup python -m scripts.backup restore-check
+TimeoutStartSec=3600

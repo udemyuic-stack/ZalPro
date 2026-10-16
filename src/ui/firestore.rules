@@ -1,0 +1,357 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isSelf(uid) { return signedIn() && request.auth.uid == uid; }
+
+    function myRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    // Bosh admin (zal egasi) — rol tayinlaydi, akkaunt o'chiradi, hammani ko'radi
+    function isOwner() { return signedIn() && myRole() == 'owner'; }
+
+    // Trener paneliga kiradiganlar: trener va bosh admin
+    function isStaff() { return signedIn() && myRole() in ['admin', 'owner']; }
+
+    // Barmen — zal bari/sotuvchisi: faqat do'kon (tovar va buyurtma)
+    function isBarmen() { return signedIn() && myRole() == 'barmen'; }
+
+    // Trener faqat O'ZIGA biriktirilgan shogird bilan ishlaydi (bosh admin — hamma bilan)
+    function isTrainerOf(uid) {
+      return isStaff() &&
+        get(/databases/$(database)/documents/users/$(uid)).data.get('trainerId', null) == request.auth.uid;
+    }
+    function canManage(uid) { return isOwner() || isTrainerOf(uid); }
+
+    // Foydalanuvchining zali ('' — zalsiz; zal o'chirilganda maydon null bo'lib qoladi)
+    function gymOf(uid) {
+      let path = /databases/$(database)/documents/users/$(uid);
+      let g = exists(path) ? get(path).data.get('gymId', '') : '';
+      return g == null ? '' : g;
+    }
+
+    // Yo'q bo'lishi mumkin bo'lgan maydonlarni xavfsiz solishtirish
+    function same(field) {
+      return request.resource.data.get(field, null) == resource.data.get(field, null);
+    }
+
+    // Shogird trenerini o'zi tanlaydi yoki almashtiradi — faqat katalogda shogird qabul
+    // qilayotgan trenerga (trenersiz qolib ketish mumkin emas)
+    function trainerChoiceOk() {
+      let newTrainer = request.resource.data.get('trainerId', null);
+      return same('trainerId') || (
+        newTrainer is string &&
+        exists(/databases/$(database)/documents/trainers/$(newTrainer)) &&
+        get(/databases/$(database)/documents/trainers/$(newTrainer)).data.get('accepting', true) == true
+      );
+    }
+
+    // Vazn haftada 1 marta (server tomonda ham): profildagi vazn faqat birinchi marta (anketa)
+    // yoki yangi o'lchov bilan birga o'zgaradi; yangi o'lchov oldingisidan kamida 6 kun keyin.
+    // (Ilova kalendar bo'yicha 7 kun kutadi — server 6 kun: soat farqi uchun zaxira.)
+    function weightChangeOk() {
+      let oldW = resource.data.get('weight', 0);
+      let oldAt = resource.data.get('lastWeighIn', null);
+      let newAt = request.resource.data.get('lastWeighIn', null);
+      return (same('weight') && same('lastWeighIn'))
+        || (oldW == 0 && same('lastWeighIn'))
+        || (newAt == request.time && (oldAt == null || request.time > oldAt + duration.value(6, 'd')));
+    }
+
+    match /users/{uid} {
+      allow read: if isSelf(uid) || isOwner()
+        // trener: faqat o'z shogirdlari (bosh admin va boshqa trenerlarni ko'rmaydi)
+        || (isStaff() && resource.data.get('trainerId', null) == request.auth.uid);
+
+      // Ro'yxatdan o'tayotgan har kim faqat oddiy foydalanuvchi bo'la oladi
+      allow create: if isSelf(uid) && request.resource.data.role == 'user';
+
+      allow update: if
+        // bosh admin — hamma maydon, rol ham
+        isOwner()
+        // trener — faqat o'z shogirdi: reja, maqsad va h.k., lekin ROL, TRENER va ZAL emas
+        || (isStaff() && resource.data.get('trainerId', null) == request.auth.uid
+            && same('role') && same('trainerId') && same('gymId'))
+        // foydalanuvchi o'zi — rol va rejaga tegmaydi; trenerni katalogdan tanlaydi;
+        // vaznni haftada 1 martadan ko'p o'zgartira olmaydi
+        // dasturni (trener tanlagan mashqlar) ham o'zi o'zgartira olmaydi
+        || (isSelf(uid) && same('role') && same('planId') && same('planAssignedAt') && same('program')
+            && same('gymId') && trainerChoiceOk() && weightChangeOk()
+            // "uyda mashq"ni va abonement muddatini faqat trener belgilaydi; zal kunlari — aynan 3 ta
+            && same('homeWorkoutDate') && same('subscriptionExpiresAt')
+            && (same('gymDays') || request.resource.data.gymDays in [[2, 4, 6], [1, 3, 5]]));
+
+      // Akkauntni faqat bosh admin o'chiradi
+      allow delete: if isOwner();
+
+      match /days/{day} {
+        allow read, write: if isSelf(uid);
+        allow read: if canManage(uid);
+      }
+      match /weights/{id} {
+        allow read: if isSelf(uid) || canManage(uid);
+        // o'lchov faqat profildagi lastWeighIn bilan BIRGA (bitta batch) yoziladi —
+        // shunda haftalik cheklov (weightChangeOk) chetlab o'tilmaydi
+        allow create: if isSelf(uid) &&
+          getAfter(/databases/$(database)/documents/users/$(uid)).data.get('lastWeighIn', null) == request.time;
+      }
+
+      // "Oldin / keyin" rasmlari — shogird o'zi qo'shadi va o'chiradi; o'zi, treneri va
+      // bosh admin ko'radi. Rasm hujjat ichida (bytes), 350 KB gacha.
+      match /photos/{id} {
+        allow read: if isSelf(uid) || canManage(uid);
+        allow create: if isSelf(uid)
+          && request.resource.data.keys().hasOnly(['data', 'takenAt', 'weight'])
+          && request.resource.data.data is bytes
+          && request.resource.data.data.size() > 0
+          && request.resource.data.data.size() <= 358400
+          && request.resource.data.takenAt == request.time
+          && request.resource.data.get('weight', 0) is number;
+        allow delete: if isSelf(uid);
+      }
+
+      // Abonement yozuvlari — faqat trener/bosh admin qo'shadi, mijoz va xodim o'qiydi
+      match /subscriptions/{id} {
+        allow read: if isSelf(uid) || canManage(uid);
+        allow create: if canManage(uid)
+          && request.resource.data.keys().hasOnly(
+               ['startDate', 'months', 'days', 'price', 'currency', 'paidDate', 'createdAt'])
+          && request.resource.data.months is int
+          && request.resource.data.months >= 0 && request.resource.data.months <= 24
+          // kunlik tashrif — `days`; oylik yoki kunlik, ikkalasi birga emas
+          && request.resource.data.get('days', 0) is int
+          && request.resource.data.get('days', 0) >= 0
+          && request.resource.data.get('days', 0) <= 31
+          && (request.resource.data.months > 0) != (request.resource.data.get('days', 0) > 0)
+          && request.resource.data.price is int && request.resource.data.price >= 0
+          && request.resource.data.get('currency', 'UZS') in ['UZS', 'USD'];
+      }
+
+      // Kunlik davomat (sana kalit bilan) — faqat trener/bosh admin belgilaydi
+      match /attendance/{day} {
+        allow read: if isSelf(uid) || canManage(uid);
+        allow write: if canManage(uid)
+          && request.resource.data.keys().hasOnly(['present', 'markedBy', 'markedAt'])
+          && request.resource.data.present is bool
+          && request.resource.data.markedBy == request.auth.uid;
+      }
+    }
+
+    // Trenerlar katalogi: hamma kirganlar o'qiydi (shogird trener tanlaydi).
+    // Yozuvni trenerning O'ZI boshqaradi; bosh admin faqat qo'shadi/o'chiradi (rol o'zgarganda).
+    // Oylik moliyaviy hisobot: hamma abonementlarni bitta so'rovda (collectionGroup)
+    // faqat bosh admin o'qiydi
+    match /{path=**}/subscriptions/{id} {
+      allow read: if isOwner();
+    }
+
+    // Mijozning OXIRGI to'lovi ko'zgusi — zalning hamma treneri va barmeni ko'radi (faqat ism
+    // va to'lov; `users` hujjati ochilmaydi). Yozish — abonement qo'sha oladigan odam.
+    match /memberships/{uid} {
+      // mijoz trenerining zali ('' — trenersiz yoki trener zalsiz)
+      function clientGym() {
+        let t = get(/databases/$(database)/documents/users/$(uid)).data.get('trainerId', null);
+        return (t == null || t == '') ? '' : gymOf(t);
+      }
+      function validMembership() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['name', 'gymId', 'months', 'days', 'price', 'currency',
+                                 'paidDate', 'expiresAt', 'updatedAt'])
+          && d.name is string && d.name.size() <= 60
+          && d.gymId == clientGym()
+          && d.months is int && d.months >= 0 && d.months <= 24
+          && d.days is int && d.days >= 0 && d.days <= 31
+          && d.price is int && d.price >= 0
+          && d.currency in ['UZS', 'USD']
+          && d.paidDate is timestamp && d.expiresAt is timestamp
+          && d.updatedAt == request.time;
+      }
+      allow read: if isSelf(uid) || isOwner()
+        || ((isStaff() || isBarmen()) && gymOf(request.auth.uid) != ''
+            && resource.data.get('gymId', '') == gymOf(request.auth.uid));
+      allow create, update: if canManage(uid) && validMembership();
+      allow delete: if isOwner();
+    }
+
+    match /trainers/{tid} {
+      function validEntry() {
+        return request.resource.data.keys().hasOnly(['name', 'bio', 'accepting', 'gymId'])
+          // zal — users/{tid}.gymId ko'zgusi: soxta qilib bo'lmaydi (shogird buyurtmasiga shundan yoziladi)
+          && request.resource.data.get('gymId', '') == gymOf(tid)
+          && request.resource.data.name is string && request.resource.data.name.size() <= 60
+          && request.resource.data.get('bio', '') is string
+          && request.resource.data.get('bio', '').size() <= 300
+          && request.resource.data.get('accepting', true) is bool;
+      }
+      function isThisTrainer() { return isSelf(tid) && myRole() == 'admin'; }
+
+      allow read: if signedIn();
+      allow create: if validEntry() && (isOwner() || isThisTrainer());
+      // bosh admin faqat zal ko'zgusini to'g'rilaydi (trenerni boshqa zalga o'tkazganda);
+      // ism, ma'lumot, qabul sozlamasi — trenerning o'zida
+      allow update: if validEntry() && (isThisTrainer() || (isOwner()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['gymId'])));
+      allow delete: if isOwner();
+    }
+
+    // Bosh admin trenerlarga qo'ygan baholar — faqat bosh admin ko'radi (trener bilmaydi)
+    match /ratings/{tid} {
+      allow read, delete: if isOwner();
+      allow write: if isOwner()
+        && request.resource.data.keys().hasOnly(['stars', 'comment', 'updatedAt'])
+        && request.resource.data.stars is int
+        && request.resource.data.stars >= 1 && request.resource.data.stars <= 5
+        && request.resource.data.get('comment', '') is string
+        && request.resource.data.get('comment', '').size() <= 500;
+    }
+
+    match /foods/{id} {
+      allow read: if signedIn();
+      allow write: if isStaff();
+    }
+
+    match /plans/{id} {
+      allow read: if signedIn();
+      allow write: if isStaff();
+    }
+
+    // Trener qo'shgan mashqlar ("Tana xaritasi"). Hamma kirganlar o'qiydi; qo'shish,
+    // tahrirlash va o'chirish — trener va bosh adminda (barmen va shogirdda yo'q).
+    // Mushak — ilovadagi 12 guruhdan biri; matn uzunligi cheklangan.
+    match /exercises/{id} {
+      function validExercise() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['name', 'muscle', 'sets', 'tip', 'also', 'video', 'createdAt', 'createdBy', 'base', 'level'])
+          && d.name is string && d.name.size() > 0 && d.name.size() <= 80
+          && d.muscle in ['chest', 'shoulders', 'biceps', 'triceps', 'forearms', 'abs',
+                          'back', 'traps', 'glutes', 'quads', 'hamstrings', 'calves']
+          && d.sets is string && d.sets.size() <= 40
+          && d.tip is string && d.tip.size() <= 500
+          && d.also is list && d.also.size() <= 6
+          && d.video is string && d.video.size() <= 300
+          && d.createdAt is int
+          && d.createdBy is string
+          // namunaviy mashqning o'zgartirilgan nusxasi bo'lsa — o'sha mashq nomi
+          && d.get('base', '') is string && d.get('base', '').size() <= 80
+          // daraja (faqat trener ko'radi): bo'sh yoki shu uchtadan biri
+          && d.get('level', '') in ['', 'beginner', 'middle', 'pro'];
+      }
+      allow read: if signedIn();
+      // kim qo'shgani soxtalashtirilmaydi; tahrirda birinchi muallif va vaqt saqlanadi
+      allow create: if isStaff() && validExercise() && request.resource.data.createdBy == request.auth.uid;
+      allow update: if isStaff() && validExercise() && same('createdBy') && same('createdAt') && same('base');
+      allow delete: if isStaff();
+    }
+
+    // Zallar (filiallar). Hamma kirganlar o'qiydi (trener o'z zalining nomini ko'radi),
+    // qo'shish va o'chirish — faqat bosh adminda.
+    match /gyms/{id} {
+      allow read: if signedIn();
+      allow write: if isOwner()
+        && request.resource.data.keys()
+             .hasOnly(['name', 'address', 'country', 'region', 'district'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 60
+        && request.resource.data.get('address', '') is string
+        && request.resource.data.get('address', '').size() <= 200
+        && request.resource.data.get('country', '') is string
+        && request.resource.data.get('country', '').size() <= 60
+        && request.resource.data.get('region', '') is string
+        && request.resource.data.get('region', '').size() <= 60
+        && request.resource.data.get('district', '') is string
+        && request.resource.data.get('district', '').size() <= 60;
+      allow delete: if isOwner();
+    }
+
+    // Zal do'koni: forma, anjomlar, sport pitaniya.
+    // Tovarlarni trener kiritadi; hamma kirganlar ko'radi.
+    match /shop/{id} {
+      allow read: if signedIn();
+      allow write: if isStaff() || isBarmen();
+    }
+
+    // Buyurtma: shogird o'zi beradi, trener "berildi"/"bekor" deb belgilaydi.
+    // Narx va trener yozuvdagi qiymatdan emas — bazadagi tovardan va shogird
+    // profilidan olinadi (shogird arzon narx yozib yubora olmaydi).
+    match /orders/{id} {
+      function myTrainer() {
+        let t = get(/databases/$(database)/documents/users/$(request.auth.uid))
+                  .data.get('trainerId', null);
+        return t == null ? '' : t;
+      }
+      function validNewOrder() {
+        let d = request.resource.data;
+        let product = get(/databases/$(database)/documents/shop/$(d.productId)).data;
+        return d.keys().hasOnly(['clientId', 'clientName', 'clientPhone', 'trainerId', 'gymId',
+              'productId', 'productName', 'category', 'size', 'color', 'price', 'currency', 'qty',
+              'status', 'createdAt'])
+          && d.get('size', '') is string && d.get('size', '').size() <= 20
+          && d.get('color', '') is string && d.get('color', '').size() <= 30
+          // valyuta tovardagi bilan bir xil bo'lishi shart
+          && d.get('currency', 'UZS') == product.get('currency', 'UZS')
+          && d.clientId == request.auth.uid
+          && d.status == 'new'
+          && d.qty is int && d.qty >= 1 && d.qty <= 20
+          && d.trainerId == myTrainer()
+          // zal — shogird trenerining zali (bo'sh trener — bo'sh zal)
+          && d.get('gymId', '') == (d.trainerId == '' ? '' : gymOf(d.trainerId))
+          && d.price == product.price
+          && product.get('active', true) == true;
+      }
+      // Buyurtma yozilgandan keyin faqat holati o'zgaradi
+      // Holat o'zgarganda kim bergani ham yoziladi (sotuv hisoboti uchun)
+      function onlyStatusChanged() {
+        return request.resource.data.diff(resource.data)
+                 .affectedKeys().hasOnly(['status', 'updatedAt', 'givenBy', 'givenAt'])
+          && (request.resource.data.get('givenBy', '') == ''
+              || request.resource.data.get('givenBy', '') == request.auth.uid);
+      }
+      function isMyOrder() { return resource.data.get('clientId', '') == request.auth.uid; }
+      function isMyClientOrder() {
+        return isStaff() && resource.data.get('trainerId', '') == request.auth.uid;
+      }
+      // Barmen — faqat o'z zalining buyurtmasi (zalsiz barmen hech narsani ko'rmaydi)
+      function isMyGymOrder() {
+        return isBarmen() && gymOf(request.auth.uid) != ''
+          && resource.data.get('gymId', '') == gymOf(request.auth.uid);
+      }
+
+      allow read: if signedIn()
+        && (isMyOrder() || isMyClientOrder() || isOwner() || isMyGymOrder());
+      allow create: if signedIn() && validNewOrder();
+      allow update: if onlyStatusChanged() && (
+        ((isOwner() || isMyClientOrder() || isMyGymOrder())
+          && request.resource.data.status in ['given', 'canceled'])
+        // shogird faqat hali berilmagan buyurtmasini bekor qiladi
+        || (isMyOrder() && resource.data.status == 'new'
+            && request.resource.data.status == 'canceled'));
+      allow delete: if isOwner();
+    }
+
+    // Abonement tugashi haqida jo'natilgan eslatmalar jurnali (haftalik hisobot uchun).
+    // Faqat trener/bosh admin yoza oladi, faqat o'z shogirdiga (bosh admin — hammaga).
+    match /reminders/{id} {
+      function myTrainerOf(cid) {
+        return get(/databases/$(database)/documents/users/$(cid)).data.get('trainerId', null);
+      }
+      allow read: if signedIn() && (resource.data.get('trainerId', '') == request.auth.uid || isOwner());
+      allow create: if isStaff()
+        && request.resource.data.keys().hasOnly(
+             ['clientId', 'clientName', 'trainerId', 'sentBy', 'sentAt', 'daysLeft'])
+        && request.resource.data.sentBy == request.auth.uid
+        && request.resource.data.daysLeft is int
+        && (isOwner() || request.resource.data.trainerId == request.auth.uid)
+        && (isOwner() || myTrainerOf(request.resource.data.clientId) == request.auth.uid);
+      allow delete: if isOwner();
+    }
+
+    match /chats/{uid}/messages/{msgId} {
+      allow read: if isSelf(uid) || canManage(uid);
+      allow create: if (isSelf(uid) || canManage(uid)) &&
+        request.resource.data.senderId == request.auth.uid;
+    }
+  }
+}

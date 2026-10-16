@@ -1,0 +1,60 @@
+name: kotta_qani_diet
+description: Aura Fit - ovqatlanish rejasi ilovasi
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.5.1
+  fl_chart: ^0.69.0
+  intl: ^0.20.3
+  shared_preferences: ^2.5.5
+  flutter_local_notifications: ^22.3.1
+  timezone: ^0.11.1
+  qr_flutter: ^4.1.0
+  image_picker: ^1.2.3
+  cached_network_image: ^3.4.1
+  flutter_localizations:
+    sdk: flutter
+  url_launcher: ^6.3.3
+  webview_flutter: ^4.14.1
+  dio: ^5.11.1
+  web_socket_channel: ^3.0.3
+  flutter_secure_storage: ^11.2.0
+  package_info_plus: ^10.2.2
+  video_player: ^2.14.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  image: ^4.9.2
+  flutter_launcher_icons: ^0.14.4
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/foods/
+    - assets/brand/
+    - assets/credits.txt
+
+# Ilova ikonkasi: assets/icon/icon.png (7-okt 2026 dan — assets/icon/logo_src_3.png: "QOBIL" yozuvli;
+# logo_src_2.png — undan oldingi asl rasm; burchaklari
+# yumaloqlangan to'liq kvadrat). `dart run flutter_launcher_icons` barcha o'lchamlarni chiqaradi.
+# Eski logotip: assets/icon/logo_src.jpg + tools/make_icon.dart (shaffof fonli variant).
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/icon.png"
+  # Adaptiv ikonka ATAYLAB yo'q: adaptiv ikonkani launcher doim shaklga solib, shaffof fonni
+  # qora/oq plashka bilan to'ldiradi. Faqat shaffof PNG — ikonka ramkasiz, orqa fon ko'rinadi.
+  # (Eslatma: mipmap-anydpi-v26/ic_launcher.xml bo'lmasligi kerak.)
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/icon/icon.png"
+    background_color: "#16191E"
+    theme_color: "#4AF2FF"

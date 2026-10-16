@@ -1,0 +1,51 @@
+# Yig'ilgan fayllar — qaytadan yaratiladi, saqlashning hojati yo'q
+build/
+.dart_tool/
+.gradle/
+android/.gradle/
+android/app/.cxx/
+windows/flutter/ephemeral/
+tools/rules_test/node_modules/
+functions/node_modules/
+
+# Chiqarish artefaktlari (APK va web nusxasi) — yig'ilgandan keyin qayta paydo bo'ladi
+public/ilova/
+public/app/*.bin
+
+# Loglar va vaqtinchalik
+*.log
+joylash-log.txt
+desktop.ini
+.firebase/
+
+# Muharrir
+.idea/
+.vscode/
+*.iml
+
+# DIQQAT: imzo kaliti android/diamond-release.jks va android/key.properties
+# git'ga QO'SHILMAYDI (android/.gitignore ularni to'sadi) — bu repo ochiq (public).
+# Kalit yo'qolsa yangi versiyani eski ilova ustiga o'rnatib bo'lmaydi: hamma mijoz
+# ilovani o'chirib qayta o'rnatishga majbur bo'ladi. Shuning uchun kalitning nusxasini
+# repodan TASHQARIDA, xavfsiz joyda saqlang (PAROLLAR.md ga qarang).
+
+# Haqiqiy parollar - faqat shu kompyuterda turadi
+PAROLLAR.md
+
+# Shogirdlarning shaxsiy malumoti (ism, telefon, chat, vazn) - public repoga chiqmaydi.
+# Faqat ildizdagi papka (/zaxira/) - tools/zaxira/ skripti bilan adashmasin.
+/zaxira/
+
+# Maxfiy qiymatlar — parol va email shu yerda, hech qachon commit qilinmaydi.
+# Namuna: .env.namuna
+.env
+
+# Firebase emulyatori eksporti — ichida parol hash'lari va email bo'ladi
+.emulator-data/
+
+# Flutter avtomatik yaratadi; ichida kompyuterdagi yo'llar (foydalanuvchi nomi) bo'ladi
+.flutter-plugins-dependencies
+.flutter-plugins
+
+# Gradle xotira dampi (yig'ish xotiradan chiqsa paydo bo'ladi)
+*.hprof

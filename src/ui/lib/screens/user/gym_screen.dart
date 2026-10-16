@@ -1,0 +1,239 @@
+import 'package:flutter/material.dart';
+import '../../l10n/tr.dart';
+import '../../models/gym.dart';
+import '../../models/models.dart';
+import '../../services/db.dart';
+import '../../theme.dart';
+import 'muscles_screen.dart';
+import '../../widgets/ui.dart';
+
+/// Shogird: Zal bo'limi — 3 ta mashg'ulot kunini tanlaydi, bugungi mashg'ulotni ko'radi.
+/// Mashqlarni belgilash yo'q (mashqlar ro'yxati hali ishlab chiqilmoqda).
+class GymScreen extends StatefulWidget {
+  final AppUser user;
+  const GymScreen({super.key, required this.user});
+
+  @override
+  State<GymScreen> createState() => _GymScreenState();
+}
+
+class _GymScreenState extends State<GymScreen> {
+  AppUser get user => widget.user;
+
+  /// "Tana xaritasi" ochiqmi. Alohida sahifa qilib ochilmaydi — shu tab ichida ko'rsatiladi,
+  /// shunda pastki menyu yo'qolib qolmaydi.
+  bool _muscles = false;
+
+  /// Trener qo'shgan mashqlar — bir marta ochiladi (har qurilishda qayta ulanmasin)
+  late final _custom = Db.customExercises();
+
+  /// Bugungi mashg'ulot holati (boshlangan, bajarilgan mashqlar)
+  late final _progress = Db.workout(user.id, todayKey());
+
+  Future<void> _chooseDays(BuildContext context) async {
+    final days = await showSheet<List<int>>(context, _DaysPicker(initial: user.gymDays));
+    if (days == null) return;
+    try {
+      await Db.setGymDays(user.id, days);
+      if (context.mounted) showSnack(context, tr('Zal kunlari saqlandi'));
+    } catch (e) {
+      if (context.mounted) showSnack(context, trf("Saqlab bo'lmadi: {0}", [e]));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context).textTheme;
+    final today = DateTime.now().weekday;
+    final days = user.gymDays;
+    final hasDays = validGymDays(days);
+    final isHome = user.homeWorkoutDate == todayKey();
+    final todayWorkout = workoutFor(days, today);
+    final next = nextWorkout(days, today);
+
+    if (_muscles) {
+      return MusclesScreen(
+        gymDays: days,
+        homeToday: isHome,
+        custom: _custom,
+        program: user.program,
+        progress: _progress,
+        onStart: () => Db.startWorkout(user.id, todayKey()),
+        onDone: (key, done) => Db.toggleExercise(user.id, todayKey(), key, done),
+        onBack: () => setState(() => _muscles = false),
+      );
+    }
+    return Scaffold(
+      appBar: AppBar(title: Text(tr('Zal'))),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.xxl),
+        children: [
+          if (!hasDays)
+            BentoTile(
+              feature: true,
+              padding: const EdgeInsets.all(AppSpace.lg),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                Text(tr('Haftasiga 3 kun mashg\'ulot'), style: t.titleLarge),
+                const SizedBox(height: AppSpace.sm),
+                Text(
+                  tr("O'zingizga qulay variantni tanlang: Seshanba, Payshanba, Shanba yoki "
+                      "Dushanba, Chorshanba, Juma."),
+                  style: t.bodyMedium?.copyWith(color: AppColors.textMuted),
+                ),
+                const SizedBox(height: AppSpace.lg),
+                FilledButton.icon(
+                  onPressed: () => _chooseDays(context),
+                  icon: const Icon(Icons.event_available_outlined),
+                  label: Text(tr('Kunlarni tanlash')),
+                ),
+              ]),
+            )
+          else ...[
+            // Bugun
+            BentoTile(
+              feature: true,
+              padding: const EdgeInsets.all(AppSpace.lg),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Eyebrow(trf('Bugun · {0}', [tr(weekdayNames[today] ?? '')])),
+                const SizedBox(height: AppSpace.sm),
+                if (isHome) ...[
+                  Row(children: [
+                    Icon(Icons.home_outlined, color: AppColors.accent),
+                    const SizedBox(width: AppSpace.sm),
+                    Text(tr('Uyda mashq'), style: t.headlineSmall),
+                  ]),
+                  const SizedBox(height: AppSpace.xs),
+                  Text(tr("Trener bugun uyda mashq qilishingizni belgiladi."),
+                      style: t.bodyMedium?.copyWith(color: AppColors.textMuted)),
+                ] else if (todayWorkout != null) ...[
+                  Text(todayWorkout, style: t.headlineSmall),
+                  const SizedBox(height: AppSpace.xs),
+                  Text(tr('Bugun zalga borish kuni'),
+                      style: t.bodyMedium?.copyWith(color: AppColors.textMuted)),
+                ] else ...[
+                  Text(tr('Dam olish kuni'), style: t.headlineSmall),
+                  if (next != null) ...[
+                    const SizedBox(height: AppSpace.xs),
+                    Text(trf('Keyingi: {0} — {1}', [tr(weekdayNames[next.$1] ?? ''), tr(next.$2)]),
+                        style: t.bodyMedium?.copyWith(color: AppColors.textMuted)),
+                  ],
+                ],
+              ]),
+            ),
+            const SizedBox(height: AppSpace.xl),
+            SectionHeader(
+              tr('Mening jadvalim'),
+              eyebrow: tr('Haftasiga 3 kun'),
+              trailing: TextButton.icon(
+                onPressed: () => _chooseDays(context),
+                icon: const Icon(Icons.edit_calendar_outlined, size: 18),
+                label: Text(tr("O'zgartirish")),
+              ),
+            ),
+            for (final d in ([...days]..sort()))
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppSpace.sm),
+                child: BentoTile(
+                  padding: const EdgeInsets.all(AppSpace.md),
+                  child: Row(children: [
+                    SizedBox(
+                      width: 96,
+                      child: Text(tr(weekdayNames[d]!),
+                          style:
+                              t.titleMedium?.copyWith(color: d == today ? AppColors.accent : null)),
+                    ),
+                    Expanded(child: Text(workoutFor(days, d)!, style: t.bodyMedium)),
+                  ]),
+                ),
+              ),
+          ],
+          const SizedBox(height: AppSpace.xl),
+          SectionHeader(tr('Mashqlar'), eyebrow: tr('Sinov')),
+          // Tana xaritasi: mushak bosiladi — mashqlari chiqadi (sinov versiyasi)
+          BentoTile(
+            onTap: () => setState(() => _muscles = true),
+            padding: const EdgeInsets.all(AppSpace.lg),
+            child: Row(children: [
+              Icon(Icons.accessibility_new, color: AppColors.accent),
+              const SizedBox(width: AppSpace.md),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(tr('Tana xaritasi'), style: t.titleMedium),
+                  const SizedBox(height: 2),
+                  Text(
+                    tr("Bugungi mashqlar — haftalik reja bo'yicha"),
+                    style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+                  ),
+                ]),
+              ),
+              Icon(Icons.chevron_right, color: AppColors.textMuted),
+            ]),
+          ),
+          const SizedBox(height: AppSpace.md),
+          Text(
+            tr("Bugun zalga kela olmasangiz — 'Trener' bo'limida \"bugun kelolmayman\" deb yozing, "
+                "trener uyda mashq belgilaydi."),
+            style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 3 kun tanlash: toq kunlar / juft kunlar / o'zim tanlayman
+class _DaysPicker extends StatefulWidget {
+  final List<int> initial;
+  const _DaysPicker({required this.initial});
+
+  @override
+  State<_DaysPicker> createState() => _DaysPickerState();
+}
+
+class _DaysPickerState extends State<_DaysPicker> {
+  late final Set<int> _sel = {...widget.initial};
+
+  bool _same(List<int> preset) => _sel.length == 3 && preset.every(_sel.contains);
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context).textTheme;
+    Widget preset(String title, List<int> days) => Card(
+          child: ListTile(
+            leading: Icon(
+              _same(days) ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+              color: _same(days) ? AppColors.accent : AppColors.textMuted,
+            ),
+            title: Text(title),
+            subtitle: Text(days.map((d) => tr(weekdayNames[d] ?? '')).join(', ')),
+            onTap: () => setState(() => _sel
+              ..clear()
+              ..addAll(days)),
+          ),
+        );
+
+    return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(tr('Zal kunlari'), style: t.titleLarge),
+          const SizedBox(height: AppSpace.xs),
+          Text(
+              trf(
+                  "Haftasiga 3 kun. Mashg'ulotlar kunlar tartibida: 1) {0}, "
+                  "2) {1}, 3) {2}.",
+                  [tr(workoutGroups[0]), tr(workoutGroups[1]), tr(workoutGroups[2])]),
+              style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
+          const SizedBox(height: AppSpace.md),
+          preset('1-variant', evenDays),
+          preset('2-variant', oddDays),
+          const SizedBox(height: AppSpace.lg),
+          FilledButton(
+            onPressed: _same(evenDays) || _same(oddDays)
+                ? () => Navigator.pop(context, _sel.toList())
+                : null,
+            child: Text(tr('Saqlash')),
+          ),
+        ]);
+  }
+}

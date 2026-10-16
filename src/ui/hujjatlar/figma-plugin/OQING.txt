@@ -1,0 +1,65 @@
+DIAMOND UI — FIGMA PLAGINI
+===========================
+
+Bu plagin Figma'ning ICHIDA maketni o'zi chizadi: 7 ta ramka,
+248 ta matn qatlami va 15 ta rang stili. Hammasi tahrirlanadi —
+rasm emas, haqiqiy Figma qatlamlari.
+
+
+ISHGA TUSHIRISH (bir marta, 2 daqiqa)
+--------------------------------------
+
+1. Figma'ning KOMPYUTER ilovasi kerak (brauzerda plagin import qilinmaydi).
+   Yuklab olish: https://www.figma.com/downloads/
+
+2. Figma'ni oching → yangi fayl yarating (Design file).
+
+3. Yuqoridagi menyudan:
+   Plugins  →  Development  →  Import plugin from manifest…
+
+   (Yoki ish maydonida o'ng tugmani bosing →
+    Plugins → Development → Import plugin from manifest…)
+
+4. Ochilgan oynada shu papkadagi faylni tanlang:
+
+   hujjatlar\figma-plugin\manifest.json
+
+5. Endi plagin ro'yxatda turadi. Ishga tushirish:
+   Plugins  →  Development  →  Diamond UI
+
+   Bir necha soniyada hamma narsa chiziladi va ekran shunga suriladi.
+
+
+NIMA YARATILADI
+---------------
+
+Ramkalar (Figma ish maydonida):
+  Dizayn tizimi            ranglar, komponentlar, oraliqlar (900 x 640)
+  Bugun — shogird          390 x 844
+  Zal — shogird            390 x 844
+  Do'kon — shogird         390 x 844
+  Mijozlar — trener        390 x 844
+  Do'kon — trener          390 x 844
+  Reja muharriri — trener  390 x 844
+
+Rang stillari (o'ng panel → Local styles → Diamond/...):
+  bg, bgDeep, card, cardHigh, text, textMuted, textFaint,
+  accent, onAccent, success, warning, danger, water, protein, white
+
+Shrift: Inter (Figma'da doim bor).
+
+
+ESLATMALAR
+----------
+
+• Plaginni IKKINCHI marta bossangiz, ramkalar yana chiziladi —
+  avvalgilarini o'chirib tashlang yoki boshqa sahifada ishlating.
+
+• Rang stillari ham har safar qaytadan yaratiladi.
+  Kerak bo'lmasa, Local styles'dan ortiqchasini o'chirasiz.
+
+• Maketni o'zgartirmoqchi bo'lsangiz — Figma'da to'g'ridan-to'g'ri
+  tahrirlayvering. Yoki menga ayting: code.js ni yangilab beraman,
+  plaginni qayta ishga tushirasiz.
+
+• Plagin internetga chiqmaydi, hech qanday ma'lumot yubormaydi.

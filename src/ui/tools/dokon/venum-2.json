@@ -1,0 +1,36 @@
+[
+  {
+    "category": "Forma",
+    "name": "Venum komplekt (Logos, oq-qora)",
+    "note": "4 qismli: uzun yengli rashgard, futbolka, uzun tayts va shortik.",
+    "sizes": [
+      "XL",
+      "XXL",
+      "3XL",
+      "4XL"
+    ],
+    "price": 35,
+    "currency": "USD",
+    "stock": 10,
+    "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/venum-logos-oq-qora.jpg",
+    "images": []
+  },
+  {
+    "category": "Forma",
+    "name": "Venum komplekt (Technical, yashil-qora)",
+    "note": "4 qismli: uzun yengli rashgard, futbolka, uzun tayts va shortik.",
+    "sizes": [
+      "XL",
+      "XXL",
+      "3XL",
+      "4XL"
+    ],
+    "price": 35,
+    "currency": "USD",
+    "stock": 10,
+    "active": true,
+    "image": "https://kotta-qani-09111753.web.app/img/tovar/venum-technical-yashil.jpg",
+    "images": []
+  }
+]

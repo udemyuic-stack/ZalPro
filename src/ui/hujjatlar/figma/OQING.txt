@@ -1,0 +1,28 @@
+FIGMA'GA QANDAY OLIB O'TISH
+============================
+
+Shu papkadagi 7 ta SVG fayl — Figma to'g'ridan-to'g'ri ochadi.
+
+1. Figma'ni oching, yangi fayl yarating (Design file).
+2. Shu papkani oching va SVG fayllarni sichqoncha bilan
+   Figma oynasiga SUDRAB TASHLANG (drag & drop).
+   Yoki: Figma menyusi > File > Place image / Import.
+3. Har fayl alohida ramka bo'lib tushadi. Ichidagi hamma narsa
+   TAHRIRLANADIGAN qatlam: to'rtburchak, matn, doira.
+4. Ramkani belgilab, o'ng paneldan Frame qilib qo'ying (390 x 844).
+
+Fayllar:
+  00-dizayn-tizimi.svg    ranglar, komponentlar, oraliqlar
+  01-bugun.svg            shogird — Bugun
+  02-zal.svg              shogird — Zal
+  03-dokon-shogird.svg    shogird — Do'kon
+  04-mijozlar-trener.svg  trener — Mijozlar
+  05-dokon-trener.svg     trener — Do'kon
+  06-reja-muharriri.svg   trener — Reja muharriri
+
+Maslahat: ranglarni Figma'da "Color styles" qilib saqlang,
+nomlarini kodnikidek qo'ying (accent, card, textMuted) —
+keyin dizayn bilan kodni solishtirish oson bo'ladi.
+
+Shrift: SVG ichida Inter ko'rsatilgan (Figma'da bor).
+Ilovaning o'zi telefonning tizim shriftini ishlatadi.

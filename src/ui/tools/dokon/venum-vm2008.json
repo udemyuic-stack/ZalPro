@@ -1,0 +1,16 @@
+{
+  "category": "Forma",
+  "name": "Venum komplekt (VM2008)",
+  "note": "4 qismli mashq to'plami: uzun yengli rashgard, futbolka, uzun tayts va shortik. Ranglari: sariq, kulrang, yashil, oq-qora.",
+  "sizes": ["XL", "XXL", "3XL", "4XL"],
+  "price": 35,
+  "currency": "USD",
+  "stock": 10,
+  "active": true,
+  "image": "https://kotta-qani-09111753.web.app/img/tovar/venum-vm2008-sariq.jpg",
+  "images": [
+    "https://kotta-qani-09111753.web.app/img/tovar/venum-vm2008-kulrang.jpg",
+    "https://kotta-qani-09111753.web.app/img/tovar/venum-vm2008-yashil.jpg",
+    "https://kotta-qani-09111753.web.app/img/tovar/venum-vm2008-oq-qora.jpg"
+  ]
+}

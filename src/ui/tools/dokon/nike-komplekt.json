@@ -1,0 +1,12 @@
+{
+  "category": "Forma",
+  "name": "Nike komplekt (4-5 qismli)",
+  "note": "Qalpoqli kofta, uzun yengli rashgard, futbolka, tayts va shortik.",
+  "sizes": ["XL", "XXL", "3XL", "4XL"],
+  "price": 45,
+  "currency": "USD",
+  "stock": 10,
+  "active": true,
+  "image": "https://kotta-qani-09111753.web.app/img/tovar/nike-komplekt-qora.jpg",
+  "images": []
+}

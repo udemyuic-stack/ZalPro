@@ -1,0 +1,11 @@
+.venv/
+path/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.idea/
+.env
+.env.*
+tests/
+migration_out/

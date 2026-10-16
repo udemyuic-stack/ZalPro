@@ -1,0 +1,12 @@
+{
+  "category": "Forma",
+  "name": "Under Armour komplekt (4-5 qismli)",
+  "note": "Qalpoqli kofta, uzun yengli rashgard, futbolka, tayts va shortik. Ranglari: qora, qora-yashil.",
+  "sizes": ["XL", "XXL", "3XL", "4XL"],
+  "price": 45,
+  "currency": "USD",
+  "stock": 10,
+  "active": true,
+  "image": "https://kotta-qani-09111753.web.app/img/tovar/under-armour-komplekt-qora.jpg",
+  "images": ["https://kotta-qani-09111753.web.app/img/tovar/under-armour-komplekt-yashil.jpg"]
+}

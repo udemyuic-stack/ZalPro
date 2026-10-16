@@ -1,0 +1,12 @@
+{
+  "category": "Forma",
+  "name": "UFC komplekt (VM202101)",
+  "note": "Venum x UFC, 3 qismli: uzun yengli rashgard, tayts va shortik. Ranglari: haki-kamuflyaj, qora-kamuflyaj.",
+  "sizes": ["XL", "XXL", "3XL", "4XL"],
+  "price": 35,
+  "currency": "USD",
+  "stock": 10,
+  "active": true,
+  "image": "https://kotta-qani-09111753.web.app/img/tovar/ufc-vm202101-haki.jpg",
+  "images": ["https://kotta-qani-09111753.web.app/img/tovar/ufc-vm202101-qora.jpg"]
+}

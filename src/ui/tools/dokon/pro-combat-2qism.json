@@ -1,0 +1,15 @@
+{
+  "category": "Forma",
+  "name": "Pro Combat komplekt (2 qismli)",
+  "note": "Uzun yengli rashgard va tayts. Ranglari: qora (kulrang chok), qora (yashil chok), sof qora.",
+  "sizes": ["XL", "XXL", "3XL", "4XL"],
+  "price": 30,
+  "currency": "USD",
+  "stock": 10,
+  "active": true,
+  "image": "https://kotta-qani-09111753.web.app/img/tovar/pro-combat-2qism-qora.jpg",
+  "images": [
+    "https://kotta-qani-09111753.web.app/img/tovar/pro-combat-2qism-yashil.jpg",
+    "https://kotta-qani-09111753.web.app/img/tovar/pro-combat-2qism-qora2.jpg"
+  ]
+}

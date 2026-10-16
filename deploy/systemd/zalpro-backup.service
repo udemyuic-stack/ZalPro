@@ -1,0 +1,10 @@
+[Unit]
+Description=ZalPro daily database backup to R2
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/zalpro/deploy
+ExecStart=/usr/bin/docker compose run --rm backup
+TimeoutStartSec=1800

@@ -1,0 +1,15 @@
+{
+  "category": "Forma",
+  "name": "Pro Combat komplekt (5 qismli)",
+  "note": "Qalpoqli kofta, uzun yengli rashgard, futbolka, tayts va shortik. Ranglari: qora, kulrang, ko'k (kulrang va ko'k variantlar ichi momiqli — issiq).",
+  "sizes": ["XL", "XXL", "3XL", "4XL"],
+  "price": 45,
+  "currency": "USD",
+  "stock": 10,
+  "active": true,
+  "image": "https://kotta-qani-09111753.web.app/img/tovar/pro-combat-qora.jpg",
+  "images": [
+    "https://kotta-qani-09111753.web.app/img/tovar/pro-combat-kulrang.jpg",
+    "https://kotta-qani-09111753.web.app/img/tovar/pro-combat-kok.jpg"
+  ]
+}

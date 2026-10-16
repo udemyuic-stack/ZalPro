@@ -1,0 +1,15 @@
+{
+  "category": "Forma",
+  "name": "Reebok komplekt (R-615)",
+  "note": "Uzun yengli rashgard, tayts va shortik. Ranglari: qora, haki, ko'k (ko'k variantda qalpoqli kofta va futbolka ham bor).",
+  "sizes": ["XL", "XXL", "3XL", "4XL"],
+  "price": 35,
+  "currency": "USD",
+  "stock": 10,
+  "active": true,
+  "image": "https://kotta-qani-09111753.web.app/img/tovar/reebok-komplekt-qora.jpg",
+  "images": [
+    "https://kotta-qani-09111753.web.app/img/tovar/reebok-komplekt-haki.jpg",
+    "https://kotta-qani-09111753.web.app/img/tovar/reebok-komplekt-kok.jpg"
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "firestore": { "rules": "firestore.rules" },
+  "functions": { "source": "functions", "ignore": ["node_modules", ".git", "*.local"] },
+  "hosting": {
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "headers": [
+      {
+        "source": "/img/**",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+      },
+      {
+        "source": "/app/kq.bin",
+        "headers": [
+          { "key": "Content-Type", "value": "application/vnd.android.package-archive" },
+          { "key": "Content-Disposition", "value": "attachment; filename=\"kotta-qani.apk\"" }
+        ]
+      },
+      {
+        "source": "/app/kq-eski.bin",
+        "headers": [
+          { "key": "Content-Type", "value": "application/vnd.android.package-archive" },
+          { "key": "Content-Disposition", "value": "attachment; filename=\"kotta-qani-eski.apk\"" }
+        ]
+      }
+    ]
+  },
+  "emulators": {
+    "singleProjectMode": true,
+    "auth": { "host": "0.0.0.0", "port": 9099 },
+    "firestore": { "host": "0.0.0.0", "port": 8085 },
+    "ui": { "enabled": true, "port": 4000 }
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "kotta-qani-09111753",
+          "appId": "1:318857705993:android:a7ac01cd69badca44a16d8",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "kotta-qani-09111753",
+          "configurations": {
+            "android": "1:318857705993:android:a7ac01cd69badca44a16d8",
+            "web": "1:318857705993:web:a58254b722a4787f4a16d8"
+          }
+        }
+      }
+    }
+  }
+}
