@@ -9,7 +9,7 @@ from zalpro_api.core.errors import conflict
 from zalpro_api.models import Day
 from zalpro_api.schemas.day import MAX_EXTRAS, MAX_GYM_DONE, DayOut, ExtraIn
 
-RETURNING = "returning day, done, extras, gym_started, gym_done, water"
+RETURNING = "returning day, done, extras, gym_started, gym_done, water, feedback"
 
 ADD_MEAL = text(
     f"""
@@ -97,6 +97,15 @@ REMOVE_EXERCISE = text(
     """
 )
 
+SET_FEEDBACK = text(
+    f"""
+    insert into days (user_id, day, feedback)
+    values (:user_id, cast(:day as date), cast(:rating as smallint))
+    on conflict (user_id, day) do update set feedback = cast(:rating as smallint)
+    {RETURNING}
+    """
+)
+
 SET_WATER = text(
     f"""
     insert into days (user_id, day, water)
@@ -108,7 +117,9 @@ SET_WATER = text(
 
 
 def empty_day(day: date) -> DayOut:
-    return DayOut(day=day, done=[], extras=[], gym_started=False, gym_done=[], water=0)
+    return DayOut(
+        day=day, done=[], extras=[], gym_started=False, gym_done=[], water=0, feedback=None
+    )
 
 
 async def _run(session: AsyncSession, statement: Any, **params: Any) -> DayOut | None:
@@ -184,3 +195,7 @@ async def set_exercise(
 
 async def set_water(session: AsyncSession, user_id: str, day: date, glasses: int) -> DayOut:
     return await _run_upsert(session, SET_WATER, user_id=user_id, day=day, glasses=glasses)
+
+
+async def set_feedback(session: AsyncSession, user_id: str, day: date, rating: int) -> DayOut:
+    return await _run_upsert(session, SET_FEEDBACK, user_id=user_id, day=day, rating=rating)

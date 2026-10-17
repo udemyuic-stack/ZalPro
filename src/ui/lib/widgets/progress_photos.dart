@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,6 +6,8 @@ import '../models/photo.dart';
 import '../services/api/api_error.dart';
 import '../services/db.dart';
 import '../theme.dart';
+import 'photo_compare_sheet.dart';
+import 'progress_photo_image.dart';
 import 'ui.dart';
 
 /// "Oldin / keyin" rasmlari — shogird qo'shadi, trener va bosh admin faqat ko'radi
@@ -68,7 +69,7 @@ class ProgressPhotos extends StatelessWidget {
       builder: (ctx) => Dialog(
         clipBehavior: Clip.antiAlias,
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Flexible(child: InteractiveViewer(child: _PhotoImage(p, fit: BoxFit.contain))),
+          Flexible(child: InteractiveViewer(child: ProgressPhotoImage(p, fit: BoxFit.contain))),
           Padding(
             padding: const EdgeInsets.all(AppSpace.sm),
             child: Row(children: [
@@ -105,10 +106,7 @@ class ProgressPhotos extends StatelessWidget {
     );
   }
 
-  static String _caption(ProgressPhoto p) => [
-        p.dateLabel,
-        if (p.weight > 0) trf('{0} kg', [fmtNum(p.weight)])
-      ].where((e) => e.isNotEmpty).join(' · ');
+  static String _caption(ProgressPhoto p) => photoCaption(p);
 
   @override
   Widget build(BuildContext context) {
@@ -124,13 +122,22 @@ class ProgressPhotos extends StatelessWidget {
           SectionHeader(
             tr('Rasmlar'),
             eyebrow: tr('Oldin / keyin'),
-            trailing: readOnly
+            trailing: photos.length < 2 && readOnly
                 ? null
-                : TextButton.icon(
-                    onPressed: () => _add(context),
-                    icon: const Icon(Icons.add_a_photo_outlined),
-                    label: Text(tr('Rasm')),
-                  ),
+                : Row(mainAxisSize: MainAxisSize.min, children: [
+                    if (photos.length >= 2)
+                      TextButton.icon(
+                        onPressed: () => showPhotoCompare(context, photos),
+                        icon: const Icon(Icons.compare_outlined),
+                        label: Text(tr('Solishtirish')),
+                      ),
+                    if (!readOnly)
+                      TextButton.icon(
+                        onPressed: () => _add(context),
+                        icon: const Icon(Icons.add_a_photo_outlined),
+                        label: Text(tr('Rasm')),
+                      ),
+                  ]),
           ),
           if (photos.isEmpty)
             Text(
@@ -190,7 +197,7 @@ class _Shot extends StatelessWidget {
           child: AspectRatio(
             aspectRatio: 3 / 4,
             // to'liq o'lchamda emas - katakcha eniga mos dekodlanadi (xotira va tezlik)
-            child: _PhotoImage(photo, fit: BoxFit.cover, cacheWidth: 360),
+            child: ProgressPhotoImage(photo, fit: BoxFit.cover, cacheWidth: 360),
           ),
         ),
       ),
@@ -202,37 +209,5 @@ class _Shot extends StatelessWidget {
         style: t.bodySmall?.copyWith(color: AppColors.textMuted),
       ),
     ]);
-  }
-}
-
-class _PhotoImage extends StatelessWidget {
-  final ProgressPhoto photo;
-  final BoxFit fit;
-  final int? cacheWidth;
-  const _PhotoImage(this.photo, {required this.fit, this.cacheWidth});
-
-  @override
-  Widget build(BuildContext context) {
-    final url = photo.url;
-    if (photo.bytes.isNotEmpty || url == null) {
-      return Image.memory(photo.bytes, fit: fit, gaplessPlayback: true, cacheWidth: cacheWidth);
-    }
-    if (kIsWeb) {
-      return Image.network(
-        url,
-        fit: fit,
-        gaplessPlayback: true,
-        cacheWidth: cacheWidth,
-        errorBuilder: (_, __, ___) => Icon(Icons.broken_image_outlined, color: AppColors.textMuted),
-      );
-    }
-    return CachedNetworkImage(
-      imageUrl: url,
-      cacheKey: photo.id,
-      fit: fit,
-      memCacheWidth: cacheWidth,
-      fadeInDuration: const Duration(milliseconds: 120),
-      errorWidget: (_, __, ___) => Icon(Icons.broken_image_outlined, color: AppColors.textMuted),
-    );
   }
 }

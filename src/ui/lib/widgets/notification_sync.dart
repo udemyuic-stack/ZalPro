@@ -78,7 +78,7 @@ class _StudentNotificationSyncState extends State<StudentNotificationSync> {
       if (!seen.add(id)) continue;
       if (m.senderId == widget.user.id) continue;
       if (AppSettings.chatNotifications && _inBackground()) {
-        Notifications.showNow('msg-$id', tr('Treneringizdan xabar'), trChat(m.text));
+        Notifications.showNow('msg-$id', tr('Treneringizdan xabar'), m.preview);
       }
     }
   }
@@ -163,7 +163,7 @@ class _TrainerNotificationSyncState extends State<TrainerNotificationSync> {
       // faqat shogird yozgan xabar (trenerning o'zi va boshqa xodimlarniki emas)
       if (m.senderId != clientId) continue;
       if (AppSettings.chatNotifications && _inBackground()) {
-        Notifications.showNow('msg-$id', _names[clientId] ?? tr('Shogird'), trChat(m.text));
+        Notifications.showNow('msg-$id', _names[clientId] ?? tr('Shogird'), m.preview);
       }
     }
   }

@@ -4,6 +4,7 @@ import '../../models/models.dart';
 import '../../services/db.dart';
 import '../../theme.dart';
 import '../../widgets/ui.dart';
+import '../../services/api/api_error.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
   final AppUser user;
@@ -93,7 +94,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       if (widget.user.weight == 0) await Db.addWeight(updated.id, updated.weight);
       if (widget.editing && mounted) Navigator.pop(context);
     } catch (e) {
-      if (mounted) showSnack(context, trf("Saqlab bo'lmadi: {0}", [e]));
+      if (mounted) showSnack(context, trf("Saqlab bo'lmadi: {0}", [apiErrorText(e)]));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -285,7 +286,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       ]),
                     ),
                     Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                      Text('BMI', style: t.bodySmall),
+                      Text(tr('BMI'), style: t.bodySmall),
                       Text(preview.bmi.toStringAsFixed(1), style: t.titleLarge),
                     ]),
                   ]),

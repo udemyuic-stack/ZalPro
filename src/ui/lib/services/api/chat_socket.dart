@@ -9,14 +9,25 @@ class ChatSocketMessage {
     required this.senderId,
     required this.text,
     required this.createdAt,
+    this.mediaKind = '',
+    this.mediaStatus = '',
+    this.mediaUrl = '',
+    this.mediaDurationMs = 0,
+    this.updated = false,
   });
 
   factory ChatSocketMessage.fromJson(Map<String, dynamic> json) {
+    String str(Object? v) => v is String ? v : '';
     return ChatSocketMessage(
       id: json['id'].toString(),
       senderId: json['sender_id'].toString(),
-      text: json['text'] as String,
+      text: str(json['text']),
       createdAt: DateTime.parse(json['created_at'] as String),
+      mediaKind: str(json['media_kind']),
+      mediaStatus: str(json['media_status']),
+      mediaUrl: str(json['media_url']),
+      mediaDurationMs: json['media_duration_ms'] is int ? json['media_duration_ms'] as int : 0,
+      updated: json['updated'] == true || json['type'] == 'message_updated',
     );
   }
 
@@ -24,6 +35,11 @@ class ChatSocketMessage {
   final String senderId;
   final String text;
   final DateTime createdAt;
+  final String mediaKind;
+  final String mediaStatus;
+  final String mediaUrl;
+  final int mediaDurationMs;
+  final bool updated;
 }
 
 class ChatSocket {

@@ -36,6 +36,7 @@ OWNER_TRAINER_PATCH_FIELDS = frozenset({"gym_id"})
 WEIGH_IN_MIN_INTERVAL = timedelta(days=6)
 
 SHOP_WRITER_ROLES = frozenset({"admin", "owner", "barmen"})
+SCAN_ROLES = frozenset({"admin", "owner", "barmen"})
 ORDER_HANDLER_STATUSES = frozenset({"given", "canceled"})
 
 
@@ -229,6 +230,11 @@ def can_write_products(actor: User) -> bool:
 
 def ensure_can_write_products(actor: User) -> None:
     if not can_write_products(actor):
+        raise forbidden()
+
+
+def ensure_can_scan_checkin(actor: User) -> None:
+    if actor.role not in SCAN_ROLES:
         raise forbidden()
 
 

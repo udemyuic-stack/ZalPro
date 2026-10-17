@@ -27,6 +27,8 @@ List<String> musclesFor(List<int> days, int weekday) {
   return i < 0 ? const [] : workoutMuscles[i];
 }
 
+int? parseFeedback(Object? v) => v is int && v >= 1 && v <= 3 ? v : null;
+
 /// Bugungi mashg'ulot holati (kunlik yozuvda: `users/{uid}/days/{sana}`)
 class WorkoutProgress {
   /// Shogird "Mashg'ulotni boshlash" ni bosganmi
@@ -34,11 +36,14 @@ class WorkoutProgress {
 
   /// Bajarilgan mashqlar kalitlari (`Exercise.key`)
   final Set<String> done;
-  const WorkoutProgress({this.started = false, this.done = const {}});
+
+  final int? feedback;
+  const WorkoutProgress({this.started = false, this.done = const {}, this.feedback});
 
   factory WorkoutProgress.fromJson(Map<String, dynamic> j) => WorkoutProgress(
         started: jsonBool(j['gym_started']),
         done: jsonStrings(j['gym_done']).toSet(),
+        feedback: parseFeedback(j['feedback']),
       );
 }
 

@@ -42,6 +42,12 @@ const levels = {
   'pro': 'Professional',
 };
 
+class ExerciseVideo {
+  final String status;
+  final String url;
+  const ExerciseVideo(this.status, this.url);
+}
+
 class Exercise {
   /// Firestore hujjat id'si; namunaviy (koddagi) mashqda bo'sh
   final String id;
@@ -59,9 +65,6 @@ class Exercise {
   /// Qisqa maslahat: qanday bajariladi
   final String tip;
 
-  /// Video havolasi (YouTube, Telegram ...); yo'q bo'lsa bo'sh. Video fayli yuklanmaydi.
-  final String video;
-
   /// Trener qo'shgan vaqt va kim qo'shgani (namunaviy mashqda yo'q)
   final DateTime? createdAt;
   final String createdBy;
@@ -77,7 +80,25 @@ class Exercise {
 
   final bool hasVideo;
 
-  static const maxVideoBytes = 60 * 1024 * 1024;
+  final String videoStatus;
+
+  static const maxVideoBytes = 100 * 1024 * 1024;
+
+  static const videoTypes = {
+    'mp4': 'video/mp4',
+    'm4v': 'video/mp4',
+    'mov': 'video/quicktime',
+    'qt': 'video/quicktime',
+    'webm': 'video/webm',
+  };
+
+  static String? videoContentType(String name, [String? mime]) {
+    final m = (mime ?? '').toLowerCase().split(';').first.trim();
+    if (videoTypes.containsValue(m)) return m;
+    final dot = name.lastIndexOf('.');
+    if (dot < 0) return null;
+    return videoTypes[name.substring(dot + 1).toLowerCase()];
+  }
 
   const Exercise(
     this.name,
@@ -86,13 +107,16 @@ class Exercise {
     this.tip, {
     this.also = const [],
     this.id = '',
-    this.video = '',
     this.createdAt,
     this.createdBy = '',
     this.base = '',
     this.level = '',
     this.hasVideo = false,
+    this.videoStatus = '',
   });
+
+  bool get videoProcessing => videoStatus == 'processing';
+  bool get videoFailed => videoStatus == 'failed';
 
   /// Trener qo'shganmi (tahrirlash va o'chirish mumkin); namunaviy mashq — yo'q
   bool get isCustom => id.isNotEmpty;
@@ -126,7 +150,6 @@ class Exercise {
           if (a != muscle && muscleById(a.toString()) != null) a.toString(),
       ],
       id: id,
-      video: (m['video'] ?? '').toString(),
       createdAt: at is int ? DateTime.fromMillisecondsSinceEpoch(at) : null,
       createdBy: (m['createdBy'] ?? '').toString(),
       base: (m['base'] ?? '').toString(),
@@ -149,12 +172,12 @@ class Exercise {
           if (a != muscle && muscleById(a) != null) a,
       ],
       id: jsonString(j['id']),
-      video: jsonString(j['video']),
       createdAt: jsonDate(j['created_at']),
       createdBy: jsonString(j['created_by']),
       base: jsonString(j['base']),
       level: levels.containsKey(level) ? level : '',
       hasVideo: j['has_video'] == true,
+      videoStatus: jsonString(j['video_status']),
     );
   }
 
@@ -164,7 +187,6 @@ class Exercise {
         'sets': sets,
         'tip': tip,
         'also': also,
-        'video': video,
         'createdAt': (createdAt ?? DateTime.now()).millisecondsSinceEpoch,
         'createdBy': createdBy,
         'base': base,

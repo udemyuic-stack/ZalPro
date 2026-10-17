@@ -3,17 +3,22 @@ import '../l10n/tr.dart';
 import '../services/notifications.dart';
 import '../services/settings.dart';
 import '../theme.dart';
+import 'change_password.dart';
 import 'lang_picker.dart';
 import 'ui.dart';
 
-/// Sozlamalar: ko'rinish (tema) va bildirishnomalar.
-/// [student] — shogird uchun ovqat/vazn/reja eslatmalari ham ko'rsatiladi.
-Future<void> showSettings(BuildContext context, {required bool student}) =>
-    showSheet<void>(context, _SettingsSheet(student: student));
+Future<void> showSettings(
+  BuildContext context, {
+  required bool student,
+  VoidCallback? onSignOut,
+}) =>
+    showSheet<void>(context, _SettingsSheet(student: student, host: context, onSignOut: onSignOut));
 
 class _SettingsSheet extends StatefulWidget {
   final bool student;
-  const _SettingsSheet({required this.student});
+  final BuildContext host;
+  final VoidCallback? onSignOut;
+  const _SettingsSheet({required this.student, required this.host, this.onSignOut});
 
   @override
   State<_SettingsSheet> createState() => _SettingsSheetState();
@@ -62,18 +67,24 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                   label: Text(tr('Telefon'))),
             ],
             selected: {mode},
-            onSelectionChanged: (s) {
-              // tema almashganda ilova qayta chiziladi — varaqni yopamiz
-              Navigator.pop(context);
-              AppSettings.setThemeMode(s.first);
-            },
+            onSelectionChanged: (s) => AppSettings.setThemeMode(s.first),
           ),
         ),
         const SizedBox(height: AppSpace.xl),
         Eyebrow(tr('Til')),
         const SizedBox(height: AppSpace.sm),
-        // til almashganda ilova qayta chiziladi — varaqni yopamiz
-        LangPicker(onChanged: () => Navigator.pop(context)),
+        const LangPicker(),
+        if (!widget.student) ...[
+          const SizedBox(height: AppSpace.md),
+          OutlinedButton.icon(
+            onPressed: () {
+              Navigator.pop(context);
+              if (widget.host.mounted) showChangePassword(widget.host);
+            },
+            icon: const Icon(Icons.key_outlined),
+            label: Text(tr("Parolni o'zgartirish")),
+          ),
+        ],
         const SizedBox(height: AppSpace.xl),
         Eyebrow(tr('Bildirishnomalar')),
         if (!Notifications.supported)
@@ -94,6 +105,18 @@ class _SettingsSheetState extends State<_SettingsSheet> {
         ],
         sw('notif_chat', AppSettings.chatNotifications, tr('Yangi xabar'),
             widget.student ? tr('Trener yozganda') : tr('Shogird yozganda')),
+        if (widget.onSignOut != null) ...[
+          const SizedBox(height: AppSpace.xl),
+          OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(foregroundColor: AppColors.danger),
+            onPressed: () {
+              Navigator.pop(context);
+              if (widget.host.mounted) widget.onSignOut!();
+            },
+            icon: const Icon(Icons.logout),
+            label: Text(tr('Chiqish')),
+          ),
+        ],
       ]),
     );
   }

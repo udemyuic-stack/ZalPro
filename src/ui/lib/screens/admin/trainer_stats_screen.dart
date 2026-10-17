@@ -6,6 +6,7 @@ import '../../services/db.dart';
 import '../../theme.dart';
 import '../../widgets/ui.dart';
 import 'clients_screen.dart';
+import '../../services/api/api_error.dart';
 
 /// "Trenerlar reytingi" — faqat bosh admin. Trenerlarni so'nggi 7 kun bo'yicha
 /// solishtiradi: reja, chatga javob, shogirdlar rioyasi, natija. Kimga e'tibor kerakligini ko'rsatadi.
@@ -131,7 +132,7 @@ class _Comparison extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
-    final metrics = stats.first.parts.map((p) => p.$1).toList();
+    final metrics = stats.first.parts.map((p) => p.$1.label).toList();
     return BentoTile(
       padding: const EdgeInsets.all(AppSpace.md),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -323,15 +324,15 @@ class _TrainerStatDetail extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpace.md),
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Eyebrow(tr('Ball tarkibi')),
-              for (final (label, value, weight) in stat.parts) ...[
+              for (final (part, value, weight) in stat.parts) ...[
                 const SizedBox(height: AppSpace.md),
                 Row(children: [
-                  Expanded(child: Text(label, style: t.titleSmall)),
+                  Expanded(child: Text(part.label, style: t.titleSmall)),
                   Text(trf("og'irligi {0}%", [weight]),
                       style: t.bodySmall?.copyWith(color: AppColors.textFaint)),
                 ]),
                 const SizedBox(height: AppSpace.xs),
-                _Bar(label: _explain(label), value: value),
+                _Bar(label: _explain(part), value: value),
               ],
             ]),
           ),
@@ -364,11 +365,11 @@ class _TrainerStatDetail extends StatelessWidget {
     );
   }
 
-  static String _explain(String label) => switch (label) {
-        'Reja berilgan' => 'shogirdlar',
-        'Chatga javob' => 'yozganlar',
-        'Shogirdlar rioyasi' => tr('yedim belgisi'),
-        _ => tr('maqsad tomon'),
+  static String _explain(ScorePart part) => switch (part) {
+        ScorePart.coverage => tr('shogirdlar'),
+        ScorePart.reply => tr('yozganlar'),
+        ScorePart.adherence => tr('yedim belgisi'),
+        ScorePart.progress => tr('maqsad tomon'),
       };
 }
 
@@ -463,7 +464,7 @@ class _OwnerRatingCardState extends State<_OwnerRatingCard> {
       await Db.saveRating(widget.trainerId, stars, _comment.text.trim());
       if (mounted) showSnack(context, tr('Baho saqlandi'));
     } catch (e) {
-      if (mounted) showSnack(context, trf("Saqlab bo'lmadi: {0}", [e]));
+      if (mounted) showSnack(context, trf("Saqlab bo'lmadi: {0}", [apiErrorText(e)]));
     } finally {
       if (mounted) setState(() => _saving = false);
     }

@@ -1,21 +1,33 @@
+import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart' show CancelToken;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../models/announcement.dart';
+import '../models/leaderboard.dart';
+import '../models/member_analytics.dart';
+import '../models/shop_analytics.dart';
 import '../models/gym.dart';
 import '../models/exercises.dart';
 import '../models/models.dart';
 import '../models/shop.dart';
 import '../models/stats.dart';
 import '../models/photo.dart';
+import '../models/scan_result.dart';
 import '../models/subscription.dart';
 import 'api/api_error.dart';
+import 'api/analytics_api.dart';
+import 'api/announcements_api.dart';
+import 'api/leaderboard_api.dart';
 import 'api/api_instance.dart';
 import 'api/billing_api.dart';
 import 'api/body_api.dart';
 import 'api/catalog_api.dart';
 import 'api/chat_api.dart';
+import 'api/checkin_api.dart';
 import 'api/day_api.dart';
+import 'api/poll_stream.dart';
 import 'api/shop_api.dart';
 import 'api/stats_api.dart';
 import 'api/users_api.dart';
@@ -41,10 +53,14 @@ class AuthService {
       apiClient.register(name.trim(), normalizePhone(phone), pass);
 
   static Future<void> signOut() async {
+    await apiClient.logout();
+    unawaited(_cancelNotifications());
+  }
+
+  static Future<void> _cancelNotifications() async {
     try {
       await Notifications.cancelAll().timeout(const Duration(seconds: 1));
     } catch (_) {}
-    await apiClient.logout();
   }
 
   static Future<void> changePassword(String current, String next) async {
@@ -64,6 +80,11 @@ class Db {
   static final _chat = ChatApi(apiClient);
   static final _body = BodyApi(apiClient);
   static final _stats = StatsApi(apiClient);
+  static final _checkin = CheckinApi(apiClient);
+  static final _announcements = AnnouncementsApi(apiClient);
+  static final _leaderboard = LeaderboardApi(apiClient);
+  static final _analytics = AnalyticsApi(apiClient);
+  static final _plans = <String, SharedStream<Plan?>>{};
 
   // ---------- users ----------
   static Stream<AppUser?> user(String uid) {
@@ -217,12 +238,25 @@ class Db {
     return _catalog.deleteFood(id);
   }
 
+  static Future<Food> uploadFoodImage(
+    String id,
+    Uint8List bytes, {
+    String contentType = 'image/jpeg',
+    void Function(int sent, int total)? onProgress,
+  }) {
+    return _catalog.uploadFoodImage(id, bytes, contentType: contentType, onProgress: onProgress);
+  }
+
+  static Future<void> deleteFoodImage(String id) {
+    return _catalog.deleteFoodImage(id);
+  }
+
   // ---------- exercises (trener qo'shgan mashqlar) ----------
   static Stream<List<Exercise>> customExercises() {
     return _catalog.customExercises();
   }
 
-  static Future<void> saveExercise(Exercise e) {
+  static Future<String> saveExercise(Exercise e) {
     return _catalog.saveExercise(e);
   }
 
@@ -231,11 +265,25 @@ class Db {
   }
 
   static Future<void> uploadExerciseVideo(
-    String id,
-    Uint8List bytes, {
+    String id, {
+    required int size,
+    required String contentType,
+    Uint8List? bytes,
+    Stream<List<int>> Function()? open,
     void Function(int sent, int total)? onProgress,
   }) {
-    return _catalog.uploadExerciseVideo(id, bytes, onProgress: onProgress);
+    return _catalog.uploadExerciseVideo(
+      id,
+      size: size,
+      contentType: contentType,
+      bytes: bytes,
+      open: open,
+      onProgress: onProgress,
+    );
+  }
+
+  static Future<String> waitVideoReady(String id, {bool Function()? cancelled}) {
+    return _catalog.waitVideoReady(id, cancelled: cancelled);
   }
 
   static Future<String> exerciseVideoUrl(String id) {
@@ -257,7 +305,7 @@ class Db {
   }
 
   static Stream<Plan?> plan(String id) {
-    return _catalog.plan(id);
+    return _plans.putIfAbsent(id, () => SharedStream(() => _catalog.plan(id))).stream;
   }
 
   /// Rejani saqlaydi va uning id sini qaytaradi (yangi reja bo'lsa — yaratilgan id)
@@ -282,6 +330,19 @@ class Db {
 
   static Future<void> deleteProduct(String id) {
     return _shop.deleteProduct(id);
+  }
+
+  static Future<String> uploadProductImage(
+    String id,
+    Uint8List bytes, {
+    String contentType = 'image/jpeg',
+    void Function(int sent, int total)? onProgress,
+  }) {
+    return _shop.uploadProductImage(id, bytes, contentType: contentType, onProgress: onProgress);
+  }
+
+  static Future<Product> setProductImages(String id, List<String> keys) {
+    return _shop.setProductImages(id, keys);
   }
 
   // ---------- do'kon: buyurtmalar (`orders`) ----------
@@ -367,6 +428,14 @@ class Db {
     return _days.toggleExercise(uid, day, key, done);
   }
 
+  static Future<void> setWorkoutFeedback(String uid, String day, int rating) {
+    return _days.setFeedback(uid, day, rating);
+  }
+
+  static Stream<Map<String, int>> workoutFeedbackWeek(String uid) {
+    return _days.feedbackWeek(uid);
+  }
+
   static Stream<int> water(String uid, String day) {
     return _days.water(uid, day);
   }
@@ -431,9 +500,49 @@ class Db {
     return _billing.attendance(uid, day);
   }
 
+  static Stream<Set<String>> attendanceRange(String uid) {
+    return _billing.attendanceRange(uid);
+  }
+
   static Future<void> markAttendance(String uid, String day, bool present, String byId) {
     return _billing.markAttendance(uid, day, present);
   }
+
+  static Stream<List<Announcement>> announcements() => _announcements.announcements();
+
+  static Future<void> addAnnouncement({
+    required String title,
+    required String body,
+    required AnnouncementAudience audience,
+    int? expiresInDays,
+  }) =>
+      _announcements.add(
+        title: title,
+        body: body,
+        audience: audience,
+        expiresInDays: expiresInDays,
+      );
+
+  static Future<void> removeAnnouncement(String id) => _announcements.remove(id);
+
+  static Stream<Leaderboard> leaderboard() => _leaderboard.leaderboard();
+
+  static Future<ShopAnalytics> shopAnalytics(DateTime from, DateTime to) =>
+      _analytics.shop(from, to);
+
+  static Future<ChurnReport> churn() => _analytics.churn();
+
+  static Future<Retention> retention(DateTime from, DateTime to) => _analytics.retention(from, to);
+
+  static Future<TrainerStats> trainerAnalytics(DateTime from, DateTime to) =>
+      _analytics.trainers(from, to);
+
+  static Future<void> setLeaderboardVisible(String uid, bool visible) =>
+      _users.setLeaderboardVisible(uid, visible);
+
+  static Future<String> checkinToken() => _checkin.checkinToken();
+
+  static Future<ScanResult> scanCheckin(String token) => _checkin.scanCheckin(token);
 
   // ---------- eslatmalar (abonement tugashi haqida jo'natilgan jurnal) ----------
   static Stream<List<Reminder>> remindersOf(String trainerId) {
@@ -470,6 +579,44 @@ class Db {
   static Future<void> send(String chatUid, String senderId, String text) {
     return _chat.send(chatUid, text);
   }
+
+  static Future<String> uploadChatMedia(
+    String chatUid, {
+    required String kind,
+    required String contentType,
+    required int size,
+    Uint8List? bytes,
+    Stream<List<int>> Function()? open,
+    void Function(int sent, int total)? onProgress,
+    CancelToken? cancelToken,
+  }) {
+    return _chat.uploadChatMedia(
+      chatUid,
+      kind: kind,
+      contentType: contentType,
+      size: size,
+      bytes: bytes,
+      open: open,
+      onProgress: onProgress,
+      cancelToken: cancelToken,
+    );
+  }
+
+  static Future<void> sendMessage(
+    String chatUid, {
+    String text = '',
+    String? mediaKey,
+    String? mediaKind,
+    int? durationMs,
+  }) {
+    return _chat.sendMessage(
+      chatUid,
+      text: text,
+      mediaKey: mediaKey,
+      mediaKind: mediaKind,
+      durationMs: durationMs,
+    );
+  }
 }
 
 // ---------- providers ----------
@@ -485,17 +632,17 @@ final trainerDirectoryProvider = StreamProvider<List<TrainerInfo>>((ref) {
 final meProvider = StreamProvider<AppUser?>((ref) {
   final uid = ref.watch(authProvider).value;
   if (uid == null) return Stream.value(null);
-  return _apiMe();
+  return _apiMe(uid);
 });
 
-Stream<AppUser?> _apiMe() async* {
+Stream<AppUser?> _apiMe(String uid) async* {
   var first = true;
-  while (true) {
+  while (apiClient.userId == uid) {
     try {
       yield AppUser.fromJson(await apiClient.getJson('/v1/users/me'));
     } on ApiException catch (e) {
       if (e.status == 401 || e.status == 404) {
-        await apiClient.clearSession();
+        if (apiClient.userId == uid) await apiClient.clearSession();
         yield null;
         return;
       }

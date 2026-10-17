@@ -12,7 +12,7 @@ void main() {
         'sets': '4 x 10',
         'tip': 'Sekin',
         'also': ['triceps', 'chest', 'nope', 'shoulders'],
-        'video': 'https://youtu.be/x',
+        'has_video': true,
         'created_at': '2026-01-02T03:04:05Z',
         'created_by': 'u1',
         'base': 'Otjimaniya',
@@ -24,7 +24,7 @@ void main() {
       expect(e.sets, '4 x 10');
       expect(e.tip, 'Sekin');
       expect(e.also, ['triceps', 'shoulders']);
-      expect(e.video, 'https://youtu.be/x');
+      expect(e.hasVideo, isTrue);
       expect(e.createdAt!.isAtSameMomentAs(DateTime.utc(2026, 1, 2, 3, 4, 5)), isTrue);
       expect(e.createdBy, 'u1');
       expect(e.base, 'Otjimaniya');
@@ -38,7 +38,7 @@ void main() {
       expect(e.sets, '');
       expect(e.tip, '');
       expect(e.also, isEmpty);
-      expect(e.video, '');
+      expect(e.hasVideo, isFalse);
       expect(e.createdAt, isNull);
       expect(e.createdBy, '');
       expect(e.base, '');

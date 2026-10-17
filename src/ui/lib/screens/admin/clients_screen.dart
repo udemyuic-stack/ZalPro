@@ -7,8 +7,10 @@ import '../../widgets/extra_food_sheet.dart';
 import '../../widgets/ui.dart';
 import '../user/chat_screen.dart';
 import '../user/progress_screen.dart';
+import 'member_analytics_screen.dart';
 import 'student_program_tab.dart';
 import 'plans_screen.dart' show planTemplates;
+import '../../services/api/api_error.dart';
 
 class ClientsScreen extends StatefulWidget {
   final AppUser admin;
@@ -84,6 +86,24 @@ class _ClientsScreenState extends State<ClientsScreen> {
             if (widget.admin.isTrainer) ...[
               _MyCatalogCard(trainer: widget.admin),
               const SizedBox(height: AppSpace.md),
+              BentoTile(
+                key: const Key('member-analytics-entry'),
+                padding: const EdgeInsets.all(AppSpace.md),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MemberAnalyticsScreen(isOwner: false)),
+                ),
+                child: Row(children: [
+                  IconBadge(Icons.groups_outlined, color: AppColors.accent, size: 38),
+                  const SizedBox(width: AppSpace.md),
+                  Expanded(
+                    child:
+                        Text(tr("A'zolar tahlili"), style: Theme.of(context).textTheme.titleMedium),
+                  ),
+                  Icon(Icons.chevron_right, size: 20, color: AppColors.textFaint),
+                ]),
+              ),
+              const SizedBox(height: AppSpace.md),
             ],
             FadeInUp(
               child: Row(children: [
@@ -125,8 +145,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
             ),
             const SizedBox(height: AppSpace.xl),
             SectionHeader(
-              tr('Mijozlar'),
-              eyebrow: q.isEmpty ? tr("Ro'yxat") : tr('Qidiruv natijasi'),
+              q.isEmpty ? tr("Ro'yxat") : tr('Qidiruv natijasi'),
               trailing: Text(
                 '${list.length}',
                 style: Theme.of(context)
@@ -198,7 +217,7 @@ class _ClientTile extends StatelessWidget {
               if (u.goal.isNotEmpty)
                 GoalPill(user: u)
               else
-                Pill(text: tr('Maqsad ?'), color: AppColors.warning),
+                Pill(text: tr('Maqsad?'), color: AppColors.warning),
             ]),
             const SizedBox(height: 2),
             Text(
@@ -287,7 +306,7 @@ class ClientDetail extends StatelessWidget {
                     Expanded(
                       child: StatTile(
                         icon: Icons.speed,
-                        label: 'BMI',
+                        label: tr('BMI'),
                         value: dash ?? u.bmi.toStringAsFixed(1),
                         color: AppColors.water,
                       ),
@@ -296,7 +315,7 @@ class ClientDetail extends StatelessWidget {
                     Expanded(
                       child: StatTile(
                         icon: Icons.local_fire_department_outlined,
-                        label: tr('Norma, kkal'),
+                        label: tr('Norma'),
                         value: dash ?? '${u.targetKcal}',
                         color: AppColors.warning,
                       ),
@@ -365,7 +384,7 @@ class _PlanPickerState extends State<_PlanPicker> {
       await job();
       if (mounted) showSnack(context, done);
     } catch (e) {
-      if (mounted) showSnack(context, trf("Saqlab bo'lmadi: {0}", [e]));
+      if (mounted) showSnack(context, trf("Saqlab bo'lmadi: {0}", [apiErrorText(e)]));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -645,7 +664,7 @@ class _TrainerPicker extends StatelessWidget {
               prefixIcon: const Icon(Icons.badge_outlined),
             ),
             items: [
-              DropdownMenuItem(value: null, child: Text(tr('— Trener yo’q —'))),
+              DropdownMenuItem(value: null, child: Text(tr("— Trener yo'q —"))),
               for (final t in staff)
                 DropdownMenuItem(
                   value: t.id,

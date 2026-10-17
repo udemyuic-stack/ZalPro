@@ -179,6 +179,32 @@ void main() {
     expect(received.single.createdAt, DateTime.utc(2026, 1, 1, 10));
   });
 
+  test('delivers media fields and updated flag', () async {
+    final received = <ChatSocketMessage>[];
+    socket.messages.listen(received.add);
+    await socket.start();
+    channels.single.serverSend(jsonEncode({
+      'id': 'v1',
+      'sender_id': 'u1',
+      'text': '',
+      'created_at': '2026-01-01T10:00:00Z',
+      'media_kind': 'video',
+      'media_status': 'ready',
+      'media_url': 'http://r2/v.mp4',
+      'updated': true,
+    }));
+    channels.single.serverSend(frame('m2'));
+    await settle();
+    expect(received, hasLength(2));
+    expect(received.first.text, '');
+    expect(received.first.mediaKind, 'video');
+    expect(received.first.mediaStatus, 'ready');
+    expect(received.first.mediaUrl, 'http://r2/v.mp4');
+    expect(received.first.updated, true);
+    expect(received.last.mediaKind, '');
+    expect(received.last.updated, false);
+  });
+
   test('malformed frames are ignored', () async {
     final received = <ChatSocketMessage>[];
     final errors = <Object>[];

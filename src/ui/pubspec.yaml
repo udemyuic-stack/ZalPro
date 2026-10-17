@@ -21,12 +21,17 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   url_launcher: ^6.3.3
-  webview_flutter: ^4.14.1
   dio: ^5.11.1
   web_socket_channel: ^3.0.3
   flutter_secure_storage: ^11.2.0
   package_info_plus: ^10.2.2
   video_player: ^2.14.1
+  mobile_scanner: ^7.4.2
+  camera: ^0.12.1
+  google_mlkit_pose_detection: ^0.16.1
+  record: ^7.1.2
+  just_audio: ^0.10.6
+  path_provider: ^2.1.6
 
 dev_dependencies:
   flutter_test:
@@ -40,6 +45,17 @@ flutter:
     - assets/foods/
     - assets/brand/
     - assets/credits.txt
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
 
 # Ilova ikonkasi: assets/icon/icon.png (7-okt 2026 dan — assets/icon/logo_src_3.png: "QOBIL" yozuvli;
 # logo_src_2.png — undan oldingi asl rasm; burchaklari

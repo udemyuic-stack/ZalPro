@@ -166,6 +166,35 @@ void main() {
     await sub2.cancel();
   });
 
+  test('attendanceRange: 12-week window, present days only, refreshed by day touch', () async {
+    var rows = [
+      {'day': '2026-05-04', 'present': true, 'marked_by': 't', 'marked_at': '2026-05-04T08:00:00Z'},
+      {
+        'day': '2026-05-05',
+        'present': false,
+        'marked_by': 't',
+        'marked_at': '2026-05-05T08:00:00Z'
+      },
+    ];
+    respond = (o) async => jsonBody(rows, 200);
+    final values = <Set<String>>[];
+    final sub = api.attendanceRange('u1').listen(values.add);
+    final sub2 = api.attendanceRange('u1').listen((_) {});
+    await Future<void>.delayed(const Duration(milliseconds: 30));
+    expect(adapter.count('/v1/users/u1/attendance'), 1);
+    expect(last().queryParameters, {'from': '2026-02-16', 'to': '2026-05-10'});
+    expect(values.single, {'2026-05-04'});
+    rows = [
+      ...rows,
+      {'day': '2026-05-10', 'present': true, 'marked_by': 't', 'marked_at': '2026-05-10T08:00:00Z'},
+    ];
+    api.bus.touch('attendance:u1:2026-05-10');
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+    expect(values.last, {'2026-05-04', '2026-05-10'});
+    await sub.cancel();
+    await sub2.cancel();
+  });
+
   test('allReminders: no window; remindersOf: 400-day window and trainer filter', () async {
     respond = (o) async => jsonBody([reminderJson('r1', 't1'), reminderJson('r2', 't2')], 200);
     final all = await api.allReminders().first;

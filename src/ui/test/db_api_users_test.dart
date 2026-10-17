@@ -79,6 +79,25 @@ void main() {
     expect(last().queryParameters['role'], 'user');
   });
 
+  test('clientsOf: concurrent listeners share one request', () async {
+    respond = (o) async => jsonBody([userJson('u1', trainerId: 't1')], 200);
+    final first = api.clientsOf('t1').listen((_) {});
+    final second = api.clientsOf('t1').listen((_) {});
+    final list = await api.clientsOf('t1').first;
+    expect(list.single.id, 'u1');
+    expect(adapter.count('/v1/users'), 1);
+    await first.cancel();
+    await second.cancel();
+  });
+
+  test('clientsOf: different trainers do not share', () async {
+    respond = (o) async => jsonBody([], 200);
+    final first = api.clientsOf('t1').listen((_) {});
+    await api.clientsOf('t2').first;
+    expect(adapter.calls.map((c) => c.queryParameters['trainer_id']), containsAll(['t1', 't2']));
+    await first.cancel();
+  });
+
   test('staff sends three roles, trainers one', () async {
     respond = (o) async => jsonBody([], 200);
     await api.staff().first;

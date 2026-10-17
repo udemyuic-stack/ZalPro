@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../l10n/tr.dart';
@@ -12,7 +13,7 @@ import '../../widgets/ui.dart';
 
 /// Trener / bosh admin: mashqlar ro'yxati ("Tana xaritasi" uchun).
 /// Tana chizmasida mushak bosiladi — shu mushak mashqlari chiqadi va yangisi qo'shiladi.
-/// Har mashq tahrirlanadi — namunaviysi ham (masalan video havolasi qo'shish uchun):
+/// Har mashq tahrirlanadi — namunaviysi ham (masalan video qo'shish uchun):
 /// namunaviy o'zgartirilsa, bazaga uning nusxasi yoziladi va ro'yxatda aslining o'rniga
 /// chiqadi; nusxa o'chirilsa — asl holiga qaytadi. Trener qo'shgan mashq butunlay o'chadi.
 /// Shogird o'zgarishni darhol ko'radi (bazadan o'qiladi).
@@ -61,7 +62,7 @@ class _ExercisesAdminScreenState extends State<ExercisesAdminScreen> {
       title: e.isOverride ? tr('Asl holiga qaytarish') : tr("Mashqni o'chirish"),
       message: e.isOverride
           ? trf(
-              "\"{0}\" namunaviy holiga qaytadi: siz kiritgan o'zgarishlar va video havolasi o'chadi.",
+              "\"{0}\" namunaviy holiga qaytadi: siz kiritgan o'zgarishlar va yuklangan video o'chadi.",
               [tr(e.name)])
           : trf("\"{0}\" o'chiriladi. Shogirdlar uni boshqa ko'rmaydi.", [e.name]),
       ok: e.isOverride ? tr('Qaytarish') : tr("O'chirish"),
@@ -74,7 +75,7 @@ class _ExercisesAdminScreenState extends State<ExercisesAdminScreen> {
         showSnack(context, e.isOverride ? tr('Asl holiga qaytdi') : tr("Mashq o'chirildi"));
       }
     } catch (err) {
-      if (mounted) showSnack(context, trf("O'chirib bo'lmadi: {0}", [err]));
+      if (mounted) showSnack(context, trf("O'chirib bo'lmadi: {0}", [apiErrorText(err)]));
     }
   }
 
@@ -138,16 +139,16 @@ class _ExercisesAdminScreenState extends State<ExercisesAdminScreen> {
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     TextButton(
                       onPressed: () => setState(() => _angle = ParticleBody.front),
-                      child: Text(tr('OLD')),
+                      child: Text(tr('Old')),
                     ),
                     TextButton(
                       onPressed: () => setState(() => _angle = ParticleBody.back),
-                      child: Text(tr('ORQA')),
+                      child: Text(tr('Orqa')),
                     ),
                     TextButton.icon(
                       onPressed: () => _rotate(1),
                       icon: const Icon(Icons.threesixty, size: 18),
-                      label: Text(tr("O'GIRISH")),
+                      label: Text(tr("O'g'irish")),
                     ),
                   ]),
                 ]),
@@ -239,11 +240,21 @@ class _ExercisesAdminScreenState extends State<ExercisesAdminScreen> {
                                 Pill(text: tr('Yangi'), color: AppColors.accent)
                               else
                                 Pill(text: tr("Trener qo'shgan"), color: AppColors.water),
-                              if (e.video.isNotEmpty)
+                              if (e.videoProcessing)
                                 Pill(
-                                    text: tr('Video'),
+                                    text: tr('Tayyorlanmoqda'),
+                                    color: AppColors.warning,
+                                    icon: Icons.hourglass_empty_outlined)
+                              else if (e.hasVideo)
+                                Pill(
+                                    text: tr('Video bor'),
                                     color: AppColors.water,
-                                    icon: Icons.play_circle_outline),
+                                    icon: Icons.play_circle_outline)
+                              else if (e.videoFailed)
+                                Pill(
+                                    text: tr('Video tayyorlanmadi'),
+                                    color: AppColors.danger,
+                                    icon: Icons.error_outline),
                               if (levels[e.level] case final l?)
                                 Pill(
                                     text: tr(l),
@@ -301,6 +312,8 @@ class ExerciseForm extends StatefulWidget {
   State<ExerciseForm> createState() => _ExerciseFormState();
 }
 
+enum _VideoPhase { none, uploading, processing, failed, ready }
+
 class _ExerciseFormState extends State<ExerciseForm> {
   late String _muscle = widget.existing?.muscle ?? widget.muscle;
   late final Set<String> _also = {...?widget.existing?.also};
@@ -323,8 +336,6 @@ class _ExerciseFormState extends State<ExerciseForm> {
     return old.isOverride ? old.base : (old.isCustom ? '' : old.name);
   }
 
-  late final _video = TextEditingController(text: widget.existing?.video);
-
   /// Daraja ('' — belgilanmagan)
   late String _lvl = widget.existing?.level ?? '';
 
@@ -333,81 +344,167 @@ class _ExerciseFormState extends State<ExerciseForm> {
   bool _busy = false;
   String? _error;
   late bool _hasVideo = widget.existing?.hasVideo ?? false;
-  double? _progress;
+  late _VideoPhase _phase = _initialPhase();
+  double _progress = 0;
+  XFile? _picked;
+  String? _savedId;
 
-  bool get _uploading => _progress != null;
+  String get _id {
+    final old = widget.existing;
+    return _savedId ?? (old != null && old.isCustom ? old.id : '');
+  }
 
-  Future<void> _pickVideo(String id) async {
-    final file = await ImagePicker().pickVideo(source: ImageSource.gallery);
-    if (file == null) return;
-    if (await file.length() > Exercise.maxVideoBytes) {
-      return setState(() => _error = tr('Video 60 MB dan katta. Avval kichraytiring'));
+  _VideoPhase _initialPhase() {
+    final old = widget.existing;
+    if (old == null || !old.isCustom) return _VideoPhase.none;
+    if (old.videoProcessing) return _VideoPhase.processing;
+    if (old.videoFailed) return _VideoPhase.failed;
+    return old.hasVideo ? _VideoPhase.ready : _VideoPhase.none;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (_phase == _VideoPhase.processing) _watch(_id);
+  }
+
+  bool get _uploading => _phase == _VideoPhase.uploading;
+
+  Future<void> _watch(String id) async {
+    try {
+      final result = await Db.waitVideoReady(id, cancelled: () => !mounted);
+      if (!mounted || result == 'processing') return;
+      setState(() {
+        _phase = result == 'ready' ? _VideoPhase.ready : _VideoPhase.failed;
+        if (result == 'ready') _hasVideo = true;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _phase = _VideoPhase.failed;
+        _error = trf('Video yuklanmadi: {0}', [apiErrorText(e)]);
+      });
     }
+  }
+
+  Future<bool> _send(String id, XFile file) async {
+    final previous = _hasVideo ? _VideoPhase.ready : _VideoPhase.none;
     setState(() {
+      _phase = _VideoPhase.uploading;
       _progress = 0;
       _error = null;
     });
     try {
-      final bytes = await file.readAsBytes();
-      await Db.uploadExerciseVideo(id, bytes, onProgress: (sent, total) {
-        if (mounted && total > 0) setState(() => _progress = sent / total);
-      });
-      if (mounted) {
-        setState(() {
-          _hasVideo = true;
-          _progress = null;
-        });
+      final type = Exercise.videoContentType(file.name, file.mimeType) ??
+          Exercise.videoContentType(file.path);
+      if (type == null) {
+        throw const ApiException(code: 'video_type_unsupported', message: '');
       }
+      final size = await file.length();
+      await Db.uploadExerciseVideo(
+        id,
+        size: size,
+        contentType: type,
+        bytes: kIsWeb ? await file.readAsBytes() : null,
+        open: kIsWeb ? null : file.openRead,
+        onProgress: (sent, total) {
+          if (mounted && total > 0) setState(() => _progress = sent / total);
+        },
+      );
+      if (!mounted) return true;
+      setState(() => _phase = _VideoPhase.processing);
+      _watch(id);
+      return true;
     } catch (e) {
       if (mounted) {
         setState(() {
-          _progress = null;
+          _phase = previous;
           _error = trf('Video yuklanmadi: {0}', [apiErrorText(e)]);
         });
       }
+      return false;
     }
   }
 
-  Future<void> _removeVideo(String id) async {
+  Future<void> _pickVideo() async {
+    final file = await ImagePicker().pickVideo(source: ImageSource.gallery);
+    if (file == null) return;
+    if (await file.length() > Exercise.maxVideoBytes) {
+      return setState(() => _error = tr('Video 100 MB dan katta. Avval kichraytiring'));
+    }
+    if (Exercise.videoContentType(file.name, file.mimeType) == null &&
+        Exercise.videoContentType(file.path) == null) {
+      return setState(() => _error = tr("Video turi qo'llanmaydi (mp4, mov, webm)"));
+    }
+    if (_id.isEmpty) {
+      return setState(() {
+        _picked = file;
+        _error = null;
+      });
+    }
+    await _send(_id, file);
+  }
+
+  Future<void> _removeVideo() async {
+    final id = _id;
+    if (id.isEmpty) return setState(() => _picked = null);
     try {
       await Db.deleteExerciseVideo(id);
-      if (mounted) setState(() => _hasVideo = false);
+      if (mounted) {
+        setState(() {
+          _hasVideo = false;
+          _phase = _VideoPhase.none;
+        });
+      }
     } catch (e) {
       if (mounted) setState(() => _error = trf("Video o'chmadi: {0}", [apiErrorText(e)]));
     }
   }
 
   Widget _videoFile(TextTheme t) {
-    final old = widget.existing;
-    if (old == null || !old.isCustom) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: AppSpace.sm),
-        child: Text(
-          tr('Video fayl yuklash uchun avval mashqni saqlang'),
-          style: t.bodyMedium?.copyWith(color: AppColors.textMuted),
-        ),
-      );
+    final muted = t.bodyMedium?.copyWith(color: AppColors.textMuted);
+    final pending = _picked != null;
+    final String label;
+    switch (_phase) {
+      case _VideoPhase.uploading:
+        label = trf('Video yuklanmoqda: {0}%', [(_progress * 100).round()]);
+      case _VideoPhase.processing:
+        label = tr('Video tayyorlanmoqda (bir necha daqiqa)');
+      case _VideoPhase.failed:
+        label = tr('Video tayyorlanmadi');
+      case _VideoPhase.ready:
+        label = tr('Video fayl yuklangan');
+      case _VideoPhase.none:
+        label = pending ? _picked!.name : tr("Video fayl yo'q");
     }
+    final busyPhase = _uploading || _phase == _VideoPhase.processing;
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpace.md),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-          _hasVideo ? tr('Video fayl yuklangan') : tr('Video fayl yo\'q'),
-          style: t.bodyMedium?.copyWith(color: AppColors.textMuted),
+          label,
+          style: _phase == _VideoPhase.failed ? muted?.copyWith(color: AppColors.danger) : muted,
         ),
+        if (pending && _phase == _VideoPhase.none)
+          Text(tr('Video mashq saqlanganda yuklanadi'),
+              style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
         const SizedBox(height: AppSpace.sm),
-        if (_uploading)
-          LinearProgressIndicator(value: _progress)
+        if (busyPhase)
+          LinearProgressIndicator(value: _uploading ? _progress : null)
         else
           Wrap(spacing: AppSpace.sm, children: [
             OutlinedButton.icon(
-              onPressed: _busy ? null : () => _pickVideo(old.id),
+              onPressed: _busy ? null : _pickVideo,
               icon: const Icon(Icons.video_file_outlined),
-              label: Text(_hasVideo ? tr('Videoni almashtirish') : tr('Video yuklash')),
+              label: Text(_phase == _VideoPhase.failed
+                  ? tr('Qayta yuklash')
+                  : (_hasVideo || pending)
+                      ? tr('Videoni almashtirish')
+                      : tr('Video yuklash')),
             ),
-            if (_hasVideo)
+            if (_hasVideo || pending)
               OutlinedButton.icon(
-                onPressed: _busy ? null : () => _removeVideo(old.id),
+                onPressed: _busy ? null : _removeVideo,
                 icon: const Icon(Icons.delete_outline),
                 label: Text(tr("Videoni o'chirish")),
               ),
@@ -421,7 +518,6 @@ class _ExerciseFormState extends State<ExerciseForm> {
     _name.dispose();
     _sets.dispose();
     _tip.dispose();
-    _video.dispose();
     super.dispose();
   }
 
@@ -435,17 +531,13 @@ class _ExerciseFormState extends State<ExerciseForm> {
       });
 
   Future<void> _save() async {
-    final name = _kept(_name.text.trim(), widget.existing?.name), video = _video.text.trim();
+    final name = _kept(_name.text.trim(), widget.existing?.name);
     if (name.isEmpty) return setState(() => _error = tr('Mashq nomini yozing'));
     // bir xil mashq ikki marta kiritilmasin (boshqa mushakda bo'lsa ham)
-    final same =
-        sameExercise(name, widget.custom, exceptId: widget.existing?.id ?? '', exceptBase: _base);
+    final same = sameExercise(name, widget.custom, exceptId: _id, exceptBase: _base);
     if (same != null) {
       return setState(() => _error =
           trf('Bunday mashq bor: {0} — {1}', [same.name, tr(muscleById(same.muscle)!.name)]));
-    }
-    if (video.isNotEmpty && !RegExp(r'^https?://\S+$').hasMatch(video)) {
-      return setState(() => _error = tr('Havola http:// yoki https:// bilan boshlanishi kerak'));
     }
     setState(() {
       _busy = true;
@@ -453,14 +545,13 @@ class _ExerciseFormState extends State<ExerciseForm> {
     });
     final old = widget.existing;
     try {
-      await Db.saveExercise(Exercise(
+      final id = await Db.saveExercise(Exercise(
         name,
         _muscle,
         _kept(_sets.text.trim(), old?.sets),
         _kept(_tip.text.trim(), old?.tip),
         also: _also.toList(),
-        id: old?.id ?? '',
-        video: video,
+        id: _id,
         level: _lvl,
         // tahrirda birinchi muallif va vaqt saqlanadi (qoida ham shuni talab qiladi);
         // namunaviy birinchi marta o'zgartirilganda — yangi yozuv
@@ -468,12 +559,26 @@ class _ExerciseFormState extends State<ExerciseForm> {
         createdBy: old != null && old.isCustom ? old.createdBy : widget.adminId,
         base: _base,
       ));
+      final file = _picked;
+      if (file != null && id.isNotEmpty) {
+        _savedId = id;
+        _picked = null;
+        if (!await _send(id, file)) {
+          if (mounted) {
+            setState(() {
+              _busy = false;
+              _error = trf('Mashq saqlandi, lekin video yuklanmadi: {0}', [_error ?? '']);
+            });
+          }
+          return;
+        }
+      }
       if (mounted) Navigator.pop(context, true);
     } catch (e) {
       if (mounted) {
         setState(() {
           _busy = false;
-          _error = trf("Saqlab bo'lmadi: {0}", [e]);
+          _error = trf("Saqlab bo'lmadi: {0}", [apiErrorText(e)]);
         });
       }
     }
@@ -570,15 +675,6 @@ class _ExerciseFormState extends State<ExerciseForm> {
               maxLines: 5,
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(labelText: tr('Maslahat: qanday bajariladi')),
-            ),
-            TextField(
-              controller: _video,
-              maxLength: 300,
-              keyboardType: TextInputType.url,
-              decoration: InputDecoration(
-                labelText: tr('Video havolasi (ixtiyoriy)'),
-                hintText: 'https://',
-              ),
             ),
             _videoFile(t),
             if (_error != null)

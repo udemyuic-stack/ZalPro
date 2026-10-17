@@ -35,6 +35,7 @@ class Notifications {
   // Bildirishnoma id oralig'lari
   static const _mealBase = 1000; // 1000..1099 — ovqat mahallari
   static const _weighInId = 1100;
+  static const _restEndId = 1101;
   static const _maxMeals = 20;
 
   static AndroidFlutterLocalNotificationsPlugin? get _android =>
@@ -113,6 +114,31 @@ class Notifications {
       title: tr('Vazn kiritish kuni'),
       body: tr("Ertalab nahorga tortilib, Progress bo'limida vazningizni kiriting"),
     );
+  }
+
+  static Future<void> scheduleRestEnd(DateTime endsAt) async {
+    if (!_ready) return;
+    try {
+      await _plugin.cancel(id: _restEndId);
+      if (!endsAt.isAfter(DateTime.now())) return;
+      await _plugin.zonedSchedule(
+        id: _restEndId,
+        scheduledDate: _tz(endsAt),
+        notificationDetails: _details,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        title: tr('Dam olish tugadi'),
+        body: tr('Keyingi setga tayyor'),
+      );
+    } catch (e) {
+      debugPrint('Dam olish bildirishnomasi rejalanmadi: $e');
+    }
+  }
+
+  static Future<void> cancelRestEnd() async {
+    if (!_ready) return;
+    try {
+      await _plugin.cancel(id: _restEndId);
+    } catch (_) {}
   }
 
   /// Darhol ko'rsatish. [tag] bir xil bo'lsa (masalan xabar id) push bilan takrorlanmaydi.

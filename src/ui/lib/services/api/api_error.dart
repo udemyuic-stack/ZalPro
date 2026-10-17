@@ -55,8 +55,38 @@ class ApiException implements Exception {
   String toString() => 'ApiException($code, $status)';
 }
 
+String _validationText(ApiException error) {
+  if (error.errors.isEmpty) {
+    return error.message.isEmpty ? tr("Ma'lumotlar noto'g'ri") : error.message;
+  }
+  final fields = error.errors.map((e) => e['field'] ?? '').toList();
+  if (fields.any((f) => f.endsWith('password'))) return tr("Parol kamida 8 belgi bo'lsin");
+  if (fields.any((f) => f.endsWith('phone'))) return tr("Telefon raqam noto'g'ri");
+  final msg = (error.errors.first['message'] ?? '').trim();
+  final lower = msg.toLowerCase();
+  const valuePrefix = 'value error, ';
+  if (lower.startsWith(valuePrefix)) {
+    final rest = msg.substring(valuePrefix.length).trim();
+    if (rest.isNotEmpty) return rest;
+  }
+  if (lower.contains('field required') || lower.contains('should be a valid string')) {
+    return tr("Majburiy maydon to'ldirilmagan");
+  }
+  if (lower.contains('at least') && lower.contains('character')) return tr('Matn juda qisqa');
+  if (lower.contains('at most') && lower.contains('character')) return tr('Matn juda uzun');
+  if (lower.contains('greater than') ||
+      lower.contains('less than') ||
+      lower.contains('valid integer') ||
+      lower.contains('valid number')) {
+    return tr('Qiymat ruxsat etilgan oraliqdan tashqarida');
+  }
+  if (lower.contains('valid date') || lower.contains('datetime')) return tr("Sana noto'g'ri");
+  return tr("Ma'lumotlar noto'g'ri");
+}
+
 String apiErrorText(Object error) {
-  if (error is! ApiException) return error.toString();
+  if (error is DioException) return apiErrorText(ApiException.fromDio(error));
+  if (error is! ApiException) return tr('Xatolik yuz berdi');
   switch (error.code) {
     case 'invalid_credentials':
       return tr("Telefon raqam yoki parol noto'g'ri");
@@ -70,12 +100,7 @@ String apiErrorText(Object error) {
       final minutes = (wait.inSeconds / 60).ceil().clamp(1, 1000000);
       return trf("Juda ko'p urinish. {0} daqiqadan so'ng qayta urinib ko'ring", ['$minutes']);
     case 'validation_error':
-      final fields = error.errors.map((e) => e['field'] ?? '').toList();
-      if (fields.any((f) => f.endsWith('password'))) {
-        return tr("Parol kamida 8 belgi bo'lsin");
-      }
-      if (fields.any((f) => f.endsWith('phone'))) return tr("Telefon raqam noto'g'ri");
-      return error.message.isEmpty ? tr("Ma'lumotlar noto'g'ri") : error.message;
+      return _validationText(error);
     case 'insufficient_stock':
       return tr("Omborda tovar yetarli emas");
     case 'product_missing':
@@ -87,16 +112,34 @@ String apiErrorText(Object error) {
     case 'weigh_in_too_soon':
       return tr("Vazn haftada bir marta kiritiladi. Keyingi o'lchov uchun biroz kuting");
     case 'storage_unavailable':
-      return tr("Rasm saqlash hozir ishlamayapti. Keyinroq urinib ko'ring");
+      return tr("Fayl saqlash hozir ishlamayapti. Keyinroq urinib ko'ring");
     case 'video_too_large':
-      return tr('Video 60 MB dan katta');
+      return tr('Video 100 MB dan katta');
+    case 'video_type_unsupported':
+      return tr("Video turi qo'llanmaydi (mp4, mov, webm)");
     case 'video_not_uploaded':
       return tr('Video serverga yetib bormagan. Qayta yuklang');
+    case 'chat_video_too_large':
+      return tr('Video 50 MB dan katta');
+    case 'media_too_large':
+      return tr('Fayl hajmi juda katta');
+    case 'media_key_invalid':
+      return tr("Fayl noto'g'ri. Qayta yuboring");
+    case 'media_not_uploaded':
+      return tr('Fayl serverga yetib bormagan. Qayta yuboring');
+    case 'checkin_not_member':
+      return tr("Bu foydalanuvchi mijoz emas");
+    case 'token_expired':
+      return tr('QR kod eskirgan, mijoz yangilasin');
+    case 'invalid_token':
+      return tr("QR kod noto'g'ri");
     case upgradeRequiredCode:
       return tr("Ilova eskirgan. Yangi versiyani yuklab oling");
     case ApiException.networkCode:
       return tr('Internet aloqasini tekshiring');
     default:
-      return error.message.isEmpty ? error.code : error.message;
+      if (error.status == 403) return tr("Bu amal uchun ruxsat yo'q");
+      if (error.message.isNotEmpty && (error.status ?? 0) < 500) return error.message;
+      return tr('Xatolik yuz berdi');
   }
 }

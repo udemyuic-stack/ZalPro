@@ -28,6 +28,7 @@ class ApiClient {
 
   static const _retriedKey = 'retried';
   static const _noAuthKey = 'noAuth';
+  static const revokeTimeout = Duration(seconds: 5);
 
   final SessionStore _store;
   final Dio _dio;
@@ -81,15 +82,41 @@ class ApiClient {
 
   Future<void> logout() async {
     final refresh = await _store.readRefreshToken();
-    if (refresh != null && _access != null) {
-      try {
-        await request<void>('POST', '/v1/auth/logout', data: {'refresh_token': refresh});
-      } on ApiException {
-        await clearSession();
-      }
-    }
+    final access = _access;
     await clearSession();
+    if (refresh != null && access != null) unawaited(_revoke(access, refresh));
   }
+
+  Future<void> _revoke(String access, String refresh) async {
+    final cancel = CancelToken();
+    try {
+      await _revokeOnce(access, refresh, cancel).timeout(revokeTimeout);
+    } catch (_) {
+      cancel.cancel();
+    }
+  }
+
+  Future<void> _revokeOnce(String access, String refresh, CancelToken cancel) async {
+    try {
+      await _logoutCall(access, refresh, cancel);
+    } on DioException catch (e) {
+      if (e.response?.statusCode != 401) rethrow;
+      final res = await _bare.post<Map<String, dynamic>>(
+        '/v1/auth/refresh',
+        data: {'refresh_token': refresh},
+        cancelToken: cancel,
+      );
+      final pair = res.data!;
+      await _logoutCall(pair['access_token'] as String, pair['refresh_token'] as String, cancel);
+    }
+  }
+
+  Future<void> _logoutCall(String access, String refresh, CancelToken cancel) => _bare.post<void>(
+        '/v1/auth/logout',
+        data: {'refresh_token': refresh},
+        options: Options(headers: {'Authorization': 'Bearer $access'}),
+        cancelToken: cancel,
+      );
 
   Future<void> clearSession() async {
     _access = null;
@@ -165,6 +192,7 @@ class ApiClient {
     Uint8List bytes, {
     String contentType = 'image/jpeg',
     void Function(int sent, int total)? onProgress,
+    CancelToken? cancelToken,
   }) async {
     try {
       await _upload.put<void>(
@@ -172,6 +200,31 @@ class ApiClient {
         data: bytes,
         options: Options(contentType: contentType),
         onSendProgress: onProgress,
+        cancelToken: cancelToken,
+      );
+    } on DioException catch (e) {
+      throw ApiException.fromDio(e);
+    }
+  }
+
+  Future<void> uploadStream(
+    String url,
+    Stream<List<int>> stream,
+    int length, {
+    String contentType = 'video/mp4',
+    void Function(int sent, int total)? onProgress,
+    CancelToken? cancelToken,
+  }) async {
+    try {
+      await _upload.put<void>(
+        url,
+        data: stream,
+        options: Options(
+          contentType: contentType,
+          headers: {Headers.contentLengthHeader: length},
+        ),
+        onSendProgress: onProgress,
+        cancelToken: cancelToken,
       );
     } on DioException catch (e) {
       throw ApiException.fromDio(e);

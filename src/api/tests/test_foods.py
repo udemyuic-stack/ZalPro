@@ -18,7 +18,6 @@ VALID_FOOD = {
     "protein": 31,
     "fat": 3.6,
     "carbs": 0,
-    "image": "https://img.example/chicken.png",
 }
 READ_ROLES = ["user", "barmen", "admin", "owner"]
 NON_STAFF_ROLES = ["user", "barmen"]
@@ -73,7 +72,7 @@ async def test_every_signed_in_role_reads_one_food(
         "protein": 2.7,
         "fat": 0.3,
         "carbs": 28.0,
-        "image": "u",
+        "image_url": None,
     }
 
 
@@ -134,7 +133,7 @@ async def test_staff_creates_food(
     assert stored.protein == 31
 
 
-async def test_create_food_with_only_name_defaults_numbers_and_image(
+async def test_create_food_with_only_name_defaults_numbers_and_no_image(
     client: AsyncClient, make_user: UserFactory, auth_headers: HeadersFactory
 ) -> None:
     actor = await make_user(role="admin")
@@ -144,7 +143,7 @@ async def test_create_food_with_only_name_defaults_numbers_and_image(
     assert response.status_code == 201
     body = response.json()
     assert body["kcal"] == body["protein"] == body["fat"] == body["carbs"] == 0
-    assert body["image"] == ""
+    assert body["image_url"] is None
 
 
 async def test_create_food_strips_name_whitespace(
@@ -210,12 +209,12 @@ async def test_staff_replaces_food_fully(
         "protein": 0,
         "fat": 0,
         "carbs": 0,
-        "image": "",
+        "image_url": None,
     }
     db_session.expire_all()
     stored = await db_session.get(Food, food_id)
     assert stored is not None
-    assert (stored.name, stored.kcal, stored.protein, stored.image) == ("New", 5, 0, "")
+    assert (stored.name, stored.kcal, stored.protein, stored.image) == ("New", 5, 0, "old")
 
 
 @pytest.mark.parametrize("role", NON_STAFF_ROLES)
@@ -311,7 +310,10 @@ INVALID_FOODS = [
     {"name": "ok", "fat": -1},
     {"name": "ok", "carbs": -1},
     {"name": "ok", "kcal": "many"},
-    {"name": "ok", "image": "i" * 501},
+    {"name": "ok", "image": "https://img.example/x.png"},
+    {"name": "ok", "image": ""},
+    {"name": "ok", "image_url": "https://img.example/x.png"},
+    {"name": "ok", "image_key": "images/foods/x/y.jpg"},
     {"name": "ok", "id": "custom"},
     {"name": "ok", "unknown": 1},
 ]
@@ -354,7 +356,7 @@ async def test_food_accepts_values_at_exact_limits(
     client: AsyncClient, make_user: UserFactory, auth_headers: HeadersFactory
 ) -> None:
     actor = await make_user(role="admin")
-    payload = {"name": "n" * 80, "kcal": 0, "protein": 0, "fat": 0, "carbs": 0, "image": "i" * 500}
+    payload = {"name": "n" * 80, "kcal": 0, "protein": 0, "fat": 0, "carbs": 0}
 
     response = await client.post("/v1/foods", json=payload, headers=auth_headers(actor))
 

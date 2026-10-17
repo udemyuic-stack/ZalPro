@@ -4,11 +4,19 @@ from datetime import UTC, datetime
 from fastapi import APIRouter, Response
 from sqlalchemy import delete, select
 
-from zalpro_api.api.deps import CurrentUser, SessionDep, SettingsDep, StaffUser, StorageDep
+from zalpro_api.api.deps import (
+    CurrentUser,
+    SessionDep,
+    SettingsDep,
+    StaffUser,
+    StorageDep,
+    VideoWorkerDep,
+)
 from zalpro_api.models import Exercise, User
 from zalpro_api.schemas.exercise import ExerciseCreate, ExerciseIn, ExerciseOut
 from zalpro_api.schemas.exercise_video import (
     VideoConfirmIn,
+    VideoConfirmOut,
     VideoUploadIn,
     VideoUploadOut,
     VideoUrlOut,
@@ -20,7 +28,9 @@ router = APIRouter(prefix="/exercises", tags=["exercises"])
 
 
 def to_out(exercise: Exercise, actor: User) -> ExerciseOut:
-    out = ExerciseOut.model_validate(exercise)
+    out = ExerciseOut.model_validate(exercise).model_copy(
+        update={"video_status": videos_service.video_status_of(exercise)}
+    )
     if permissions.can_see_exercise_level(actor):
         return out
     return out.model_copy(update={"level": ""})
@@ -91,17 +101,17 @@ async def create_video_upload_url(
     )
 
 
-@router.put("/{exercise_id}/video", response_model=ExerciseOut)
+@router.put("/{exercise_id}/video", response_model=VideoConfirmOut, status_code=202)
 async def confirm_video(
     exercise_id: str,
     body: VideoConfirmIn,
     actor: StaffUser,
     session: SessionDep,
     storage: StorageDep,
-) -> ExerciseOut:
+    worker: VideoWorkerDep,
+) -> VideoConfirmOut:
     exercise = await catalog.get_exercise_or_404(session, exercise_id)
-    await videos_service.confirm_upload(session, storage, exercise, body.key)
-    return to_out(exercise, actor)
+    return await videos_service.confirm_upload(session, storage, worker, exercise, body.key)
 
 
 @router.get("/{exercise_id}/video", response_model=VideoUrlOut)

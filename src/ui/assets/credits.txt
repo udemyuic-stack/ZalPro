@@ -102,3 +102,6 @@ https://commons.wikimedia.org/wiki/File:Red_bell_pepper.jpg
 Makaron — rjp from London, UK, CC BY-SA 2.0
 https://commons.wikimedia.org/wiki/File:Fusilli.jpg
 
+
+Shrift: Inter 4.1 — The Inter Project Authors, SIL Open Font License 1.1
+https://github.com/rsms/inter

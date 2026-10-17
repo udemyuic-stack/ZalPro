@@ -104,7 +104,7 @@ async def set_status(session: AsyncSession, actor: User, order_id: str, status: 
         raise conflict("invalid_status_transition", "Buyurtma holatini o'zgartirib bo'lmaydi")
     now = datetime.now(UTC)
     if status == STATUS_GIVEN:
-        await take_stock(session, locked)
+        locked.cost_price = await take_stock(session, locked)
         locked.given_by = actor.id
         locked.given_at = now
     locked.status = status
@@ -121,7 +121,7 @@ async def set_status(session: AsyncSession, actor: User, order_id: str, status: 
     return locked
 
 
-async def take_stock(session: AsyncSession, order: Order) -> None:
+async def take_stock(session: AsyncSession, order: Order) -> int:
     product = await session.scalar(
         select(Product)
         .where(Product.id == order.product_id)
@@ -138,10 +138,11 @@ async def take_stock(session: AsyncSession, order: Order) -> None:
         size_stock[order.size] = available - order.qty
         product.size_stock = size_stock
         product.stock = sum(size_stock.values())
-        return
+        return product.cost_price
     if product.stock < order.qty:
         raise conflict("insufficient_stock", "Omborda tovar yetarli emas")
     product.stock -= order.qty
+    return product.cost_price
 
 
 async def delete_order(session: AsyncSession, order_id: str) -> None:

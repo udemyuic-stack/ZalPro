@@ -1,4 +1,5 @@
 from zalpro_api.db.base import Base
+from zalpro_api.models.announcement import Announcement
 from zalpro_api.models.attendance import Attendance
 from zalpro_api.models.day import Day
 from zalpro_api.models.exercise import Exercise
@@ -23,6 +24,7 @@ metadata = Base.metadata
 
 __all__ = [
     "ROLES",
+    "Announcement",
     "Attendance",
     "Day",
     "Exercise",

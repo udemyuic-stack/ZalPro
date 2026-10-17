@@ -87,7 +87,7 @@ void main() {
         'protein': 2.7,
         'fat': 0.3,
         'carbs': 28,
-        'image': 'https://x/y.png',
+        'image_url': 'https://x/y.png',
       });
       expect(f.id, 'f1');
       expect(f.name, 'Rice');
@@ -95,7 +95,9 @@ void main() {
       expect(f.protein, 2.7);
       expect(f.fat, 0.3);
       expect(f.carbs, 28.0);
-      expect(f.image, 'https://x/y.png');
+      expect(f.imageUrl, 'https://x/y.png');
+      expect(f.toMap().containsKey('image'), false);
+      expect(f.toMap().containsKey('image_url'), false);
     });
 
     test('minimal payload', () {
@@ -106,7 +108,7 @@ void main() {
       expect(f.protein, 0.0);
       expect(f.fat, 0.0);
       expect(f.carbs, 0.0);
-      expect(f.image, '');
+      expect(f.imageUrl, '');
     });
   });
 
@@ -117,13 +119,12 @@ void main() {
         'grams': 100,
         'kcal': 155.5,
         'protein': 13,
-        'image': 'img',
       });
       expect(i.name, 'Egg');
       expect(i.grams, 100.0);
       expect(i.kcal, 155.5);
       expect(i.protein, 13.0);
-      expect(i.image, 'img');
+      expect(i.toMap().containsKey('image'), false);
     });
 
     test('minimal payload', () {
@@ -132,7 +133,6 @@ void main() {
       expect(i.grams, 0.0);
       expect(i.kcal, 0.0);
       expect(i.protein, 0.0);
-      expect(i.image, '');
     });
   });
 
@@ -142,15 +142,14 @@ void main() {
         'time': '07:00',
         'title': 'Breakfast',
         'items': [
-          {'name': 'Egg', 'grams': 50, 'kcal': 70, 'protein': 6, 'image': ''},
-          {'name': 'Bread', 'grams': 30, 'kcal': 80, 'protein': 3, 'image': 'b'},
+          {'name': 'Egg', 'grams': 50, 'kcal': 70, 'protein': 6},
+          {'name': 'Bread', 'grams': 30, 'kcal': 80, 'protein': 3},
         ],
       });
       expect(m.time, '07:00');
       expect(m.title, 'Breakfast');
       expect(m.items.length, 2);
       expect(m.items[0].name, 'Egg');
-      expect(m.items[1].image, 'b');
       expect(m.kcal, 150.0);
       expect(m.protein, 9.0);
     });

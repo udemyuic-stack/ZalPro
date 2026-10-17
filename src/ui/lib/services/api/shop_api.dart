@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import '../../models/shop.dart';
 import 'api_service.dart';
 import 'json_helpers.dart';
@@ -23,6 +25,27 @@ class ShopApi extends ApiService {
   }
 
   Future<void> deleteProduct(String id) => write('DELETE', '/v1/products/$id', null, ['products']);
+
+  Future<String> uploadProductImage(
+    String id,
+    Uint8List bytes, {
+    String contentType = 'image/jpeg',
+    void Function(int sent, int total)? onProgress,
+  }) =>
+      uploadImage(
+        '/v1/products/$id/images/upload-url',
+        bytes,
+        contentType: contentType,
+        onProgress: onProgress,
+      );
+
+  Future<Product> setProductImages(String id, List<String> keys) async {
+    final saved = await bus.after(
+      client.request<Map<String, dynamic>>('PUT', '/v1/products/$id/images', data: {'keys': keys}),
+      ['products'],
+    );
+    return Product.fromJson(saved ?? const {});
+  }
 
   String _day(DateTime d) =>
       '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-'

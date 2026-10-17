@@ -36,7 +36,7 @@ class MySubscriptionCard extends StatelessWidget {
           return BentoTile(
             padding: const EdgeInsets.all(AppSpace.md),
             child: Row(children: [
-              IconBadge(Icons.card_membership_outlined, color: AppColors.textMuted, size: 40),
+              IconBadge(Icons.event_repeat_outlined, color: AppColors.textMuted, size: 40),
               const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -53,7 +53,7 @@ class MySubscriptionCard extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpace.md),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              IconBadge(Icons.card_membership_outlined, color: AppColors.accent, size: 40),
+              IconBadge(Icons.event_repeat_outlined, color: AppColors.accent, size: 40),
               const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

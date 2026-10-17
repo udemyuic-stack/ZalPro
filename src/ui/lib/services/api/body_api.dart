@@ -5,6 +5,7 @@ import '../../models/photo.dart';
 import 'api_error.dart';
 import 'api_service.dart';
 import 'json_helpers.dart';
+import 'poll_stream.dart';
 
 class BodyApi extends ApiService {
   BodyApi(super.client, {super.bus, super.activity, DateTime Function()? now})
@@ -15,13 +16,19 @@ class BodyApi extends ApiService {
   static const _urlLife = Duration(minutes: 9);
 
   final DateTime Function() _now;
+  final _weightStreams = <String, SharedStream<List<WeightLog>>>{};
 
   Stream<List<WeightLog>> weights(String uid) {
-    return poll(() async {
-      final rows = await client.getList('/v1/users/$uid/weights');
-      final logs = [for (final row in jsonMaps(rows)) WeightLog.fromJson(row)];
-      return logs..sort((a, b) => a.date.compareTo(b.date));
-    }, _weights, {'weights:$uid'});
+    return _weightStreams
+        .putIfAbsent(
+          uid,
+          () => SharedStream(() => poll(() async {
+                final rows = await client.getList('/v1/users/$uid/weights');
+                final logs = [for (final row in jsonMaps(rows)) WeightLog.fromJson(row)];
+                return logs..sort((a, b) => a.date.compareTo(b.date));
+              }, _weights, {'weights:$uid'})),
+        )
+        .stream;
   }
 
   Future<void> addWeight(String uid, double w) => write('POST', '/v1/users/$uid/weights', {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../l10n/tr.dart';
+import '../../models/kcal_target.dart';
 import '../../models/models.dart';
 import '../../services/db.dart';
 import '../../theme.dart';
@@ -7,62 +8,13 @@ import '../../widgets/change_password.dart';
 import '../../widgets/lang_picker.dart';
 import '../../widgets/settings_sheet.dart';
 import '../../widgets/subscription_card.dart';
+import '../../widgets/trainer_picker.dart';
 import '../../widgets/ui.dart';
 import 'profile_setup_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   final AppUser user;
   const ProfileScreen({super.key, required this.user});
-
-  /// Trenerni almashtirish — katalogdagi shogird qabul qilayotgan boshqa trenerlardan
-  Future<void> _changeTrainer(BuildContext context) async {
-    final all = await Db.trainerDirectory().first;
-    final others = all.where((t) => t.id != user.trainerId).toList();
-    if (!context.mounted) return;
-    if (others.isEmpty) {
-      showSnack(context, tr("Hozircha shogird qabul qilayotgan boshqa trener yo'q"));
-      return;
-    }
-    final picked = await showSheet<TrainerInfo>(
-      context,
-      ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.75),
-        child: ListView(shrinkWrap: true, children: [
-          Text(tr('Trenerni tanlang'), style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: AppSpace.xs),
-          Text(
-            tr("Yangi treneringiz rejangiz va chatingizni ko'radi."),
-            style: TextStyle(color: AppColors.textMuted, fontSize: 13),
-          ),
-          const SizedBox(height: AppSpace.md),
-          for (final t in others)
-            Card(
-              child: ListTile(
-                leading: UserAvatar(name: t.name, size: 40),
-                title: Text(t.name),
-                subtitle: t.bio.isEmpty ? null : Text(t.bio),
-                onTap: () => Navigator.pop(context, t),
-              ),
-            ),
-        ]),
-      ),
-    );
-    if (picked == null || !context.mounted) return;
-    final ok = await confirm(
-      context,
-      title: tr('Trener almashtirilsinmi?'),
-      message: trf(
-          '{0} sizning treneringiz bo\'ladi. Oldingi trener sizni endi ko\'rmaydi.', [picked.name]),
-      ok: tr('Almashtirish'),
-    );
-    if (!ok) return;
-    try {
-      await Db.chooseTrainer(user.id, picked.id);
-      if (context.mounted) showSnack(context, trf('Treneringiz: {0}', [picked.name]));
-    } catch (e) {
-      if (context.mounted) showSnack(context, trf("Almashtirib bo'lmadi: {0}", [e]));
-    }
-  }
 
   Future<void> _signOut(BuildContext context) async {
     final ok = await confirm(
@@ -216,7 +168,7 @@ class ProfileScreen extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: TextButton.icon(
-                    onPressed: () => _changeTrainer(context),
+                    onPressed: () => pickTrainer(context, user),
                     icon: const Icon(Icons.swap_horiz, size: 18),
                     label: Text(tr('Trenerni almashtirish')),
                   ),
@@ -225,38 +177,12 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: AppSpace.md),
               _BmiCard(bmi: user.bmi),
               const SizedBox(height: AppSpace.md),
-              // Kunlik norma — ink urg'u bloki
-              BentoTile(
-                feature: true,
-                child: Row(children: [
-                  Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Eyebrow(tr('Kunlik norma'), color: AppColors.textFaint),
-                      const SizedBox(height: AppSpace.xs),
-                      Text(
-                        trf('Trener formulasi: {0}', [user.kcalFormula]),
-                        style: t.bodySmall?.copyWith(
-                          color: AppColors.textMuted,
-                        ),
-                      ),
-                    ]),
-                  ),
-                  const SizedBox(width: AppSpace.md),
-                  Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: [
-                        Text(
-                          '${user.targetKcal}',
-                          style: t.headlineMedium?.copyWith(
-                            color: AppColors.accent,
-                            fontFeatures: tabular,
-                          ),
-                        ),
-                        const SizedBox(width: AppSpace.xs),
-                        Text(tr('kkal'), style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
-                      ]),
-                ]),
+              StreamBuilder<Plan?>(
+                stream: user.planId == null ? Stream.value(null) : Db.plan(user.planId!),
+                builder: (context, snap) => _TargetCard(
+                  user: user,
+                  target: kcalTargetOf(user, snap.data, DateTime.now().weekday),
+                ),
               ),
               const SizedBox(height: AppSpace.xl),
               OutlinedButton.icon(
@@ -285,7 +211,7 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 8),
               OutlinedButton.icon(
                 onPressed: () => showSettings(context, student: true),
-                icon: const Icon(Icons.tune),
+                icon: const Icon(Icons.settings_outlined),
                 label: Text(tr("Sozlamalar (ko'rinish, bildirishnomalar)")),
               ),
               const SizedBox(height: 8),
@@ -386,6 +312,50 @@ class _BmiCard extends StatelessWidget {
               style: t.bodySmall?.copyWith(color: s.onSurfaceVariant)),
         ]),
       ),
+    );
+  }
+}
+
+class _TargetCard extends StatelessWidget {
+  final AppUser user;
+  final KcalTarget target;
+  const _TargetCard({required this.user, required this.target});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context).textTheme;
+    final hint = target.fromPlan
+        ? (target.recommended == null
+            ? tr('Trener rejasi')
+            : trf('Tavsiya: {0} kkal', [target.recommended]))
+        : trf('Tavsiya etilgan me\'yor: {0}', [user.kcalFormula]);
+    return BentoTile(
+      feature: true,
+      child: Row(children: [
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Eyebrow(tr(target.fromPlan ? 'Kunlik maqsad' : 'Kunlik norma'),
+                color: AppColors.textFaint),
+            const SizedBox(height: AppSpace.xs),
+            Text(hint, style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
+          ]),
+        ),
+        const SizedBox(width: AppSpace.md),
+        Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text(
+                '${target.target}',
+                style: t.headlineMedium?.copyWith(
+                  color: AppColors.accent,
+                  fontFeatures: tabular,
+                ),
+              ),
+              const SizedBox(width: AppSpace.xs),
+              Text(tr('kkal'), style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
+            ]),
+      ]),
     );
   }
 }

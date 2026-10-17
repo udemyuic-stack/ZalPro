@@ -5,6 +5,7 @@ from fastapi import APIRouter, Query, Response
 from zalpro_api.api.deps import CurrentUser, OwnerUser, SessionDep
 from zalpro_api.core.security import hash_password
 from zalpro_api.models import User
+from zalpro_api.schemas.leaderboard import LeaderboardVisibility
 from zalpro_api.schemas.user import (
     GymAssignment,
     PasswordReset,
@@ -25,6 +26,15 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("/me", response_model=UserOut)
 async def read_me(actor: CurrentUser) -> User:
+    return actor
+
+
+@router.put("/me/leaderboard", response_model=UserOut)
+async def set_leaderboard_visibility(
+    body: LeaderboardVisibility, actor: CurrentUser, session: SessionDep
+) -> User:
+    actor.show_in_leaderboard = body.visible
+    await session.commit()
     return actor
 
 

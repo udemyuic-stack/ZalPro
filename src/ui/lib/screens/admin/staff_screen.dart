@@ -8,7 +8,10 @@ import '../../widgets/ui.dart';
 import 'clients_screen.dart';
 import 'sales_report_screen.dart';
 import 'finance_screen.dart';
+import 'member_analytics_screen.dart';
+import 'shop_analytics_screen.dart';
 import 'trainer_stats_screen.dart';
+import '../../services/api/api_error.dart';
 
 /// "Xodimlar" — faqat bosh admin (zal egasi) uchun.
 /// Zal qo'shadi, zalga trener biriktiradi, har trenerning shogirdlarini ko'radi.
@@ -181,6 +184,57 @@ class _StaffScreenState extends State<StaffScreen> {
                             const SizedBox(height: 2),
                             Text(
                               tr("Solishtirish, ball va kimga e'tibor kerak"),
+                              style: TextStyle(color: AppColors.textMuted, fontSize: 12.5),
+                            ),
+                          ]),
+                        ),
+                        Icon(Icons.chevron_right, size: 20, color: AppColors.textFaint),
+                      ]),
+                    ),
+                    const SizedBox(height: AppSpace.md),
+                    BentoTile(
+                      key: const Key('staff-member-analytics'),
+                      padding: const EdgeInsets.all(AppSpace.md),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const MemberAnalyticsScreen(isOwner: true)),
+                      ),
+                      child: Row(children: [
+                        IconBadge(Icons.groups_outlined, color: AppColors.accent, size: 38),
+                        const SizedBox(width: AppSpace.md),
+                        Expanded(
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Text(tr("A'zolar tahlili"),
+                                style: Theme.of(context).textTheme.titleMedium),
+                            const SizedBox(height: 2),
+                            Text(
+                              tr("Ketish xavfi, qolish ulushi va trenerlar natijasi"),
+                              style: TextStyle(color: AppColors.textMuted, fontSize: 12.5),
+                            ),
+                          ]),
+                        ),
+                        Icon(Icons.chevron_right, size: 20, color: AppColors.textFaint),
+                      ]),
+                    ),
+                    const SizedBox(height: AppSpace.md),
+                    BentoTile(
+                      key: const Key('staff-shop-analytics'),
+                      padding: const EdgeInsets.all(AppSpace.md),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ShopAnalyticsScreen()),
+                      ),
+                      child: Row(children: [
+                        IconBadge(Icons.insights_outlined, color: AppColors.accent, size: 38),
+                        const SizedBox(width: AppSpace.md),
+                        Expanded(
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Text(tr("Do'kon tahlili"),
+                                style: Theme.of(context).textTheme.titleMedium),
+                            const SizedBox(height: 2),
+                            Text(
+                              tr("Eng ko'p sotilgan tovarlar va hafta kunlari bo'yicha savdo"),
                               style: TextStyle(color: AppColors.textMuted, fontSize: 12.5),
                             ),
                           ]),
@@ -490,7 +544,7 @@ class _StaffScreenState extends State<StaffScreen> {
                   textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
                     labelText: tr('Zal nomi'),
-                    hintText: 'Aura Fit zali',
+                    hintText: tr('Aura Fit zali'),
                   ),
                 ),
                 const SizedBox(height: AppSpace.md),
@@ -499,7 +553,7 @@ class _StaffScreenState extends State<StaffScreen> {
                   textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
                     labelText: tr("Ko'cha, uy (ixtiyoriy)"),
-                    hintText: 'Bunyodkor 12',
+                    hintText: tr('Bunyodkor 12'),
                   ),
                 ),
                 const SizedBox(height: AppSpace.lg),
@@ -635,7 +689,7 @@ class _StaffScreenState extends State<StaffScreen> {
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
                   labelText: tr('Ism'),
-                  hintText: isBarmen ? 'Anvar aka' : 'Bekzod aka',
+                  hintText: isBarmen ? tr('Anvar aka') : tr('Bekzod aka'),
                 ),
               ),
               const SizedBox(height: AppSpace.md),
@@ -653,7 +707,7 @@ class _StaffScreenState extends State<StaffScreen> {
                 controller: pass,
                 decoration: InputDecoration(
                   labelText: tr('Parol'),
-                  helperText: tr('Kamida 6 belgi — xodimga shu parolni aytasiz'),
+                  helperText: tr('Kamida 8 belgi — xodimga shu parolni aytasiz'),
                 ),
               ),
               if (gyms.isNotEmpty) ...[
@@ -689,8 +743,8 @@ class _StaffScreenState extends State<StaffScreen> {
                           setS(() => error = tr('Telefon raqam to\'liq emas'));
                           return;
                         }
-                        if (pass.text.trim().length < 6) {
-                          setS(() => error = tr('Parol kamida 6 belgi bo\'lsin'));
+                        if (pass.text.trim().length < 8) {
+                          setS(() => error = tr("Parol kamida 8 belgi bo'lsin"));
                           return;
                         }
                         setS(() {
@@ -707,9 +761,9 @@ class _StaffScreenState extends State<StaffScreen> {
                           );
                           if (ctx.mounted) Navigator.pop(ctx, true);
                         } catch (e) {
-                          final msg = '$e'.contains('email-already-in-use')
+                          final msg = (e is ApiException && e.code == 'phone_taken')
                               ? tr('Bu raqam allaqachon ro\'yxatdan o\'tgan')
-                              : trf('Bo\'lmadi: {0}', [e]);
+                              : trf('Bo\'lmadi: {0}', [apiErrorText(e)]);
                           setS(() {
                             busy = false;
                             error = msg;
@@ -809,7 +863,7 @@ class _StaffScreenState extends State<StaffScreen> {
       title: tr('Trener qilinsinmi?'),
       message: trf(
           '{0} '
-          'trener paneliga kira oladi: reja tuzadi, mahsulot qo’shadi, '
+          "trener paneliga kira oladi: reja tuzadi, mahsulot qo'shadi, "
           'shogirdlar bilan yozishadi.',
           [picked.name.isEmpty ? fmtPhone(picked.phone) : picked.name]),
       ok: tr('Trener qilish'),
@@ -841,7 +895,7 @@ class _StaffScreenState extends State<StaffScreen> {
           Text(
             person.isOwner
                 ? tr('Bosh admin')
-                : (count == 0 ? tr('Shogirdi yo’q') : trf('{0} ta shogird biriktirilgan', [count])),
+                : (count == 0 ? tr("Shogirdi yo'q") : trf('{0} ta shogird biriktirilgan', [count])),
             style: TextStyle(color: AppColors.textMuted, fontSize: 13),
           ),
           const SizedBox(height: AppSpace.lg),
@@ -888,7 +942,7 @@ class _StaffScreenState extends State<StaffScreen> {
             Padding(
               padding: const EdgeInsets.only(top: AppSpace.sm),
               child: Text(
-                tr('Bu yagona bosh admin — tushirib bo’lmaydi. Avval boshqa birovni '
+                tr("Bu yagona bosh admin — tushirib bo'lmaydi. Avval boshqa birovni "
                     'bosh admin qiling.'),
                 style: TextStyle(color: AppColors.textFaint, fontSize: 12),
               ),
@@ -901,7 +955,7 @@ class _StaffScreenState extends State<StaffScreen> {
             ),
             onPressed: () => Navigator.pop(context, 'delete'),
             icon: const Icon(Icons.delete_outline, size: 18),
-            label: Text(tr('Akkauntni o’chirish')),
+            label: Text(tr("Akkauntni o'chirish")),
           ),
         ],
       ),
@@ -945,8 +999,8 @@ class _StaffScreenState extends State<StaffScreen> {
         context,
         title: tr('Bosh admin qilinsinmi?'),
         message: trf(
-            '{0} sizga teng huquq oladi: trener tayinlaydi, akkaunt o’chiradi, '
-            'hamma trener va shogirdni ko’radi.\n\nUni faqat boshqa bosh admin '
+            "{0} sizga teng huquq oladi: trener tayinlaydi, akkaunt o'chiradi, "
+            "hamma trener va shogirdni ko'radi.\n\nUni faqat boshqa bosh admin "
             'tushira oladi.',
             [name]),
         ok: tr('Bosh admin qilish'),
@@ -965,8 +1019,8 @@ class _StaffScreenState extends State<StaffScreen> {
         title: person.isOwner ? tr('Bosh adminlikdan olinsinmi?') : tr('Trenerlikdan olinsinmi?'),
         message: person.isOwner
             ? trf(
-                '{0} oddiy trener bo’lib qoladi: rol tayinlay olmaydi va akkaunt '
-                'o’chira olmaydi. Shogirdlari o’zida qoladi.',
+                "{0} oddiy trener bo'lib qoladi: rol tayinlay olmaydi va akkaunt "
+                "o'chira olmaydi. Shogirdlari o'zida qoladi.",
                 [name])
             : (count == 0
                 ? trf('{0} oddiy foydalanuvchiga aylanadi va trener paneliga kira olmaydi.', [name])
@@ -988,17 +1042,17 @@ class _StaffScreenState extends State<StaffScreen> {
 
     final ok = await confirm(
       context,
-      title: tr('Akkaunt o’chirilsinmi?'),
+      title: tr("Akkaunt o'chirilsinmi?"),
       message: trf(
-          '{0} ilovaga kira olmaydi va ro’yxatlardan yo’qoladi. '
-          'Bu amalni qaytarib bo’lmaydi.',
+          "{0} ilovaga kira olmaydi va ro'yxatlardan yo'qoladi. "
+          "Bu amalni qaytarib bo'lmaydi.",
           [name]),
-      ok: tr('O’chirish'),
+      ok: tr("O'chirish"),
       destructive: true,
     );
     if (!ok) return;
     await Db.deleteUser(person.id);
-    if (context.mounted) showSnack(context, tr('Akkaunt o’chirildi'));
+    if (context.mounted) showSnack(context, tr("Akkaunt o'chirildi"));
   }
 }
 
@@ -1080,7 +1134,7 @@ class _StaffTile extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               clientCount == 0
-                  ? tr('Shogirdi yo’q')
+                  ? tr("Shogirdi yo'q")
                   : trf('{0} ta shogird  ·  {1}', [clientCount, fmtPhone(person.phone)]),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -1141,7 +1195,7 @@ class TrainerDetail extends StatelessWidget {
             return EmptyState(
               icon: Icons.groups_outlined,
               title: tr('Shogird biriktirilmagan'),
-              subtitle: tr('Shogirdni "Mijozlar" bo’limidan tanlab, '
+              subtitle: tr('Shogirdni "Mijozlar" bo\'limidan tanlab, '
                   'shu trenerga biriktirishingiz mumkin.'),
             );
           }
@@ -1198,7 +1252,7 @@ class _ClientRow extends StatelessWidget {
             Text(
               u.profileDone
                   ? trf('{0} kg · {1} kkal', [fmtNum(u.weight), u.targetKcal])
-                  : tr('Anketa to’ldirilmagan'),
+                  : tr("Anketa to'ldirilmagan"),
               style: t.bodySmall?.copyWith(
                 color: AppColors.textMuted,
                 fontFeatures: tabular,

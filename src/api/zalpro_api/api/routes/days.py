@@ -10,6 +10,7 @@ from zalpro_api.schemas.day import (
     DayRange,
     ExerciseMark,
     ExtraIn,
+    FeedbackIn,
     MealMark,
     WaterIn,
     WritableDay,
@@ -90,6 +91,14 @@ async def mark_exercise(
 ) -> DayOut:
     permissions.ensure_self(actor, user_id)
     return await days_service.set_exercise(session, user_id, day, key, body.done)
+
+
+@router.put("/{user_id}/days/{day}/workout/feedback", response_model=DayOut)
+async def set_feedback(
+    user_id: str, day: DayPath, body: FeedbackIn, actor: CurrentUser, session: SessionDep
+) -> DayOut:
+    permissions.ensure_self(actor, user_id)
+    return await days_service.set_feedback(session, user_id, day, body.rating)
 
 
 @router.put("/{user_id}/days/{day}/water", response_model=DayOut)

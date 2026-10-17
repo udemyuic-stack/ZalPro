@@ -15,10 +15,10 @@ Widget _host(Widget child, {double scale = 1.0, bool reduce = false}) => Materia
     );
 
 void main() {
-  testWidgets('Heading katta harfda va urg\'u qismi bilan', (t) async {
+  testWidgets('Heading oddiy harfda va urg\'u qismi bilan', (t) async {
     await t.pumpWidget(_host(const Heading("Zal holati", accent: "bugun")));
     final rt = t.widget<RichText>(find.byType(RichText).last);
-    expect(rt.text.toPlainText(), 'ZAL HOLATI BUGUN');
+    expect(rt.text.toPlainText(), 'Zal holati bugun');
   });
 
   testWidgets('BentoTile onTap bilan kamida kTouchTarget balandlikda', (t) async {

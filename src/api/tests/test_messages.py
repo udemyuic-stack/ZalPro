@@ -357,6 +357,17 @@ async def test_response_shape(
     response = await client.get(url(trainee), headers=auth_headers(trainee))
 
     item = response.json()[0]
-    assert set(item) == {"id", "chat_uid", "sender_id", "kind", "text", "created_at"}
+    assert set(item) == {
+        "id",
+        "chat_uid",
+        "sender_id",
+        "kind",
+        "text",
+        "created_at",
+        "media_kind",
+        "media_status",
+        "media_duration_ms",
+        "media_url",
+    }
     assert item["kind"] == "system"
     assert item["sender_id"] == "other"

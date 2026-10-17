@@ -64,11 +64,11 @@ class Product {
   /// [name] va [note] — asosiy (o'zbekcha): buyurtma va hisobotlarga shular yoziladi.
   final String nameRu, nameEn, noteRu, noteEn;
 
-  /// Asosiy rasm havolasi (ixtiyoriy) — bo'sh bo'lsa bo'lim ikonkasi chiqadi
-  final String image;
+  /// Serverdagi rasmlarning vaqtinchalik havolalari. Birinchisi — muqova.
+  final List<String> imageUrls;
 
-  /// Qo'shimcha rasmlar (rang variantlari va h.k.). Birinchisi — [image].
-  final List<String> images;
+  /// [imageUrls] bilan bir xil tartibdagi saqlash kalitlari (rasmlar ro'yxatini almashtirish uchun)
+  final List<String> imageKeys;
 
   /// Mavjud o'lchamlar: XL, XXL, 3XL … Bo'sh bo'lsa o'lcham so'ralmaydi.
   final List<String> sizes;
@@ -106,8 +106,8 @@ class Product {
     this.nameEn = '',
     this.noteRu = '',
     this.noteEn = '',
-    this.image = '',
-    this.images = const [],
+    this.imageUrls = const [],
+    this.imageKeys = const [],
     this.sizes = const [],
     this.colors = const [],
     this.price = 0,
@@ -118,15 +118,18 @@ class Product {
     this.active = true,
   });
 
-  /// Ko'rsatiladigan hamma rasm (asosiysi birinchi, takrorlanmaydi)
+  /// Ko'rsatiladigan hamma rasm (muqova birinchi, takrorlanmaydi)
   List<String> get gallery {
-    final all = <String>[if (image.trim().isNotEmpty) image.trim()];
-    for (final u in images) {
+    final all = <String>[];
+    for (final u in imageUrls) {
       final t = u.trim();
       if (t.isNotEmpty && !all.contains(t)) all.add(t);
     }
     return all;
   }
+
+  /// Muqova rasm havolasi (rasm bo'lmasa bo'sh)
+  String get image => gallery.isEmpty ? '' : gallery.first;
 
   /// Jami qoldiq — [sizes] bo'lsa [sizeStock] yig'indisi, bo'lmasa [stock].
   int get totalStock => sizes.isEmpty ? stock : sizeStock.values.fold(0, (a, b) => a + b);
@@ -168,8 +171,8 @@ class Product {
       nameEn: jsonString(j['name_en']),
       noteRu: jsonString(j['note_ru']),
       noteEn: jsonString(j['note_en']),
-      image: jsonString(j['image']),
-      images: jsonStrings(j['images']),
+      imageUrls: jsonStrings(j['image_urls']),
+      imageKeys: jsonStrings(j['image_keys']),
       sizes: jsonStrings(j['sizes']),
       colors: jsonStrings(j['colors']),
       price: jsonInt(j['price']),
@@ -194,8 +197,6 @@ class Product {
         if (nameEn.isNotEmpty) 'nameEn': nameEn,
         if (noteRu.isNotEmpty) 'noteRu': noteRu,
         if (noteEn.isNotEmpty) 'noteEn': noteEn,
-        'image': image,
-        'images': images,
         'sizes': sizes,
         'colors': colors,
         'price': price,
@@ -214,8 +215,6 @@ class Product {
         'name_en': nameEn,
         'note_ru': noteRu,
         'note_en': noteEn,
-        'image': image,
-        'images': images,
         'sizes': sizes,
         'colors': colors,
         'price': price,
@@ -238,8 +237,8 @@ class Product {
         nameEn: nameEn,
         noteRu: noteRu,
         noteEn: noteEn,
-        image: image,
-        images: images,
+        imageUrls: imageUrls,
+        imageKeys: imageKeys,
         sizes: sizes,
         colors: colors,
         price: price,

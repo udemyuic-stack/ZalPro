@@ -123,7 +123,7 @@ void main() {
     expect(sockets, isEmpty);
   });
 
-  test('messageEvents: limit 20 with ids, one shared poll per chat', () async {
+  test('messageEvents: limit 50 with ids, one shared poll per chat', () async {
     respond = (o) async => jsonBody([
           msg('b', 'u1', '2026-05-10T10:00:00Z'),
           msg('a', 'u1', '2026-05-10T09:00:00Z'),
@@ -131,9 +131,18 @@ void main() {
     final first = api.messageEvents('u1').listen((_) {});
     final second = await api.messageEvents('u1').first;
     expect(second.map((e) => e.$1), ['b', 'a']);
-    expect(last().queryParameters, {'limit': 20});
+    expect(last().queryParameters, {'limit': 50});
     expect(adapter.count('/v1/chats/u1/messages'), 1);
     await first.cancel();
+  });
+
+  test('messages not live and messageEvents share one request', () async {
+    respond = (o) async => jsonBody([msg('a', 'u1', '2026-05-10T09:00:00Z')], 200);
+    final events = api.messageEvents('u1').listen((_) {});
+    final list = await api.messages('u1', live: false).first;
+    expect(list.single.text, 'salom');
+    expect(adapter.count('/v1/chats/u1/messages'), 1);
+    await events.cancel();
   });
 
   test('send: POST only text, touches chat tag', () async {

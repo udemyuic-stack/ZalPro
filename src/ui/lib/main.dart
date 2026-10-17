@@ -28,6 +28,18 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> with WidgetsBindingObserver {
+  String? _look;
+
+  void _rebuildAll() {
+    if (!mounted) return;
+    void visit(Element e) {
+      e.markNeedsBuild();
+      e.visitChildren(visit);
+    }
+
+    (context as Element).visitChildren(visit);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -61,9 +73,12 @@ class _AppState extends State<App> with WidgetsBindingObserver {
               WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.light;
           final light = mode == ThemeMode.light || (mode == ThemeMode.system && platformLight);
           AppColors.light = light;
+          final look = '$light-$lang';
+          if (_look != null && _look != look) {
+            WidgetsBinding.instance.addPostFrameCallback((_) => _rebuildAll());
+          }
+          _look = look;
           return MaterialApp(
-            // Ranglar const emas — rejim almashganda butun daraxt qayta quriladi
-            key: ValueKey('$light-$lang'),
             title: 'Aura Fit',
             // Tizim oynalari (vaqt tanlash, "Orqaga" va h.k.) ham ilova tilida chiqsin
             locale: Locale(lang),

@@ -1,21 +1,18 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import '../../l10n/tr.dart';
 import '../../models/exercises.dart';
 import '../../models/gym.dart';
-import '../../models/video_link.dart';
 import '../../services/api/api_error.dart';
 import '../../services/db.dart';
+import '../../services/notifications.dart';
 import '../../theme.dart';
+import '../../widgets/workout_feedback.dart';
 import '../../widgets/body_map.dart';
-import '../../widgets/food_image.dart';
 import '../../widgets/particle_body.dart';
+import '../../widgets/rest_timer.dart';
 import '../../widgets/ui.dart';
-import '../../widgets/youtube_embed_io.dart'
-    if (dart.library.js_interop) '../../widgets/youtube_embed_web.dart';
 
 class MusclesScreen extends StatefulWidget {
   final List<int> gymDays;
@@ -32,6 +29,7 @@ class MusclesScreen extends StatefulWidget {
 
   final VoidCallback? onStart;
   final void Function(String key, bool done)? onDone;
+  final void Function(int rating)? onFeedback;
 
   final int? weekday;
 
@@ -45,6 +43,7 @@ class MusclesScreen extends StatefulWidget {
     this.progress,
     this.onStart,
     this.onDone,
+    this.onFeedback,
     this.weekday,
   });
 
@@ -68,7 +67,7 @@ const _label = TextStyle(
 
 const _lead = TextStyle(fontSize: 17, height: 1.5, fontWeight: FontWeight.w300, color: _silver);
 
-class _MusclesScreenState extends State<MusclesScreen> {
+class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserver {
   int _angle = ParticleBody.front;
   String? _muscle;
 
@@ -80,16 +79,30 @@ class _MusclesScreenState extends State<MusclesScreen> {
 
   bool _started = false;
   Set<String> _done = {};
+  int? _feedback;
   StreamSubscription<WorkoutProgress>? _sub;
+  String? _restKey;
+  final RestTimerController _rest = RestTimerController(
+    onFinished: restTimerAlert,
+    onStarted: Notifications.scheduleRestEnd,
+    onStopped: Notifications.cancelRestEnd,
+  );
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _rest.refresh();
+  }
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _sub = widget.progress?.listen((p) {
       if (mounted) {
         setState(() {
           _started = p.started;
           _done = {...p.done};
+          _feedback = p.feedback;
         });
       }
     }, onError: (_) {});
@@ -97,7 +110,9 @@ class _MusclesScreenState extends State<MusclesScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _sub?.cancel();
+    _rest.dispose();
     super.dispose();
   }
 
@@ -114,6 +129,11 @@ class _MusclesScreenState extends State<MusclesScreen> {
     widget.onStart?.call();
   }
 
+  void _setFeedback(int rating) {
+    setState(() => _feedback = rating);
+    widget.onFeedback?.call(rating);
+  }
+
   void _toggleDone(Exercise e) {
     final done = !_done.contains(e.key);
     setState(() {
@@ -121,6 +141,19 @@ class _MusclesScreenState extends State<MusclesScreen> {
       _open = null;
     });
     widget.onDone?.call(e.key, done);
+    if (widget.onDone == null) return;
+    if (done) {
+      _startRest(e.key);
+    } else {
+      _rest.skip();
+    }
+  }
+
+  Future<void> _startRest(String key) async {
+    final seconds = await RestTimerPrefs.load(key);
+    if (!mounted || !_done.contains(key)) return;
+    _restKey = key;
+    _rest.start(Duration(seconds: seconds));
   }
 
   int get _today => widget.weekday ?? DateTime.now().weekday;
@@ -212,9 +245,13 @@ class _MusclesScreenState extends State<MusclesScreen> {
         Text(tr("Bugungi mashg'ulot tugadi"), style: _count),
         const SizedBox(height: 12),
         Text(tr('Hamma mashq bajarildi. Barakalla!'), style: _lead),
+        if (widget.onFeedback != null) ...[
+          const SizedBox(height: 24),
+          WorkoutFeedbackPicker(selected: _feedback, onSelect: _setFeedback),
+        ],
       ] else ...[
         const SizedBox(height: 14),
-        Text('${tr('Hozir')}: ${tr(muscleById(active)!.name)}'.toUpperCase(), style: _label),
+        Text('${tr('Hozir')}: ${tr(muscleById(active)!.name)}', style: _label),
         const SizedBox(height: 10),
         Text(trf('{0} / {1} bajarildi', [_doneIn(active), _of(active).length]), style: _count),
         const SizedBox(height: 30),
@@ -235,7 +272,7 @@ class _MusclesScreenState extends State<MusclesScreen> {
     if (m != null) {
       final muscle = muscleById(m)!;
       final head = [
-        Text(tr(muscle.name).toUpperCase(), style: _label),
+        Text(tr(muscle.name), style: _label),
         const SizedBox(height: 10),
       ];
       return [
@@ -250,7 +287,7 @@ class _MusclesScreenState extends State<MusclesScreen> {
     }
     return [
       Text(
-        (_gymToday ? tr('Bugungi mashqlar') : tr("Keyingi mashg'ulot mashqlari")).toUpperCase(),
+        (_gymToday ? tr('Bugungi mashqlar') : tr("Keyingi mashg'ulot mashqlari")),
         style: _label,
       ),
       const SizedBox(height: 10),
@@ -260,7 +297,7 @@ class _MusclesScreenState extends State<MusclesScreen> {
       ),
       const SizedBox(height: 34),
       for (final id in plan) ...[
-        Text(tr(muscleById(id)!.name).toUpperCase(), style: _label.copyWith(color: _brand)),
+        Text(tr(muscleById(id)!.name), style: _label.copyWith(color: _brand)),
         const SizedBox(height: 18),
         _exercises(id),
         const SizedBox(height: 10),
@@ -296,180 +333,193 @@ class _MusclesScreenState extends State<MusclesScreen> {
       child: Scaffold(
         backgroundColor: Colors.black,
         body: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(24, 6, 24, 60),
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  padding: EdgeInsets.zero,
+          child: Column(children: [
+            Expanded(
+                child: ListView(
+              padding: const EdgeInsets.fromLTRB(24, 6, 24, 60),
+              children: [
+                Align(
                   alignment: Alignment.centerLeft,
-                  tooltip: tr('Orqaga'),
-                  onPressed: widget.onBack,
-                  icon: const Icon(Icons.arrow_back, color: _ash),
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints:
+                        const BoxConstraints.tightFor(width: kTouchTarget, height: kTouchTarget),
+                    alignment: Alignment.centerLeft,
+                    tooltip: tr('Orqaga'),
+                    onPressed: widget.onBack,
+                    icon: const Icon(Icons.arrow_back, color: _ash),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Text(trf('Bugun · {0}', [tr(weekdayNames[_today] ?? '')]).toUpperCase(),
-                  style: _label),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: wide < 380 ? 30 : 36,
-                  height: 1.05,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: -1.2,
-                  color: _white,
+                const SizedBox(height: 12),
+                Text(trf('Bugun · {0}', [tr(weekdayNames[_today] ?? '')]), style: _label),
+                const SizedBox(height: 12),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: wide < 380 ? 30 : 36,
+                    height: 1.05,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: -1.2,
+                    color: _white,
+                  ),
                 ),
-              ),
-              if (note.trim().isNotEmpty) ...[
-                const SizedBox(height: 14),
-                Text(note.trim(), style: _lead),
-              ],
-              const SizedBox(height: 14),
-              Text(
-                tr('Hozircha faqat zaldagi mashqlar. Uydagi mashqlar hali tayyor emas.'),
-                style: const TextStyle(
-                    fontSize: 14, height: 1.45, fontWeight: FontWeight.w400, color: _amber),
-              ),
-              if (_gymToday && _plan.isNotEmpty) ...[
-                const SizedBox(height: 22),
-                if (!_running) ...[
-                  Text(trf('Tartib: {0}', [_names(_plan)]), style: _lead),
+                if (note.trim().isNotEmpty) ...[
                   const SizedBox(height: 14),
+                  Text(note.trim(), style: _lead),
+                ],
+                const SizedBox(height: 14),
+                Text(
+                  tr('Hozircha faqat zaldagi mashqlar. Uydagi mashqlar hali tayyor emas.'),
+                  style: const TextStyle(
+                      fontSize: 14, height: 1.45, fontWeight: FontWeight.w400, color: _amber),
+                ),
+                if (_gymToday && _plan.isNotEmpty) ...[
+                  const SizedBox(height: 22),
+                  if (!_running) ...[
+                    Text(trf('Tartib: {0}', [_names(_plan)]), style: _lead),
+                    const SizedBox(height: 14),
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: _brandFill,
+                        foregroundColor: _white,
+                        shape: const StadiumBorder(),
+                        minimumSize: const Size(double.infinity, 54),
+                        textStyle: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.4),
+                      ),
+                      onPressed: _start,
+                      child: Text(tr("Mashg'ulotni boshlash")),
+                    ),
+                  ] else
+                    Text(
+                      active == null
+                          ? tr("Bugungi mashg'ulot tugadi")
+                          : '${tr('Hozir')}: ${tr(muscleById(active)!.name)} · '
+                              '${trf('{0} / {1} bajarildi', [
+                                  _doneIn(active),
+                                  _of(active).length
+                                ])}',
+                      style: const TextStyle(
+                          fontSize: 18, height: 1.3, fontWeight: FontWeight.w600, color: _white),
+                    ),
+                ],
+                const SizedBox(height: 26),
+                Row(children: [
+                  _Side(
+                    text: tr('Old'),
+                    active: _angle == ParticleBody.front,
+                    onTap: () => _face(ParticleBody.front),
+                  ),
+                  const SizedBox(width: 24),
+                  _Side(
+                    text: tr('Orqa'),
+                    active: _angle == ParticleBody.back,
+                    onTap: () => _face(ParticleBody.back),
+                  ),
+                  const Spacer(),
                   FilledButton(
                     style: FilledButton.styleFrom(
                       backgroundColor: _brandFill,
                       foregroundColor: _white,
                       shape: const StadiumBorder(),
-                      minimumSize: const Size(double.infinity, 54),
+                      minimumSize: const Size(0, kTouchTarget),
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
                       textStyle: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.4),
+                          fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 0.4),
                     ),
-                    onPressed: _start,
-                    child: Text(tr("Mashg'ulotni boshlash")),
+                    onPressed: () => _rotate(1),
+                    child: Text(tr("O'g'irish")),
                   ),
-                ] else
-                  Text(
-                    active == null
-                        ? tr("Bugungi mashg'ulot tugadi")
-                        : '${tr('Hozir')}: ${tr(muscleById(active)!.name)} · '
-                            '${trf('{0} / {1} bajarildi', [_doneIn(active), _of(active).length])}',
-                    style: const TextStyle(
-                        fontSize: 18, height: 1.3, fontWeight: FontWeight.w600, color: _white),
-                  ),
-              ],
-              const SizedBox(height: 26),
-              Row(children: [
-                _Side(
-                  text: tr('OLD'),
-                  active: _angle == ParticleBody.front,
-                  onTap: () => _face(ParticleBody.front),
-                ),
-                const SizedBox(width: 24),
-                _Side(
-                  text: tr('ORQA'),
-                  active: _angle == ParticleBody.back,
-                  onTap: () => _face(ParticleBody.back),
-                ),
-                const Spacer(),
-                FilledButton(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: _brandFill,
-                    foregroundColor: _white,
-                    shape: const StadiumBorder(),
-                    minimumSize: const Size(0, kTouchTarget),
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    textStyle: const TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 0.4),
-                  ),
-                  onPressed: () => _rotate(1),
-                  child: Text(tr("O'GIRISH")),
-                ),
-              ]),
-              const SizedBox(height: 18),
-              Center(
-                child: ParticleBody(
-                  angle: _angle,
-                  selected: _running ? null : _muscle,
-                  today: plan,
-                  onTap: _select,
-                  onRotate: _rotate,
-                  width: wide < 380 ? 290 : 320,
-                  height: wide < 380 ? 520 : 574,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Center(
-                child: Text(
-                  tr('Surib aylantiring'),
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w300, color: _ash),
-                ),
-              ),
-              const SizedBox(height: 4),
-              Center(
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: _muscle == null || _running ? 0 : 1,
-                  child: _Side(
-                    text: tr("TO'LIQ KO'RINISH"),
-                    active: false,
-                    onTap: () => _select(null),
+                ]),
+                const SizedBox(height: 18),
+                Center(
+                  child: ParticleBody(
+                    angle: _angle,
+                    selected: _running ? null : _muscle,
+                    today: plan,
+                    onTap: _select,
+                    onRotate: _rotate,
+                    width: wide < 380 ? 290 : 320,
+                    height: wide < 380 ? 520 : 574,
                   ),
                 ),
-              ),
-              const SizedBox(height: 18),
-              Wrap(spacing: 18, runSpacing: 12, children: [
-                for (final m in muscles)
-                  if (!_hasPlan || _plan.contains(m.id))
-                    InkWell(
-                      onTap: () => _select(m.id),
-                      child: Text(
-                        fresh.contains(m.id) ? '${tr(m.name)} · ${tr('yangi')}' : tr(m.name),
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: m.id == (_running ? active : _muscle)
-                              ? FontWeight.w600
-                              : FontWeight.w300,
-                          color: m.id == (_running ? active : _muscle)
-                              ? _amber
-                              : _running
-                                  ? (active == null || _plan.indexOf(m.id) < _plan.indexOf(active)
-                                      ? _brand
-                                      : _ash)
-                                  : plan.contains(m.id)
-                                      ? _white
-                                      : _ash,
+                const SizedBox(height: 8),
+                Center(
+                  child: Text(
+                    tr('Surib aylantiring'),
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w300, color: _ash),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Center(
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 200),
+                    opacity: _muscle == null || _running ? 0 : 1,
+                    child: _Side(
+                      text: tr("To'liq ko'rinish"),
+                      active: false,
+                      onTap: () => _select(null),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Wrap(spacing: 18, runSpacing: 12, children: [
+                  for (final m in muscles)
+                    if (!_hasPlan || _plan.contains(m.id))
+                      InkWell(
+                        onTap: () => _select(m.id),
+                        child: Text(
+                          fresh.contains(m.id) ? '${tr(m.name)} · ${tr('yangi')}' : tr(m.name),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: m.id == (_running ? active : _muscle)
+                                ? FontWeight.w600
+                                : FontWeight.w300,
+                            color: m.id == (_running ? active : _muscle)
+                                ? _amber
+                                : _running
+                                    ? (active == null || _plan.indexOf(m.id) < _plan.indexOf(active)
+                                        ? _brand
+                                        : _ash)
+                                    : plan.contains(m.id)
+                                        ? _white
+                                        : _ash,
+                          ),
                         ),
                       ),
-                    ),
-              ]),
-              const SizedBox(height: 44),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                for (final back in [false, true])
-                  Column(children: [
-                    BodyMap(
-                      back: back,
-                      primary: _running ? active : _muscle,
-                      secondary: _running ? const {} : plan,
-                      onTap: _select,
-                      height: wide < 380 ? 270 : 310,
-                    ),
-                    const SizedBox(height: 6),
-                    Text(tr(back ? 'ORQA' : 'OLD'), style: _label.copyWith(color: _ash)),
-                  ]),
-              ]),
-              const SizedBox(height: 52),
-              ..._body(),
-              const SizedBox(height: 18),
-              Text(
-                tr("Sinov versiyasi: mashqlar ro'yxati namunaviy — treneringiz bergan dastur ustun turadi."),
-                style: const TextStyle(
-                    fontSize: 13, height: 1.5, fontWeight: FontWeight.w300, color: _ash),
-              ),
-            ],
-          ),
+                ]),
+                const SizedBox(height: 44),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                  for (final back in [false, true])
+                    Column(children: [
+                      BodyMap(
+                        back: back,
+                        primary: _running ? active : _muscle,
+                        secondary: _running ? const {} : plan,
+                        onTap: _select,
+                        height: wide < 380 ? 270 : 310,
+                      ),
+                      const SizedBox(height: 6),
+                      Text(tr(back ? 'Orqa' : 'Old'), style: _label.copyWith(color: _ash)),
+                    ]),
+                ]),
+                const SizedBox(height: 52),
+                ..._body(),
+                const SizedBox(height: 18),
+                Text(
+                  tr("Sinov versiyasi: mashqlar ro'yxati namunaviy — treneringiz bergan dastur ustun turadi."),
+                  style: const TextStyle(
+                      fontSize: 13, height: 1.5, fontWeight: FontWeight.w300, color: _ash),
+                ),
+              ],
+            )),
+            ListenableBuilder(
+              listenable: _rest,
+              builder: (context, _) => _rest.running
+                  ? RestTimerBar(controller: _rest, exerciseKey: _restKey)
+                  : const SizedBox.shrink(),
+            ),
+          ]),
         ),
       ),
     );
@@ -539,7 +589,7 @@ class _ExerciseRow extends StatelessWidget {
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 if (e.isNew()) ...[
-                  Text(tr('Yangi').toUpperCase(), style: _label),
+                  Text(tr('Yangi'), style: _label),
                   const SizedBox(height: 6),
                 ],
                 Text(
@@ -593,8 +643,10 @@ class _ExerciseRow extends StatelessWidget {
                 ? Padding(
                     padding: const EdgeInsets.only(top: 14),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      e.hasVideo ? _StoredVideo(id: e.id) : _VideoSlot(url: e.video),
-                      const SizedBox(height: 14),
+                      if (e.hasVideo || e.videoProcessing) ...[
+                        _StoredVideo(id: e.id, processing: e.videoProcessing),
+                        const SizedBox(height: 14),
+                      ],
                       Text(
                         tr(e.tip),
                         style: const TextStyle(
@@ -611,9 +663,6 @@ class _ExerciseRow extends StatelessWidget {
 }
 
 @visibleForTesting
-Widget Function(String url)? debugVideoThumb;
-
-@visibleForTesting
 Widget Function(String url)? debugVideoPlayer;
 
 @visibleForTesting
@@ -621,7 +670,8 @@ Future<String> Function(String id)? debugVideoUrl;
 
 class _StoredVideo extends StatefulWidget {
   final String id;
-  const _StoredVideo({required this.id});
+  final bool processing;
+  const _StoredVideo({required this.id, this.processing = false});
 
   @override
   State<_StoredVideo> createState() => _StoredVideoState();
@@ -669,6 +719,13 @@ class _StoredVideoState extends State<_StoredVideo> {
     try {
       final url = await (debugVideoUrl ?? Db.exerciseVideoUrl)(id);
       if (!mounted || id != widget.id) return;
+      if (url.isEmpty) {
+        setState(() {
+          _url = null;
+          _loading = false;
+        });
+        return;
+      }
       if (debugVideoPlayer != null) {
         setState(() {
           _url = url;
@@ -711,8 +768,22 @@ class _StoredVideoState extends State<_StoredVideo> {
     final Widget body;
     final url = _url;
     final controller = _controller;
+    if (!_loading && _error == null && (url == null || url.isEmpty) && !widget.processing) {
+      return const SizedBox.shrink();
+    }
     if (_loading) {
       body = const Center(child: CircularProgressIndicator(color: _brand));
+    } else if (_error == null && (url == null || url.isEmpty)) {
+      body = Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            tr('Video tayyorlanmoqda'),
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: _silver),
+          ),
+        ),
+      );
     } else if (_error != null || url == null) {
       body = Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -778,156 +849,6 @@ class _StoredVideoState extends State<_StoredVideo> {
             aspectRatio: 16 / 9,
             child: ColoredBox(color: Colors.black, child: body),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _VideoSlot extends StatefulWidget {
-  final String url;
-  const _VideoSlot({this.url = ''});
-
-  @override
-  State<_VideoSlot> createState() => _VideoSlotState();
-}
-
-class _VideoSlotState extends State<_VideoSlot> {
-  bool _playing = false;
-
-  String get url => widget.url;
-
-  @override
-  void didUpdateWidget(_VideoSlot old) {
-    super.didUpdateWidget(old);
-    if (old.url != url) _playing = false;
-  }
-
-  Future<void> _outside(BuildContext context) async {
-    var ok = false;
-    try {
-      ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-    } catch (_) {}
-    if (!ok && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(tr("Havolani ochib bo'lmadi — nusxalab brauzerda oching"))));
-    }
-  }
-
-  static final _box = BoxDecoration(
-    gradient: const LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [Color(0xFF2A1118), Color(0xFF140A0D)],
-    ),
-    borderRadius: BorderRadius.circular(24),
-    border: Border.all(color: const Color(0x55FF3B5C)),
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    final id = youtubeId(url);
-    if (id != null) {
-      final frame = ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: _playing
-              ? ColoredBox(color: Colors.black, child: youtubeEmbed(id))
-              : Semantics(
-                  button: true,
-                  label: tr("Videoni ko'rish"),
-                  child: InkWell(
-                    onTap: () => setState(() => _playing = true),
-                    child: Stack(fit: StackFit.expand, children: [
-                      DecoratedBox(decoration: _box),
-                      debugVideoThumb?.call(youtubeThumb(url)!) ??
-                          netImage(youtubeThumb(url)!,
-                              errorBuilder: (_, __, ___) => const SizedBox()),
-                      const DecoratedBox(decoration: BoxDecoration(color: Color(0x55000000))),
-                      Center(
-                        child: Container(
-                          width: 64,
-                          height: 64,
-                          decoration: const BoxDecoration(color: _brand, shape: BoxShape.circle),
-                          child: const Icon(Icons.play_arrow, color: _white, size: 38),
-                        ),
-                      ),
-                      Positioned(
-                        left: 14,
-                        bottom: 10,
-                        child: Text(tr('VIDEO'), style: _label.copyWith(color: _white)),
-                      ),
-                    ]),
-                  ),
-                ),
-        ),
-      );
-      return Column(children: [
-        Center(
-            child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 560), child: frame)),
-        if (_playing)
-          TextButton(
-            onPressed: () => _outside(context),
-            child: Text(tr("Video ochilmasa — YouTube'da ochish"),
-                style: const TextStyle(color: _brand)),
-          ),
-      ]);
-    }
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 150, minWidth: double.infinity),
-      child: DecoratedBox(
-        decoration: _box,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(url.isEmpty ? Icons.videocam_off_outlined : Icons.play_circle_outline,
-                    color: _brand, size: 38),
-                const SizedBox(height: 10),
-                Text(tr('VIDEO'), style: _label),
-                const SizedBox(height: 6),
-                if (url.isEmpty)
-                  Text(
-                    tr("Video hali tayyorlanmagan. Trener tayyorlab qo'ygach, shu yerda ko'rinadi."),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontSize: 13, height: 1.45, fontWeight: FontWeight.w300, color: _silver),
-                  )
-                else ...[
-                  Text(
-                    url,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style:
-                        const TextStyle(fontSize: 13, fontWeight: FontWeight.w300, color: _silver),
-                  ),
-                  const SizedBox(height: 8),
-                  FilledButton.icon(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: _brandFill,
-                      foregroundColor: _white,
-                      shape: const StadiumBorder(),
-                      minimumSize: const Size(0, kTouchTarget),
-                    ),
-                    onPressed: () => _outside(context),
-                    icon: const Icon(Icons.play_arrow, size: 20),
-                    label: Text(tr("Videoni ko'rish")),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      await Clipboard.setData(ClipboardData(text: url));
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(content: Text(tr('Havola nusxalandi'))));
-                      }
-                    },
-                    child: Text(tr('Havolani nusxalash'), style: const TextStyle(color: _brand)),
-                  ),
-                ],
-              ]),
         ),
       ),
     );

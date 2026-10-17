@@ -2,6 +2,7 @@ import '../../models/models.dart';
 import 'api_service.dart';
 import 'api_error.dart';
 import 'json_helpers.dart';
+import 'poll_stream.dart';
 
 class UsersApi extends ApiService {
   UsersApi(super.client, {super.bus, super.activity, DateTime Function()? now})
@@ -13,6 +14,7 @@ class UsersApi extends ApiService {
   static const _rare = Duration(minutes: 5);
 
   final DateTime Function() _now;
+  final _clientStreams = <String, SharedStream<List<AppUser>>>{};
 
   List<String> _userTags(String uid) => ['users', 'user:$uid'];
 
@@ -39,10 +41,14 @@ class UsersApi extends ApiService {
 
   Stream<AppUser?> user(String uid) => poll(() => _fetchUser(uid), _profile, {'user:$uid'});
 
-  Stream<List<AppUser>> clients() => poll(() => _list({'role': 'user'}), _lists, {'users'});
+  Stream<List<AppUser>> _sharedClients(String key, Map<String, dynamic> query) => _clientStreams
+      .putIfAbsent(key, () => SharedStream(() => poll(() => _list(query), _lists, {'users'})))
+      .stream;
+
+  Stream<List<AppUser>> clients() => _sharedClients('', {'role': 'user'});
 
   Stream<List<AppUser>> clientsOf(String trainerId) =>
-      poll(() => _list({'role': 'user', 'trainer_id': trainerId}), _lists, {'users'});
+      _sharedClients(trainerId, {'role': 'user', 'trainer_id': trainerId});
 
   Stream<List<AppUser>> staff() => poll(
         () => _list({
@@ -131,6 +137,13 @@ class UsersApi extends ApiService {
 
   Future<void> assignTrainer(String uid, String? trainerId) =>
       write('PUT', '/v1/users/$uid/trainer', {'trainer_id': trainerId}, _userTags(uid));
+
+  Future<void> setLeaderboardVisible(String uid, bool visible) => write(
+        'PUT',
+        '/v1/users/me/leaderboard',
+        {'visible': visible},
+        [..._userTags(uid), 'leaderboard'],
+      );
 
   Future<void> setGymDays(String uid, List<int> days) => write(
         'PATCH',

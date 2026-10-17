@@ -8,6 +8,7 @@ from zalpro_api.db.base import Base
 
 MAX_PHOTO_BYTES = 358400
 MAX_PHOTO_WEIGHT = 500
+MAX_IMAGE_BYTES = 5 * 1024 * 1024
 
 
 class Photo(Base):

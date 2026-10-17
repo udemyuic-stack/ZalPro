@@ -11,6 +11,12 @@ class DayApi extends ApiService {
 
   final _days = <String, SharedStream<Map<String, dynamic>>>{};
 
+  static const feedbackDays = 7;
+
+  static String _dayKey(DateTime d) =>
+      '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-'
+      '${d.day.toString().padLeft(2, '0')}';
+
   String _base(String uid, String day) => '/v1/users/$uid/days/$day';
 
   SharedStream<Map<String, dynamic>> _shared(String uid, String day) {
@@ -59,6 +65,22 @@ class DayApi extends ApiService {
 
   Future<void> toggleExercise(String uid, String day, String key, bool done) =>
       _mark('PUT', uid, day, '/workout/exercises/${Uri.encodeComponent(key)}', {'done': done});
+
+  Future<void> setFeedback(String uid, String day, int rating) =>
+      _mark('PUT', uid, day, '/workout/feedback', {'rating': rating});
+
+  Stream<Map<String, int>> feedbackWeek(String uid) => poll(() async {
+        final today = DateTime.now();
+        final from = DateTime(today.year, today.month, today.day - (feedbackDays - 1));
+        final rows = await client.getList('/v1/users/$uid/days', query: {
+          'from': _dayKey(from),
+          'to': _dayKey(today),
+        });
+        return {
+          for (final row in jsonMaps(rows))
+            if (parseFeedback(row['feedback']) case final f?) jsonString(row['day']): f,
+        };
+      }, _every, {'feedback:$uid'});
 
   Stream<int> water(String uid, String day) => _day(uid, day).map((d) => jsonInt(d['water']));
 

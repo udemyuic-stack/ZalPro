@@ -94,6 +94,20 @@ class ClientStat {
   }
 }
 
+enum ScorePart {
+  coverage,
+  reply,
+  adherence,
+  progress;
+
+  String get label => switch (this) {
+        coverage => tr('Reja berilgan'),
+        reply => tr('Chatga javob'),
+        adherence => tr('Shogirdlar rioyasi'),
+        progress => tr('Natija (vazn)'),
+      };
+}
+
 /// Bitta trener bo'yicha umumiy ko'rsatkichlar va ball
 class TrainerSummary {
   final int clientCount;
@@ -184,12 +198,12 @@ class TrainerStat {
   List<ClientStat> get needAttention => clients.where((c) => c.attention.isNotEmpty).toList()
     ..sort((a, b) => b.attention.length.compareTo(a.attention.length));
 
-  /// Ball tarkibi: (nomi, ulush 0..1 yoki null, og'irligi)
-  List<(String, double?, int)> get parts => [
-        (tr('Reja berilgan'), planCoverage, 30),
-        (tr('Chatga javob'), replyRate, 25),
-        (tr('Shogirdlar rioyasi'), adherence, 25),
-        (tr('Natija (vazn)'), progressRate, 20),
+  /// Ball tarkibi: (qism, ulush 0..1 yoki null, og'irligi)
+  List<(ScorePart, double?, int)> get parts => [
+        (ScorePart.coverage, planCoverage, 30),
+        (ScorePart.reply, replyRate, 25),
+        (ScorePart.adherence, adherence, 25),
+        (ScorePart.progress, progressRate, 20),
       ];
 
   /// 0..100. Ma'lumoti yo'q qismlar hisobga olinmaydi; shogird yo'q bo'lsa null.

@@ -53,6 +53,7 @@ class AppUser {
   final Map<String, List<String>> program;
 
   final DateTime? lastWeighIn;
+  final bool showInLeaderboard;
 
   AppUser({
     required this.id,
@@ -76,6 +77,7 @@ class AppUser {
     this.subscriptionExpiresAt,
     this.program = const {},
     this.lastWeighIn,
+    this.showInLeaderboard = true,
   });
 
   /// Bosh admin — zal egasi: trener tayinlaydi, hammani ko'radi, o'chira oladi
@@ -184,6 +186,7 @@ class AppUser {
         subscriptionExpiresAt: subscriptionExpiresAt,
         program: program,
         lastWeighIn: lastWeighIn,
+        showInLeaderboard: showInLeaderboard,
       );
 
   factory AppUser.fromJson(Map<String, dynamic> j) {
@@ -209,6 +212,7 @@ class AppUser {
       homeWorkoutDate: jsonStringOrNull(j['home_workout_date']),
       subscriptionExpiresAt: jsonDate(j['subscription_expires_at']),
       lastWeighIn: jsonDate(j['last_weigh_in']),
+      showInLeaderboard: jsonBool(j['show_in_leaderboard'], true),
       program: {
         if (program is Map)
           for (final e in program.entries)
@@ -330,7 +334,7 @@ class Food {
   final String id;
   final String name;
   final double kcal, protein, fat, carbs; // 100 g uchun
-  final String image; // ixtiyoriy rasm URL; bo'sh bo'lsa nomiga qarab ichki rasm tanlanadi
+  final String imageUrl; // serverdagi rasm havolasi; bo'sh bo'lsa nomiga qarab ichki rasm tanlanadi
 
   Food({
     this.id = '',
@@ -339,7 +343,7 @@ class Food {
     required this.protein,
     required this.fat,
     required this.carbs,
-    this.image = '',
+    this.imageUrl = '',
   });
 
   factory Food.fromJson(Map<String, dynamic> j) => Food(
@@ -349,7 +353,7 @@ class Food {
         protein: jsonDouble(j['protein']),
         fat: jsonDouble(j['fat']),
         carbs: jsonDouble(j['carbs']),
-        image: jsonString(j['image']),
+        imageUrl: jsonString(j['image_url']),
       );
 
   Map<String, dynamic> toMap() => {
@@ -358,7 +362,6 @@ class Food {
         'protein': protein,
         'fat': fat,
         'carbs': carbs,
-        'image': image,
       };
 }
 
@@ -367,14 +370,12 @@ class MealItem {
   final double grams;
   final double kcal;
   final double protein;
-  final String image; // mahsulotdan ko'chiriladi (ixtiyoriy URL)
 
   MealItem({
     required this.name,
     required this.grams,
     required this.kcal,
     this.protein = 0,
-    this.image = '',
   });
 
   factory MealItem.fromFood(Food f, double grams) => MealItem(
@@ -382,7 +383,6 @@ class MealItem {
         grams: grams,
         kcal: f.kcal * grams / 100,
         protein: f.protein * grams / 100,
-        image: f.image,
       );
 
   factory MealItem.fromMap(Map<String, dynamic> m) => MealItem(
@@ -390,7 +390,6 @@ class MealItem {
         grams: (m['grams'] ?? 0).toDouble(),
         kcal: (m['kcal'] ?? 0).toDouble(),
         protein: (m['protein'] ?? 0).toDouble(),
-        image: m['image'] ?? '',
       );
 
   factory MealItem.fromJson(Map<String, dynamic> j) => MealItem(
@@ -398,7 +397,6 @@ class MealItem {
         grams: jsonDouble(j['grams']),
         kcal: jsonDouble(j['kcal']),
         protein: jsonDouble(j['protein']),
-        image: jsonString(j['image']),
       );
 
   Map<String, dynamic> toMap() => {
@@ -406,7 +404,6 @@ class MealItem {
         'grams': grams,
         'kcal': kcal,
         'protein': protein,
-        if (image.isNotEmpty) 'image': image,
       };
 }
 
@@ -572,16 +569,55 @@ class WeightLog {
 }
 
 class ChatMessage {
+  static const mediaImage = 'image';
+  static const mediaVideo = 'video';
+  static const mediaAudio = 'audio';
+  static const statusProcessing = 'processing';
+  static const statusReady = 'ready';
+  static const statusFailed = 'failed';
+  static const maxVideoBytes = 50 * 1024 * 1024;
+  static const maxAudioBytes = 5 * 1024 * 1024;
+  static const maxAudioMs = 300000;
+  static const audioContentType = 'audio/mp4';
+
   final String senderId;
   final String text;
   final DateTime createdAt;
-  ChatMessage(this.senderId, this.text, this.createdAt);
+  final String mediaKind;
+  final String mediaStatus;
+  final String mediaUrl;
+  final int mediaDurationMs;
+  ChatMessage(
+    this.senderId,
+    this.text,
+    this.createdAt, {
+    this.mediaKind = '',
+    this.mediaStatus = '',
+    this.mediaUrl = '',
+    this.mediaDurationMs = 0,
+  });
 
   factory ChatMessage.fromJson(Map<String, dynamic> j) => ChatMessage(
         jsonString(j['sender_id']),
         jsonString(j['text']),
         jsonDate(j['created_at']) ?? DateTime.now(),
+        mediaKind: jsonString(j['media_kind']),
+        mediaStatus: jsonString(j['media_status']),
+        mediaUrl: jsonString(j['media_url']),
+        mediaDurationMs: jsonInt(j['media_duration_ms']),
       );
+
+  bool get hasMedia =>
+      mediaKind == mediaImage || mediaKind == mediaVideo || mediaKind == mediaAudio;
+  bool get isVideo => mediaKind == mediaVideo;
+  bool get isImage => mediaKind == mediaImage;
+  bool get isAudio => mediaKind == mediaAudio;
+
+  String get preview {
+    if (text.isNotEmpty || !hasMedia) return trChat(text);
+    if (isAudio) return tr('🎤 Ovozli xabar');
+    return isVideo ? tr('🎥 Video') : tr('📷 Rasm');
+  }
 }
 
 /// Rejadan tashqari yeyilgan ovqat — shogird "+ Yedim" bilan qo'shadi.

@@ -1,3 +1,4 @@
+import asyncio
 import itertools
 import os
 import uuid
@@ -255,6 +256,8 @@ class FakeStorage:
         self.deleted: list[str] = []
         self.put_calls: list[tuple[str, int]] = []
         self.objects: dict[str, int] = {}
+        self.contents: dict[str, bytes] = {}
+        self.uploads: dict[str, tuple[bytes, str]] = {}
 
     async def presign_put(self, key: str, size: int, expires: int) -> str:
         self.put_calls.append((key, size))
@@ -270,6 +273,19 @@ class FakeStorage:
     async def delete(self, key: str) -> None:
         self.deleted.append(key)
 
+    async def download(self, key: str, path: Path) -> None:
+        if key not in self.objects:
+            raise FileNotFoundError(key)
+        await asyncio.to_thread(path.write_bytes, self.contents.get(key, b"raw-video"))
+
+    async def upload(self, path: Path, key: str, content_type: str) -> None:
+        data = await asyncio.to_thread(path.read_bytes)
+        self.uploads[key] = (data, content_type)
+        self.objects[key] = len(data)
+
+    async def list_keys(self, prefix: str) -> list[str]:
+        return [key for key in reversed(self.objects) if key.startswith(prefix)]
+
 
 @pytest_asyncio.fixture
 async def storage(app: Any) -> AsyncIterator[FakeStorage]:
@@ -278,6 +294,21 @@ async def storage(app: Any) -> AsyncIterator[FakeStorage]:
     app.state.storage = fake
     yield fake
     app.state.storage = original
+
+
+async def copy_transcode(source: Path, target: Path) -> None:
+    data = await asyncio.to_thread(source.read_bytes)
+    await asyncio.to_thread(target.write_bytes, b"mp4:" + data)
+
+
+@pytest_asyncio.fixture
+async def video_worker(app: Any, storage: FakeStorage) -> AsyncIterator[Any]:
+    worker = app.state.video_worker
+    original = worker.transcode
+    worker.transcode = copy_transcode
+    yield worker
+    await worker.join()
+    worker.transcode = original
 
 
 @pytest_asyncio.fixture

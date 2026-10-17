@@ -18,6 +18,8 @@ PRODUCT_CATEGORIES = (
     "Boshqa",
 )
 
+MAX_PRODUCT_IMAGES = 20
+
 _CATEGORY_LIST = ", ".join(f"'{item}'" for item in PRODUCT_CATEGORIES)
 
 
@@ -41,6 +43,7 @@ class Product(Base):
     note_en: Mapped[str] = mapped_column(Text, default="", server_default="")
     image: Mapped[str] = mapped_column(Text, default="", server_default="")
     images: Mapped[list[str]] = mapped_column(ARRAY(Text), default=list, server_default="{}")
+    image_keys: Mapped[list[str]] = mapped_column(ARRAY(Text), default=list, server_default="{}")
     sizes: Mapped[list[str]] = mapped_column(ARRAY(Text), default=list, server_default="{}")
     colors: Mapped[list[str]] = mapped_column(ARRAY(Text), default=list, server_default="{}")
     price: Mapped[int] = mapped_column(Integer, default=0, server_default="0")

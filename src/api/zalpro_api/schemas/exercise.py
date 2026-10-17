@@ -29,7 +29,6 @@ class ExerciseIn(StrictModel):
     sets: str = Field(default="", max_length=40)
     tip: str = Field(default="", max_length=500)
     also: list[Muscle] = Field(default_factory=list, max_length=6)
-    video: str = Field(default="", max_length=300)
     level: Level = ""
 
     @model_validator(mode="after")
@@ -50,9 +49,9 @@ class ExerciseOut(OutModel):
     sets: str
     tip: str
     also: list[str]
-    video: str
     created_at: datetime
     created_by: str
     base: str
     level: str
     has_video: bool
+    video_status: Literal["processing", "ready", "failed"] | None = None

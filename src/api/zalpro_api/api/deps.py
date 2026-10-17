@@ -13,6 +13,7 @@ from zalpro_api.services import permissions
 from zalpro_api.services.chat_hub import ChatHub
 from zalpro_api.services.login_throttle import LoginThrottle
 from zalpro_api.services.storage import Storage
+from zalpro_api.services.video_transcode import VideoWorker
 
 bearer_scheme = HTTPBearer(auto_error=False)
 
@@ -38,11 +39,16 @@ def get_storage(request: Request) -> Storage:
     return request.app.state.storage
 
 
+def get_video_worker(request: Request) -> VideoWorker:
+    return request.app.state.video_worker
+
+
 SettingsDep = Annotated[Settings, Depends(get_settings)]
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 HubDep = Annotated[ChatHub, Depends(get_hub)]
 LoginThrottleDep = Annotated[LoginThrottle, Depends(get_login_throttle)]
 StorageDep = Annotated[Storage, Depends(get_storage)]
+VideoWorkerDep = Annotated[VideoWorker, Depends(get_video_worker)]
 
 
 async def get_current_user(
@@ -77,6 +83,12 @@ async def require_shop_writer(actor: CurrentUser) -> User:
     return actor
 
 
+async def require_scan_actor(actor: CurrentUser) -> User:
+    permissions.ensure_can_scan_checkin(actor)
+    return actor
+
+
 OwnerUser = Annotated[User, Depends(require_owner)]
 StaffUser = Annotated[User, Depends(require_staff)]
 ShopWriter = Annotated[User, Depends(require_shop_writer)]
+ScanActor = Annotated[User, Depends(require_scan_actor)]

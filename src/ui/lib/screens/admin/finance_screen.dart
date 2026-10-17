@@ -8,6 +8,8 @@ import '../../services/db.dart';
 import '../../services/settings.dart';
 import '../../theme.dart';
 import '../../widgets/ui.dart';
+import 'member_analytics_screen.dart';
+import 'shop_analytics_screen.dart';
 
 const _oylar = [
   'Yanvar',
@@ -18,8 +20,8 @@ const _oylar = [
   'Iyun',
   'Iyul',
   'Avgust',
-  'Sentabr',
-  'Oktabr',
+  'Sentyabr',
+  'Oktyabr',
   'Noyabr',
   'Dekabr',
 ];
@@ -175,7 +177,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
                         ),
                         const SizedBox(height: AppSpace.md),
                         _Card(
-                          icon: Icons.card_membership_outlined,
+                          icon: Icons.event_repeat_outlined,
                           color: AppColors.water,
                           title: tr('Abonement'),
                           value: MonthlyReport.money(r.subsSums),
@@ -201,6 +203,57 @@ class _FinanceScreenState extends State<FinanceScreen> {
                                   '{0} ta buyurtmada tan narx yo\'q — '
                                   'foydaga qo\'shilmadi',
                                   [r.noCostOrders]),
+                        ),
+                        const SizedBox(height: AppSpace.md),
+                        BentoTile(
+                          key: const Key('member-analytics-entry'),
+                          padding: const EdgeInsets.all(AppSpace.md),
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const MemberAnalyticsScreen(isOwner: true)),
+                          ),
+                          child: Row(children: [
+                            IconBadge(Icons.groups_outlined, color: AppColors.accent, size: 38),
+                            const SizedBox(width: AppSpace.md),
+                            Expanded(
+                              child:
+                                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                Text(tr("A'zolar tahlili"), style: t.titleMedium),
+                                const SizedBox(height: 2),
+                                Text(
+                                  tr("Ketish xavfi, qolish ulushi va trenerlar natijasi"),
+                                  style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+                                ),
+                              ]),
+                            ),
+                            Icon(Icons.chevron_right, size: 20, color: AppColors.textFaint),
+                          ]),
+                        ),
+                        const SizedBox(height: AppSpace.md),
+                        BentoTile(
+                          key: const Key('shop-analytics-entry'),
+                          padding: const EdgeInsets.all(AppSpace.md),
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const ShopAnalyticsScreen()),
+                          ),
+                          child: Row(children: [
+                            IconBadge(Icons.insights_outlined, color: AppColors.accent, size: 38),
+                            const SizedBox(width: AppSpace.md),
+                            Expanded(
+                              child:
+                                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                Text(tr("Do'kon tahlili"), style: t.titleMedium),
+                                const SizedBox(height: 2),
+                                Text(
+                                  tr("Eng ko'p sotilgan tovarlar va hafta kunlari bo'yicha savdo"),
+                                  style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+                                ),
+                              ]),
+                            ),
+                            Icon(Icons.chevron_right, size: 20, color: AppColors.textFaint),
+                          ]),
                         ),
                         const SizedBox(height: AppSpace.xl),
                         SectionHeader(

@@ -5,6 +5,7 @@ import '../services/db.dart';
 import '../theme.dart';
 import 'food_image.dart';
 import 'ui.dart';
+import '../services/api/api_error.dart';
 
 /// "+ Yedim" oynasi: mahsulotlar bazasidan taom tanlanadi, miqdori (gramm) yoziladi —
 /// kaloriya va oqsil darhol ko'rinadi. Tanlangan [ExtraFood] qaytadi (bekor qilinsa null).
@@ -50,7 +51,7 @@ class _ExtraFoodPickerState extends State<_ExtraFoodPicker> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(children: [
-              FoodImage(name: food.name, url: food.image, size: 48),
+              FoodImage(name: food.name, url: food.imageUrl, size: 48),
               const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -151,7 +152,7 @@ class _ExtraFoodPickerState extends State<_ExtraFoodPicker> {
                   final f = list[i];
                   return ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: FoodImage(name: f.name, url: f.image, size: 40),
+                    leading: FoodImage(name: f.name, url: f.imageUrl, size: 40),
                     title: Text(tr(f.name), maxLines: 1, overflow: TextOverflow.ellipsis),
                     subtitle: Text(trf('100 g da {0} kkal', [f.kcal.round()])),
                     onTap: () => setState(() => _food = f),
@@ -195,7 +196,7 @@ class ExtrasToday extends StatelessWidget {
     try {
       await Db.addExtra(uid, day, e);
     } catch (err) {
-      if (context.mounted) showSnack(context, trf("Bo'lmadi: {0}", [err]));
+      if (context.mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(err)]));
     }
   }
 

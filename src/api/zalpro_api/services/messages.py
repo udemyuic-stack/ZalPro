@@ -1,25 +1,19 @@
 import uuid
 from datetime import datetime
-from typing import Any
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from zalpro_api.core.config import Settings
 from zalpro_api.models import Message
+from zalpro_api.schemas.message import MessageIn, MessageOut
+from zalpro_api.services import chat_media
 from zalpro_api.services.chat_hub import ChatHub
+from zalpro_api.services.message_view import message_out, message_payload
+from zalpro_api.services.storage import Storage
+from zalpro_api.services.video_transcode import VideoJob, VideoWorker
 
 STAGED_KEY = "staged_messages"
-
-
-def message_payload(message: Message) -> dict[str, Any]:
-    return {
-        "id": str(message.id),
-        "chat_uid": message.chat_uid,
-        "sender_id": message.sender_id,
-        "kind": message.kind,
-        "text": message.text,
-        "created_at": message.created_at.isoformat(),
-    }
 
 
 async def stage_message(
@@ -38,6 +32,18 @@ def publish_staged(session: AsyncSession, hub: ChatHub) -> None:
         hub.publish(payload["chat_uid"], payload)
 
 
+async def list_messages_out(
+    session: AsyncSession,
+    storage: Storage,
+    settings: Settings,
+    chat_uid: str,
+    limit: int,
+    before: datetime | None,
+) -> list[MessageOut]:
+    messages = await list_messages(session, chat_uid, limit, before)
+    return [await message_out(storage, settings, message) for message in messages]
+
+
 async def list_messages(
     session: AsyncSession, chat_uid: str, limit: int, before: datetime | None
 ) -> list[Message]:
@@ -49,9 +55,35 @@ async def list_messages(
 
 
 async def post_message(
-    session: AsyncSession, hub: ChatHub, chat_uid: str, sender_id: str, text: str
-) -> Message:
-    message = await stage_message(session, chat_uid, sender_id, text, kind="user")
+    session: AsyncSession,
+    hub: ChatHub,
+    storage: Storage,
+    settings: Settings,
+    worker: VideoWorker,
+    chat_uid: str,
+    sender_id: str,
+    body: MessageIn,
+) -> MessageOut:
+    media_status = None
+    if body.media_key is not None and body.media_kind is not None:
+        await chat_media.ensure_uploaded(storage, chat_uid, body.media_key, body.media_kind)
+        media_status = "processing" if body.media_kind == "video" else "ready"
+    message = Message(
+        id=uuid.uuid4(),
+        chat_uid=chat_uid,
+        sender_id=sender_id,
+        kind="user",
+        text=body.text or "",
+        media_key=body.media_key,
+        media_kind=body.media_kind,
+        media_duration_ms=body.media_duration_ms,
+        media_status=media_status,
+    )
+    session.add(message)
     await session.commit()
-    publish_staged(session, hub)
-    return message
+    await session.refresh(message)
+    out = await message_out(storage, settings, message)
+    if media_status == "processing" and body.media_key is not None:
+        worker.enqueue(VideoJob(str(message.id), body.media_key, "message"))
+    hub.publish(chat_uid, message_payload(message, out.media_url))
+    return out

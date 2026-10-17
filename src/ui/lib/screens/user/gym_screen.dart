@@ -1,17 +1,25 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../l10n/tr.dart';
 import '../../models/gym.dart';
 import '../../models/models.dart';
 import '../../services/db.dart';
 import '../../theme.dart';
+import 'leaderboard_screen.dart';
 import 'muscles_screen.dart';
+import 'rep_counter_screen.dart';
+import '../../models/rep_counter.dart';
 import '../../widgets/ui.dart';
+import '../../widgets/workout_feedback.dart';
+import '../../services/api/api_error.dart';
 
 /// Shogird: Zal bo'limi — 3 ta mashg'ulot kunini tanlaydi, bugungi mashg'ulotni ko'radi.
 /// Mashqlarni belgilash yo'q (mashqlar ro'yxati hali ishlab chiqilmoqda).
 class GymScreen extends StatefulWidget {
   final AppUser user;
-  const GymScreen({super.key, required this.user});
+  final ValueListenable<int>? openSignal;
+  final ValueListenable<int>? resetSignal;
+  const GymScreen({super.key, required this.user, this.openSignal, this.resetSignal});
 
   @override
   State<GymScreen> createState() => _GymScreenState();
@@ -30,6 +38,26 @@ class _GymScreenState extends State<GymScreen> {
   /// Bugungi mashg'ulot holati (boshlangan, bajarilgan mashqlar)
   late final _progress = Db.workout(user.id, todayKey());
 
+  @override
+  void initState() {
+    super.initState();
+    widget.openSignal?.addListener(_open);
+    widget.resetSignal?.addListener(_reset);
+  }
+
+  @override
+  void dispose() {
+    widget.openSignal?.removeListener(_open);
+    widget.resetSignal?.removeListener(_reset);
+    super.dispose();
+  }
+
+  void _open() => setState(() => _muscles = true);
+
+  void _reset() {
+    if (_muscles) setState(() => _muscles = false);
+  }
+
   Future<void> _chooseDays(BuildContext context) async {
     final days = await showSheet<List<int>>(context, _DaysPicker(initial: user.gymDays));
     if (days == null) return;
@@ -37,7 +65,7 @@ class _GymScreenState extends State<GymScreen> {
       await Db.setGymDays(user.id, days);
       if (context.mounted) showSnack(context, tr('Zal kunlari saqlandi'));
     } catch (e) {
-      if (context.mounted) showSnack(context, trf("Saqlab bo'lmadi: {0}", [e]));
+      if (context.mounted) showSnack(context, trf("Saqlab bo'lmadi: {0}", [apiErrorText(e)]));
     }
   }
 
@@ -60,6 +88,7 @@ class _GymScreenState extends State<GymScreen> {
         progress: _progress,
         onStart: () => Db.startWorkout(user.id, todayKey()),
         onDone: (key, done) => Db.toggleExercise(user.id, todayKey(), key, done),
+        onFeedback: (rating) => Db.setWorkoutFeedback(user.id, todayKey(), rating),
         onBack: () => setState(() => _muscles = false),
       );
     }
@@ -148,8 +177,9 @@ class _GymScreenState extends State<GymScreen> {
               ),
           ],
           const SizedBox(height: AppSpace.xl),
-          SectionHeader(tr('Mashqlar'), eyebrow: tr('Sinov')),
-          // Tana xaritasi: mushak bosiladi — mashqlari chiqadi (sinov versiyasi)
+          WorkoutFeedbackStrip(uid: user.id),
+          const SizedBox(height: AppSpace.xl),
+          SectionHeader(tr('Mashqlar')),
           BentoTile(
             onTap: () => setState(() => _muscles = true),
             padding: const EdgeInsets.all(AppSpace.lg),
@@ -170,11 +200,57 @@ class _GymScreenState extends State<GymScreen> {
             ]),
           ),
           const SizedBox(height: AppSpace.md),
-          Text(
-            tr("Bugun zalga kela olmasangiz — 'Trener' bo'limida \"bugun kelolmayman\" deb yozing, "
-                "trener uyda mashq belgilaydi."),
-            style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+          BentoTile(
+            onTap: () => Navigator.of(context)
+                .push(MaterialPageRoute<void>(builder: (_) => LeaderboardScreen(user: user))),
+            padding: const EdgeInsets.all(AppSpace.lg),
+            child: Row(children: [
+              Icon(Icons.emoji_events_outlined, color: AppColors.accent),
+              const SizedBox(width: AppSpace.md),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(tr('Zal reytingi'), style: t.titleMedium),
+                  const SizedBox(height: 2),
+                  Text(
+                    trf('Oxirgi {0} kun', [30]),
+                    style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+                  ),
+                ]),
+              ),
+              Icon(Icons.chevron_right, color: AppColors.textMuted),
+            ]),
           ),
+          if (repCounterSupported(isWeb: kIsWeb, platform: defaultTargetPlatform)) ...[
+            const SizedBox(height: AppSpace.md),
+            BentoTile(
+              onTap: () => Navigator.of(context)
+                  .push(MaterialPageRoute<void>(builder: (_) => const RepCounterScreen())),
+              padding: const EdgeInsets.all(AppSpace.lg),
+              child: Row(children: [
+                Icon(Icons.videocam_outlined, color: AppColors.accent),
+                const SizedBox(width: AppSpace.md),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(tr('Takror sanagich (sinov)'), style: t.titleMedium),
+                    const SizedBox(height: 2),
+                    Text(
+                      tr('Squat takrorlarini kamera sanaydi'),
+                      style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+                    ),
+                  ]),
+                ),
+                Icon(Icons.chevron_right, color: AppColors.textMuted),
+              ]),
+            ),
+          ],
+          if (user.trainerId != null) ...[
+            const SizedBox(height: AppSpace.md),
+            Text(
+              tr("Bugun zalga kela olmasangiz — 'Trener' bo'limida \"bugun kelolmayman\" deb yozing, "
+                  "trener uyda mashq belgilaydi."),
+              style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+            ),
+          ],
         ],
       ),
     );

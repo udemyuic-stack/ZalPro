@@ -1,7 +1,18 @@
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import ARRAY, CheckConstraint, DateTime, Float, ForeignKey, Integer, Text, func
+from sqlalchemy import (
+    ARRAY,
+    Boolean,
+    CheckConstraint,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    Text,
+    func,
+    true,
+)
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -48,5 +59,6 @@ class User(Base):
     home_workout_date: Mapped[str | None] = mapped_column(Text)
     subscription_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     last_weigh_in: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    show_in_leaderboard: Mapped[bool] = mapped_column(Boolean, default=True, server_default=true())
     program: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict, server_default="{}")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

@@ -190,9 +190,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         if (items.isEmpty) {
           return EmptyState(
             icon: Icons.notifications_none,
-            title: tr('Bildirishnoma yo‘q'),
-            subtitle: tr('Yangi xabar, reja yoki buyurtma bo‘lsa shu yerda chiqadi — '
-                'telefonda bildirishnoma o‘chirilgan bo‘lsa ham.'),
+            title: tr("Bildirishnoma yo'q"),
+            subtitle: tr("Yangi xabar, reja yoki buyurtma bo'lsa shu yerda chiqadi — "
+                "telefonda bildirishnoma o'chirilgan bo'lsa ham."),
           );
         }
         final action = items.where((i) => i.action).toList();
@@ -252,7 +252,7 @@ class _FeedTile extends StatelessWidget {
         FeedKind.order => (Icons.storefront_outlined, AppColors.protein),
         FeedKind.attention => (Icons.error_outline, AppColors.danger),
         FeedKind.gym => (Icons.fitness_center_outlined, AppColors.warning),
-        FeedKind.subscription => (Icons.card_membership_outlined, AppColors.danger),
+        FeedKind.subscription => (Icons.event_repeat_outlined, AppColors.danger),
       };
 
   @override
@@ -284,7 +284,7 @@ class _FeedTile extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 4),
-            Text(feedTime(item.at), style: TextStyle(color: AppColors.textFaint, fontSize: 11)),
+            Text(feedTime(item.at), style: TextStyle(color: AppColors.textFaint, fontSize: 12)),
           ]),
         ),
       ]),

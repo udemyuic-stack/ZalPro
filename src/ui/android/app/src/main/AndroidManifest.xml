@@ -1,5 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
     <!-- Bildirishnomalar: ovqat vaqti, haftalik vazn, chat va reja (Android 13+ ruxsat so'raladi) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <!-- Telefon qayta yonganda rejalashtirilgan eslatmalar tiklansin -->
@@ -7,7 +11,6 @@
     <application
         android:label="Aura Fit"
         android:name="${applicationName}"
-        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <!-- flutter_local_notifications: rejalashtirilgan eslatmalarni ko'rsatish va qayta tiklash -->
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
@@ -57,7 +60,6 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
-        <!-- mashq videosi havolasini YouTube / Telegram / brauzerda ochish (url_launcher) -->
         <intent>
             <action android:name="android.intent.action.VIEW"/>
             <data android:scheme="https"/>

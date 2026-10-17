@@ -19,3 +19,4 @@ class Food(Base):
     fat: Mapped[float] = mapped_column(Float, default=0.0, server_default="0")
     carbs: Mapped[float] = mapped_column(Float, default=0.0, server_default="0")
     image: Mapped[str] = mapped_column(Text, default="", server_default="")
+    image_key: Mapped[str | None] = mapped_column(Text, default=None)

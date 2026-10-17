@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kotta_qani_diet/services/api/api_client.dart';
@@ -174,10 +176,72 @@ void main() {
     await client.login('p', 'q');
 
     await client.logout();
+    await Future<void>.delayed(const Duration(milliseconds: 10));
 
     expect(adapter.count('/v1/auth/logout'), 1);
     expect(await store.readRefreshToken(), isNull);
     expect(client.userId, isNull);
     expect(client.accessToken, isNull);
+  });
+
+  test('logout clears the session before the server revoke completes', () async {
+    final server = Completer<ResponseBody>();
+    final adapter = FakeAdapter((o) async {
+      if (o.path == '/v1/auth/login') return jsonBody(pair('u1', 'r1'), 200);
+      return server.future;
+    });
+    final client = ApiClient(store: store, baseUrl: 'http://x', adapter: adapter);
+    await client.login('p', 'q');
+    final emitted = <String?>[];
+    client.userChanges.listen(emitted.add);
+
+    await client.logout();
+
+    expect(server.isCompleted, isFalse);
+    expect(await store.readRefreshToken(), isNull);
+    expect(client.userId, isNull);
+    expect(client.accessToken, isNull);
+    await Future<void>.delayed(const Duration(milliseconds: 10));
+    expect(emitted, [null]);
+    expect(server.isCompleted, isFalse);
+    final revoke = adapter.calls.last;
+    expect(revoke.path, '/v1/auth/logout');
+    expect(revoke.headers['Authorization'], 'Bearer ${fakeJwt('u1')}');
+    expect(revoke.data, {'refresh_token': 'r1'});
+    server.complete(jsonBody({}, 204));
+  });
+
+  test('logout revoke 401 refreshes once in background and never touches the session', () async {
+    final adapter = FakeAdapter((o) async {
+      if (o.path == '/v1/auth/login') return jsonBody(pair('u1', 'r1'), 200);
+      if (o.path == '/v1/auth/refresh') return jsonBody(pair('u1', 'r2'), 200);
+      if (o.data is Map && (o.data as Map)['refresh_token'] == 'r1') {
+        return jsonBody({
+          'detail': {'code': 'expired'}
+        }, 401);
+      }
+      return jsonBody({}, 204);
+    });
+    final client = ApiClient(store: store, baseUrl: 'http://x', adapter: adapter);
+    await client.login('p', 'q');
+
+    await client.logout();
+    await Future<void>.delayed(const Duration(milliseconds: 30));
+
+    expect(adapter.count('/v1/auth/logout'), 2);
+    expect(adapter.count('/v1/auth/refresh'), 1);
+    expect(adapter.calls.last.data, {'refresh_token': 'r2'});
+    expect(await store.readRefreshToken(), isNull);
+    expect(client.userId, isNull);
+  });
+
+  test('logout without a session sends nothing', () async {
+    final adapter = FakeAdapter((o) async => jsonBody({}, 204));
+    final client = ApiClient(store: store, baseUrl: 'http://x', adapter: adapter);
+
+    await client.logout();
+    await Future<void>.delayed(const Duration(milliseconds: 10));
+
+    expect(adapter.calls, isEmpty);
   });
 }

@@ -46,7 +46,7 @@ class PlansScreen extends StatelessWidget {
                               p.isWeekly ? tr("Haftalik (7 kun) • ") : "",
                               p.mealsPerDay,
                               p.kcal.round(),
-                              p.isWeekly ? tr(' (o‘rtacha)') : '',
+                              p.isWeekly ? tr(" (o'rtacha)") : '',
                               p.protein.round()
                             ])),
                   onTap: () => Navigator.pop(context, p),
@@ -90,7 +90,7 @@ class PlansScreen extends StatelessWidget {
           final plans = snap.data!;
           if (plans.isEmpty) {
             return EmptyState(
-              icon: Icons.menu_book_outlined,
+              icon: Icons.assignment_outlined,
               title: tr("Hali reja yo'q"),
               subtitle: tr('Aura Fit zal shablonidan boshlang yoki yangi reja tuzing.'),
               action: FilledButton.icon(
@@ -186,7 +186,7 @@ class _PlanCard extends StatelessWidget {
                   Pill(
                     text: trf('{0} g oqsil', [plan.protein.round()]),
                     color: AppColors.protein,
-                    icon: Icons.egg_alt_outlined,
+                    icon: Icons.restaurant_outlined,
                   ),
                 ]),
               ]),
@@ -373,7 +373,7 @@ class _PlanEditorState extends State<PlanEditor> {
             FilledButton(
               style: FilledButton.styleFrom(minimumSize: const Size(0, 44)),
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('OK'),
+              child: Text(tr('OK')),
             ),
           ],
         ),
@@ -426,7 +426,7 @@ class _PlanEditorState extends State<PlanEditor> {
                   .map((f) => DropdownMenuItem(
                         value: f,
                         child: Row(children: [
-                          FoodImage(name: f.name, url: f.image, size: 32),
+                          FoodImage(name: f.name, url: f.imageUrl, size: 32),
                           const SizedBox(width: AppSpace.md),
                           Expanded(child: Text(tr(f.name), overflow: TextOverflow.ellipsis)),
                         ]),
@@ -546,7 +546,7 @@ class _PlanEditorState extends State<PlanEditor> {
             const SizedBox(width: AppSpace.md),
             Expanded(
               child: StatTile(
-                icon: Icons.egg_alt_outlined,
+                icon: Icons.restaurant_outlined,
                 label: tr('Oqsil'),
                 value: trf('{0} g', [_protein.round()]),
                 color: AppColors.protein,
@@ -725,7 +725,7 @@ class _PlanEditorState extends State<PlanEditor> {
             Padding(
               padding: const EdgeInsets.only(left: 4),
               child: Row(children: [
-                FoodImage(name: m.items[ii].name, url: m.items[ii].image, size: 36),
+                FoodImage(name: m.items[ii].name, size: 36),
                 const SizedBox(width: AppSpace.md),
                 Expanded(child: Text(tr(m.items[ii].name), style: t.bodyMedium)),
                 Text(trf('{0} g', [m.items[ii].grams.round()]),

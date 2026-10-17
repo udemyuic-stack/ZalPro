@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../l10n/tr.dart';
@@ -21,9 +23,12 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isRegister = false;
   bool _busy = false;
   bool _hidePass = true;
+  bool _slow = false;
+  Timer? _slowTimer;
 
   @override
   void dispose() {
+    _slowTimer?.cancel();
     _name.dispose();
     _phone.dispose();
     _pass.dispose();
@@ -32,14 +37,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? _passwordError(String? v) {
     final value = v ?? '';
-    if (_isRegister) return value.length < 8 ? tr('Parol kamida 8 belgidan iborat') : null;
+    if (_isRegister) return value.length < 8 ? tr("Parol kamida 8 belgi bo'lsin") : null;
     return value.isEmpty ? tr('Parolni kiriting') : null;
   }
 
   Future<void> _submit() async {
     if (!_form.currentState!.validate()) return;
     FocusScope.of(context).unfocus();
-    setState(() => _busy = true);
+    setState(() {
+      _busy = true;
+      _slow = false;
+    });
+    _slowTimer?.cancel();
+    _slowTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted && _busy) setState(() => _slow = true);
+    });
     try {
       if (_isRegister) {
         await AuthService.register(_name.text, _phone.text, _pass.text);
@@ -49,9 +61,15 @@ class _LoginScreenState extends State<LoginScreen> {
     } on ApiException catch (e) {
       if (mounted) showSnack(context, apiErrorText(e));
     } catch (e) {
-      if (mounted) showSnack(context, e.toString());
+      if (mounted) showSnack(context, apiErrorText(e));
     } finally {
-      if (mounted) setState(() => _busy = false);
+      _slowTimer?.cancel();
+      if (mounted) {
+        setState(() {
+          _busy = false;
+          _slow = false;
+        });
+      }
     }
   }
 
@@ -172,6 +190,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ))
                             : Text(_isRegister ? tr('Akkaunt yaratish') : tr('Kirish')),
                       ),
+                      if (_busy && _slow)
+                        Padding(
+                          padding: const EdgeInsets.only(top: AppSpace.sm),
+                          child: Text(
+                            tr("Server uyg'onmoqda, biroz kuting"),
+                            textAlign: TextAlign.center,
+                            style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+                          ),
+                        ),
                       if (!_isRegister)
                         TextButton(
                           onPressed: () => showSheet<void>(

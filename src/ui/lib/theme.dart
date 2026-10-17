@@ -59,6 +59,7 @@ class AppRadius {
 
 const tabular = [FontFeature.tabularFigures()];
 const kTouchTarget = 52.0;
+const appFontFamily = 'Inter';
 
 class AppTheme {
   static const radius = AppRadius.md;
@@ -90,6 +91,7 @@ class AppTheme {
     final theme = ThemeData(
       colorScheme: s,
       useMaterial3: true,
+      fontFamily: appFontFamily,
       brightness: isLight ? Brightness.light : Brightness.dark,
     );
     final r = BorderRadius.circular(AppRadius.md);
@@ -111,10 +113,10 @@ class AppTheme {
         centerTitle: false,
         iconTheme: IconThemeData(color: AppColors.text, size: 22),
         titleTextStyle: TextStyle(
+          fontFamily: appFontFamily,
           fontSize: 20,
-          fontWeight: FontWeight.w800,
-          fontStyle: FontStyle.italic,
-          letterSpacing: -0.3,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.2,
           color: AppColors.text,
         ),
       ),
@@ -142,10 +144,11 @@ class AppTheme {
         focusedErrorBorder: border(AppColors.danger, 1.5),
         prefixIconColor: AppColors.textFaint,
         suffixIconColor: AppColors.textFaint,
-        hintStyle: TextStyle(color: AppColors.textFaint),
-        labelStyle: TextStyle(color: AppColors.textMuted),
-        floatingLabelStyle: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w600),
-        helperStyle: TextStyle(color: AppColors.textFaint, fontSize: 12),
+        hintStyle: TextStyle(fontFamily: appFontFamily, color: AppColors.textFaint),
+        labelStyle: TextStyle(fontFamily: appFontFamily, color: AppColors.textMuted),
+        floatingLabelStyle: TextStyle(
+            fontFamily: appFontFamily, color: AppColors.accent, fontWeight: FontWeight.w600),
+        helperStyle: TextStyle(fontFamily: appFontFamily, color: AppColors.textFaint, fontSize: 12),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
@@ -156,6 +159,7 @@ class AppTheme {
           minimumSize: const Size(64, kTouchTarget + 4),
           shape: RoundedRectangleBorder(borderRadius: r),
           textStyle: const TextStyle(
+            fontFamily: appFontFamily,
             fontSize: 15.5,
             fontWeight: FontWeight.w700,
             letterSpacing: 0.1,
@@ -168,7 +172,8 @@ class AppTheme {
           minimumSize: const Size(64, kTouchTarget),
           side: BorderSide(color: AppColors.hairlineStrong),
           shape: RoundedRectangleBorder(borderRadius: r),
-          textStyle: const TextStyle(fontSize: 15.5, fontWeight: FontWeight.w600),
+          textStyle: const TextStyle(
+              fontFamily: appFontFamily, fontSize: 15.5, fontWeight: FontWeight.w600),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -176,7 +181,7 @@ class AppTheme {
           foregroundColor: AppColors.accent,
           minimumSize: const Size(56, kTouchTarget),
           shape: RoundedRectangleBorder(borderRadius: r),
-          textStyle: const TextStyle(fontWeight: FontWeight.w600),
+          textStyle: const TextStyle(fontFamily: appFontFamily, fontWeight: FontWeight.w600),
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
@@ -197,6 +202,7 @@ class AppTheme {
         ),
         labelTextStyle: WidgetStateProperty.resolveWith(
           (st) => TextStyle(
+            fontFamily: appFontFamily,
             fontSize: 12,
             letterSpacing: 0.1,
             fontWeight: st.contains(WidgetState.selected) ? FontWeight.w700 : FontWeight.w500,
@@ -211,17 +217,27 @@ class AppTheme {
         highlightElevation: 0,
         backgroundColor: AppColors.accentFill,
         foregroundColor: AppColors.onAccentFill,
-        extendedTextStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+        extendedTextStyle:
+            const TextStyle(fontFamily: appFontFamily, fontSize: 15, fontWeight: FontWeight.w700),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
       ),
       chipTheme: theme.chipTheme.copyWith(
         backgroundColor: AppColors.cardHigh,
+        selectedColor: AppColors.accent.withValues(alpha: 0.18),
+        checkmarkColor: AppColors.accentText,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.sm)),
         side: BorderSide.none,
         labelStyle: TextStyle(
-          fontSize: 13,
+          fontFamily: appFontFamily,
+          fontSize: 14,
           fontWeight: FontWeight.w600,
           color: AppColors.text,
+        ),
+        secondaryLabelStyle: TextStyle(
+          fontFamily: appFontFamily,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: AppColors.accentText,
         ),
       ),
       dialogTheme: DialogThemeData(
@@ -229,28 +245,38 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.xl)),
         titleTextStyle: TextStyle(
+          fontFamily: appFontFamily,
           fontSize: 18,
           fontWeight: FontWeight.w700,
           letterSpacing: -0.2,
           color: AppColors.text,
         ),
-        contentTextStyle: TextStyle(fontSize: 14.5, height: 1.5, color: AppColors.textMuted),
+        contentTextStyle: TextStyle(
+            fontFamily: appFontFamily, fontSize: 14.5, height: 1.5, color: AppColors.textMuted),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: AppColors.cardHigh,
-        contentTextStyle: TextStyle(color: AppColors.text, fontWeight: FontWeight.w500),
+        showCloseIcon: true,
+        closeIconColor: AppColors.textMuted,
+        contentTextStyle: TextStyle(
+            fontFamily: appFontFamily,
+            color: AppColors.text,
+            fontSize: 14.5,
+            fontWeight: FontWeight.w500),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
       ),
       listTileTheme: ListTileThemeData(
         shape: RoundedRectangleBorder(borderRadius: r),
         iconColor: AppColors.textMuted,
         titleTextStyle: TextStyle(
+          fontFamily: appFontFamily,
           fontSize: 15,
           fontWeight: FontWeight.w600,
           color: AppColors.text,
         ),
-        subtitleTextStyle: TextStyle(fontSize: 13, color: AppColors.textMuted),
+        subtitleTextStyle:
+            TextStyle(fontFamily: appFontFamily, fontSize: 13, color: AppColors.textMuted),
       ),
       dividerTheme: DividerThemeData(
         color: AppColors.hairlineSoft,
@@ -277,7 +303,7 @@ class AppTheme {
           color: AppColors.cardHigh,
           borderRadius: BorderRadius.circular(AppRadius.sm),
         ),
-        textStyle: TextStyle(color: AppColors.text, fontSize: 12),
+        textStyle: TextStyle(fontFamily: appFontFamily, color: AppColors.text, fontSize: 12),
       ),
       splashFactory: InkSparkle.splashFactory,
     );
@@ -286,52 +312,59 @@ class AppTheme {
   static TextTheme _textTheme(TextTheme t) => t
       .copyWith(
         displaySmall: t.displaySmall?.copyWith(
-          fontSize: 38,
-          fontWeight: FontWeight.w800,
-          fontStyle: FontStyle.italic,
-          letterSpacing: -1.4,
-          height: 1.0,
-        ),
-        headlineLarge: t.headlineLarge?.copyWith(
-          fontSize: 30,
-          fontWeight: FontWeight.w800,
-          fontStyle: FontStyle.italic,
-          letterSpacing: -1.0,
+          fontSize: 34,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.8,
           height: 1.1,
         ),
-        headlineMedium: t.headlineMedium?.copyWith(
-          fontSize: 25,
-          fontWeight: FontWeight.w800,
-          fontStyle: FontStyle.italic,
-          letterSpacing: -0.8,
+        headlineLarge: t.headlineLarge?.copyWith(
+          fontSize: 28,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.6,
           height: 1.15,
         ),
-        headlineSmall: t.headlineSmall?.copyWith(
-          fontSize: 21,
-          fontWeight: FontWeight.w800,
-          fontStyle: FontStyle.italic,
+        headlineMedium: t.headlineMedium?.copyWith(
+          fontSize: 24,
+          fontWeight: FontWeight.w700,
           letterSpacing: -0.5,
           height: 1.2,
+        ),
+        headlineSmall: t.headlineSmall?.copyWith(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.3,
+          height: 1.25,
         ),
         titleLarge: t.titleLarge?.copyWith(
           fontSize: 18,
           fontWeight: FontWeight.w700,
-          letterSpacing: -0.3,
+          letterSpacing: -0.2,
         ),
         titleMedium: t.titleMedium?.copyWith(
-          fontSize: 15,
+          fontSize: 16,
           fontWeight: FontWeight.w600,
-          letterSpacing: -0.1,
+          letterSpacing: 0,
         ),
-        bodyLarge: t.bodyLarge?.copyWith(fontSize: 15, height: 1.5),
-        bodyMedium: t.bodyMedium?.copyWith(fontSize: 14, height: 1.55),
-        bodySmall: t.bodySmall?.copyWith(fontSize: 12.5, height: 1.4),
-        labelLarge: t.labelLarge?.copyWith(fontWeight: FontWeight.w600, letterSpacing: 0.1),
+        titleSmall: t.titleSmall?.copyWith(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0,
+        ),
+        bodyLarge: t.bodyLarge?.copyWith(fontSize: 16, height: 1.5),
+        bodyMedium: t.bodyMedium?.copyWith(fontSize: 14.5, height: 1.5),
+        bodySmall: t.bodySmall?.copyWith(fontSize: 13, height: 1.4),
+        labelLarge:
+            t.labelLarge?.copyWith(fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: 0),
+        labelMedium: t.labelMedium?.copyWith(fontSize: 12.5, fontWeight: FontWeight.w600),
         labelSmall: t.labelSmall?.copyWith(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          letterSpacing: 1.2,
+          letterSpacing: 0.4,
         ),
       )
-      .apply(bodyColor: AppColors.text, displayColor: AppColors.text);
+      .apply(
+        fontFamily: appFontFamily,
+        bodyColor: AppColors.text,
+        displayColor: AppColors.text,
+      );
 }

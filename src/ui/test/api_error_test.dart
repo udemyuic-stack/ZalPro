@@ -60,7 +60,7 @@ void main() {
         ex('validation_error', message: 'Bad name', errors: [
           {'field': 'body.name', 'message': 'bad'},
         ]),
-        'Bad name',
+        "Ma'lumotlar noto'g'ri",
       ),
       'validation_error other without message': (
         ex('validation_error'),
@@ -68,15 +68,15 @@ void main() {
       ),
       'network_error': (ex('network_error'), 'Internet aloqasini tekshiring'),
       'unknown with message': (ex('weird', message: 'Something'), 'Something'),
-      'unknown without message': (ex('weird'), 'weird'),
+      'unknown without message': (ex('weird'), 'Xatolik yuz berdi'),
     };
 
     cases.forEach((name, c) {
       test(name, () => expect(apiErrorText(c.$1), c.$2));
     });
 
-    test('non ApiException falls back to toString', () {
-      expect(apiErrorText(StateError('x')), StateError('x').toString());
+    test('non ApiException gives generic text', () {
+      expect(apiErrorText(StateError('x')), 'Xatolik yuz berdi');
     });
   });
 

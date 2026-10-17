@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/tr.dart';
+import '../../services/api/api_error.dart';
 import '../../services/db.dart';
 import '../../services/screen_guard.dart';
 import '../../theme.dart';
@@ -19,7 +20,7 @@ class AuthGate extends ConsumerWidget {
     final auth = ref.watch(authProvider);
     return auth.when(
       loading: () => const _Splash(),
-      error: (e, _) => _ErrorView(message: '$e'),
+      error: (e, _) => _ErrorView(message: apiErrorText(e)),
       data: (user) {
         if (user == null) {
           ScreenGuard.set(false);
@@ -28,7 +29,7 @@ class AuthGate extends ConsumerWidget {
         final me = ref.watch(meProvider);
         return me.when(
           loading: () => const _Splash(),
-          error: (e, _) => _ErrorView(message: '$e'),
+          error: (e, _) => _ErrorView(message: apiErrorText(e)),
           data: (u) {
             if (u == null) return const _Splash();
             ScreenGuard.set(!u.isAdmin && !u.isBarmen);

@@ -33,7 +33,6 @@ VALID_EXERCISE = {
     "sets": "4x10",
     "tip": "Keep your back flat",
     "also": ["triceps", "shoulders"],
-    "video": "https://youtu.be/abc",
     "level": "middle",
 }
 READ_ROLES = ["user", "barmen", "admin", "owner"]
@@ -98,7 +97,7 @@ async def test_every_signed_in_role_reads_one_exercise(
     assert body["sets"] == "3x12"
     assert body["tip"] == "Pull"
     assert body["also"] == ["biceps"]
-    assert body["video"] == "v"
+    assert "video" not in body
     assert body["created_by"] == "coach"
     assert body["base"] == "Barbell row"
     assert body["created_at"]
@@ -180,7 +179,8 @@ async def test_create_exercise_with_minimal_payload_defaults_rest(
 
     assert response.status_code == 201
     body = response.json()
-    assert body["sets"] == body["tip"] == body["video"] == body["level"] == ""
+    assert body["sets"] == body["tip"] == body["level"] == ""
+    assert "video" not in body
     assert body["also"] == []
 
 
@@ -318,7 +318,8 @@ async def test_update_is_full_replacement(
     assert response.status_code == 200
     body = response.json()
     assert body["muscle"] == "back"
-    assert body["sets"] == body["tip"] == body["video"] == body["level"] == ""
+    assert body["sets"] == body["tip"] == body["level"] == ""
+    assert "video" not in body
     assert body["also"] == []
     db_session.expire_all()
     stored = await db_session.get(Exercise, exercise_id)
@@ -327,7 +328,7 @@ async def test_update_is_full_replacement(
         "",
         "",
         [],
-        "",
+        "v",
         "",
     )
 
@@ -502,7 +503,9 @@ INVALID_EXERCISES: list[dict[str, Any]] = [
     {"name": "ok", "muscle": "Chest"},
     {"name": "ok", "muscle": "chest", "sets": "s" * 41},
     {"name": "ok", "muscle": "chest", "tip": "t" * 501},
-    {"name": "ok", "muscle": "chest", "video": "v" * 301},
+    {"name": "ok", "muscle": "chest", "video": "https://youtu.be/abc"},
+    {"name": "ok", "muscle": "chest", "video": ""},
+    {"name": "ok", "muscle": "chest", "video_key": "videos/x/y"},
     {"name": "ok", "muscle": "chest", "also": MUSCLES[1:8]},
     {"name": "ok", "muscle": "chest", "also": ["legs"]},
     {"name": "ok", "muscle": "chest", "also": ["chest"]},
@@ -559,7 +562,6 @@ async def test_exercise_accepts_values_at_exact_limits(
         "sets": "s" * 40,
         "tip": "t" * 500,
         "also": MUSCLES[1:7],
-        "video": "v" * 300,
         "level": "pro",
     }
 

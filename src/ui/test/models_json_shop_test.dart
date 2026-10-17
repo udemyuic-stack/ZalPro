@@ -14,8 +14,8 @@ void main() {
       'name_en': 'Whey EN',
       'note_ru': 'шоколад',
       'note_en': 'chocolate',
-      'image': 'a.png',
-      'images': ['a.png', 'b.png'],
+      'image_urls': ['a.png', 'b.png'],
+      'image_keys': ['k/a', 'k/b'],
       'sizes': ['XL', 'XXL'],
       'colors': ['sariq'],
       'price': 450000,
@@ -33,8 +33,13 @@ void main() {
     expect(p.nameEn, 'Whey EN');
     expect(p.noteRu, 'шоколад');
     expect(p.noteEn, 'chocolate');
+    expect(p.imageUrls, ['a.png', 'b.png']);
+    expect(p.imageKeys, ['k/a', 'k/b']);
     expect(p.image, 'a.png');
-    expect(p.images, ['a.png', 'b.png']);
+    expect(p.toJson().containsKey('image'), false);
+    expect(p.toJson().containsKey('images'), false);
+    expect(p.toJson().containsKey('image_urls'), false);
+    expect(p.toJson().containsKey('image_keys'), false);
     expect(p.sizes, ['XL', 'XXL']);
     expect(p.colors, ['sariq']);
     expect(p.price, 450000);
@@ -58,7 +63,8 @@ void main() {
     expect(e.noteRu, '');
     expect(e.noteEn, '');
     expect(e.image, '');
-    expect(e.images, isEmpty);
+    expect(e.imageUrls, isEmpty);
+    expect(e.imageKeys, isEmpty);
     expect(e.sizes, isEmpty);
     expect(e.colors, isEmpty);
     expect(e.price, 0);

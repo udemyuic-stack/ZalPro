@@ -32,6 +32,7 @@ WRITE_CASES = [
     ("DELETE", "/extras/1000", None),
     ("PUT", "/workout/start", None),
     ("PUT", "/workout/exercises/Squat", {"done": True}),
+    ("PUT", "/workout/feedback", {"rating": 2}),
     ("PUT", "/water", {"glasses": 3}),
 ]
 
@@ -116,6 +117,7 @@ async def test_day_without_row_returns_zero_state(
         "gym_started": False,
         "gym_done": [],
         "water": 0,
+        "feedback": None,
     }
     assert await db_session.scalar(select(func.count()).select_from(Day)) == 0
 
@@ -565,6 +567,7 @@ async def test_writes_to_different_fields_share_one_row(
         "gym_started": True,
         "gym_done": ["Squat"],
         "water": 2,
+        "feedback": None,
     }
     assert await db_session.scalar(select(func.count()).select_from(Day)) == 1
 
@@ -826,3 +829,96 @@ async def test_days_are_removed_with_their_user(
 
     assert response.status_code == 204
     assert await db_session.scalar(select(func.count()).select_from(Day)) == 0
+
+
+async def test_feedback_is_saved_and_replaced(
+    client: AsyncClient, student: User, auth_headers: HeadersFactory
+) -> None:
+    headers = auth_headers(student)
+    url = f"{base(student)}/workout/feedback"
+
+    first = await client.put(url, headers=headers, json={"rating": 3})
+    second = await client.put(url, headers=headers, json={"rating": 1})
+    read = await client.get(base(student), headers=headers)
+
+    assert first.status_code == 200
+    assert first.json()["feedback"] == 3
+    assert second.json()["feedback"] == 1
+    assert read.json()["feedback"] == 1
+
+
+@pytest.mark.parametrize("rating", [0, 4, -1, "2", True, None, 1.5])
+async def test_invalid_feedback_is_rejected(
+    client: AsyncClient, student: User, auth_headers: HeadersFactory, rating: Any
+) -> None:
+    response = await client.put(
+        f"{base(student)}/workout/feedback", headers=auth_headers(student), json={"rating": rating}
+    )
+
+    assert response.status_code == 422
+
+
+async def test_feedback_without_body_field_is_rejected(
+    client: AsyncClient, student: User, auth_headers: HeadersFactory
+) -> None:
+    response = await client.put(
+        f"{base(student)}/workout/feedback", headers=auth_headers(student), json={}
+    )
+
+    assert response.status_code == 422
+
+
+@pytest.mark.parametrize("who", ["trainer", "owner", "stranger"])
+async def test_only_the_student_can_write_feedback(
+    client: AsyncClient, make_user: UserFactory, auth_headers: HeadersFactory, who: str
+) -> None:
+    trainer = await make_user(role="admin")
+    student = await make_user(trainer_id=trainer.id)
+    actors = {
+        "trainer": trainer,
+        "owner": await make_user(role="owner"),
+        "stranger": await make_user(),
+    }
+
+    response = await client.put(
+        f"{base(student)}/workout/feedback",
+        headers=auth_headers(actors[who]),
+        json={"rating": 2},
+    )
+
+    assert response.status_code == 403
+
+
+async def test_trainer_reads_student_feedback_in_range(
+    client: AsyncClient, make_user: UserFactory, auth_headers: HeadersFactory
+) -> None:
+    trainer = await make_user(role="admin")
+    other_trainer = await make_user(role="admin")
+    student = await make_user(trainer_id=trainer.id)
+    await client.put(
+        f"{base(student)}/workout/feedback", headers=auth_headers(student), json={"rating": 3}
+    )
+    url = f"/v1/users/{student.id}/days"
+    window = {"from": OTHER_DAY, "to": DAY}
+
+    seen = await client.get(url, headers=auth_headers(trainer), params=window)
+    denied = await client.get(url, headers=auth_headers(other_trainer), params=window)
+
+    assert seen.status_code == 200
+    assert [item["feedback"] for item in seen.json()] == [3]
+    assert denied.status_code == 403
+
+
+async def test_feedback_keeps_other_day_fields(
+    client: AsyncClient, student: User, auth_headers: HeadersFactory
+) -> None:
+    headers = auth_headers(student)
+    await client.put(f"{base(student)}/water", headers=headers, json={"glasses": 4})
+
+    response = await client.put(
+        f"{base(student)}/workout/feedback", headers=headers, json={"rating": 2}
+    )
+
+    assert response.json()["water"] == 4
+    assert response.json()["feedback"] == 2
+    assert response.json()["gym_started"] is False

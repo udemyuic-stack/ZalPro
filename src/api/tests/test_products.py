@@ -248,8 +248,12 @@ async def test_invalid_stock_combinations_return_422(
         {"note": "x" * 501},
         {"name_ru": "x" * 121},
         {"note_en": "x" * 501},
-        {"image": "x" * 501},
-        {"images": ["x"] * 21},
+        {"image": "https://img.example/a.png"},
+        {"image": ""},
+        {"images": ["https://img.example/a.png"]},
+        {"images": []},
+        {"image_keys": ["images/products/x/y.jpg"]},
+        {"image_urls": ["https://img.example/a.png"]},
         {"sizes": [""]},
         {"price": -1},
         {"price": 2147483648},
@@ -568,3 +572,43 @@ async def test_patch_waits_for_row_lock_and_applies_after_release(
 
     assert response.status_code == 200
     assert response.json()["name"] == product.name
+
+
+@pytest.mark.parametrize(
+    "extra",
+    [{"image": "https://img.example/a.png"}, {"images": ["https://img.example/a.png"]}],
+)
+async def test_patch_rejects_image_urls_and_keeps_legacy_columns(
+    client: AsyncClient,
+    make_user: UserFactory,
+    make_product: ProductFactory,
+    auth_headers: HeadersFactory,
+    db_session: AsyncSession,
+    extra: dict[str, Any],
+) -> None:
+    product = await make_product(image="legacy", images=["legacy"])
+    actor = await make_user(role="admin")
+
+    response = await client.patch(f"{URL}/{product.id}", json=extra, headers=auth_headers(actor))
+
+    assert response.status_code == 422
+    row = await stored(db_session, product.id)
+    assert (row.image, row.images) == ("legacy", ["legacy"])
+
+
+async def test_product_out_has_image_urls_and_no_url_fields(
+    client: AsyncClient,
+    make_user: UserFactory,
+    make_product: ProductFactory,
+    auth_headers: HeadersFactory,
+) -> None:
+    product = await make_product(image="https://legacy/a.png", images=["https://legacy/b.png"])
+    actor = await make_user(role="user")
+
+    response = await client.get(f"{URL}/{product.id}", headers=auth_headers(actor))
+
+    body = response.json()
+    assert body["image_urls"] == []
+    assert "image" not in body
+    assert "images" not in body
+    assert "https://legacy" not in response.text

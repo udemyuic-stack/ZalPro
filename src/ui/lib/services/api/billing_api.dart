@@ -1,4 +1,5 @@
 import '../../models/models.dart';
+import '../../models/streak.dart';
 import '../../models/subscription.dart';
 import 'api_service.dart';
 import 'json_helpers.dart';
@@ -18,6 +19,7 @@ class BillingApi extends ApiService {
 
   final DateTime Function() _now;
   final _marks = <String, SharedStream<bool>>{};
+  final _ranges = <String, SharedStream<Set<String>>>{};
 
   String _day(DateTime d) =>
       '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-'
@@ -68,6 +70,35 @@ class BillingApi extends ApiService {
 
   Stream<bool> attendance(String uid, String day) => _mark(uid, day).stream;
 
+  SharedStream<Set<String>> _range(String uid) {
+    return _ranges.putIfAbsent(uid, () {
+      final today = _now();
+      final from = historyFromKey(_day(today));
+      final start = DateTime.parse(from);
+      final tags = <String>{'attendance:$uid'};
+      for (var d = start;
+          !d.isAfter(DateTime(today.year, today.month, today.day + 2));
+          d = DateTime(d.year, d.month, d.day + 1)) {
+        tags.add('attendance:$uid:${_day(d)}');
+      }
+      return SharedStream(
+        () => poll(() async {
+          final now = _now();
+          final rows = await client.getList('/v1/users/$uid/attendance', query: {
+            'from': historyFromKey(_day(now)),
+            'to': _day(now),
+          });
+          return {
+            for (final row in jsonMaps(rows))
+              if (jsonBool(row['present'])) jsonString(row['day']),
+          };
+        }, _attendance, tags),
+      );
+    });
+  }
+
+  Stream<Set<String>> attendanceRange(String uid) => _range(uid).stream;
+
   Future<void> markAttendance(String uid, String day, bool present) async {
     final row = await client.request<Map<String, dynamic>>(
       'PUT',
@@ -75,7 +106,7 @@ class BillingApi extends ApiService {
       data: {'present': present},
     );
     _mark(uid, day).push(row == null ? present : jsonBool(row['present']));
-    bus.touch('attendance:$uid:$day');
+    bus.touchAll(['attendance:$uid:$day', 'attendance:$uid']);
   }
 
   Stream<List<Reminder>> _remindersWhere(bool owner, bool Function(Reminder) keep) {

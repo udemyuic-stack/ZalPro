@@ -4,6 +4,7 @@ import '../../models/models.dart';
 import '../../services/db.dart';
 import '../../theme.dart';
 import '../../widgets/food_image.dart';
+import '../../widgets/food_photo_editor.dart';
 import '../../widgets/ui.dart';
 
 class FoodsScreen extends StatefulWidget {
@@ -23,66 +24,46 @@ class FoodsScreen extends StatefulWidget {
           decoration: InputDecoration(labelText: label, suffixText: tr(suffix)),
         );
 
-    final img = TextEditingController(text: f?.image);
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setD) => AlertDialog(
-          title: Text(f == null ? tr("Mahsulot qo'shish") : tr('Mahsulotni tahrirlash')),
-          content: SingleChildScrollView(
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Row(children: [
-                // nom yoki havola o'zgarganda rasm darhol yangilanadi
-                FoodImage(name: name.text, url: img.text, size: 64),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: TextField(
-                    controller: name,
-                    autofocus: f == null,
-                    textCapitalization: TextCapitalization.sentences,
-                    onChanged: (_) => setD(() {}),
-                    decoration: InputDecoration(labelText: tr('Nomi')),
-                  ),
-                ),
-              ]),
-              const SizedBox(height: 12),
-              TextField(
-                controller: img,
-                keyboardType: TextInputType.url,
-                onChanged: (_) => setD(() {}),
-                decoration: InputDecoration(
-                  labelText: tr('Rasm havolasi (ixtiyoriy)'),
-                  hintText: 'https://...',
-                  helperText: tr("Bo'sh bo'lsa, nomiga qarab rasm tanlanadi"),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(tr('100 gramm uchun:'),
-                    style: const TextStyle(fontWeight: FontWeight.w600)),
-              ),
-              const SizedBox(height: AppSpace.md),
-              field(kcal, tr('Kaloriya'), 'kkal'),
-              const SizedBox(height: AppSpace.md),
-              Row(children: [
-                Expanded(child: field(p, tr('Oqsil'), 'g')),
-                const SizedBox(width: 8),
-                Expanded(child: field(fat, tr("Yog'"), 'g')),
-                const SizedBox(width: 8),
-                Expanded(child: field(c, tr('Uglevod'), 'g')),
-              ]),
-            ]),
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(tr('Bekor'))),
-            FilledButton(
-              style: FilledButton.styleFrom(minimumSize: const Size(0, 44)),
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(tr('Saqlash')),
+      builder: (ctx) => AlertDialog(
+        title: Text(f == null ? tr("Mahsulot qo'shish") : tr('Mahsulotni tahrirlash')),
+        content: SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            TextField(
+              controller: name,
+              autofocus: f == null,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(labelText: tr('Nomi')),
             ),
-          ],
+            const SizedBox(height: 12),
+            FoodPhotoEditor(food: f, name: name),
+            const SizedBox(height: 16),
+            Align(
+              alignment: Alignment.centerLeft,
+              child:
+                  Text(tr('100 gramm uchun:'), style: const TextStyle(fontWeight: FontWeight.w600)),
+            ),
+            const SizedBox(height: AppSpace.md),
+            field(kcal, tr('Kaloriya'), 'kkal'),
+            const SizedBox(height: AppSpace.md),
+            Row(children: [
+              Expanded(child: field(p, tr('Oqsil'), 'g')),
+              const SizedBox(width: 8),
+              Expanded(child: field(fat, tr("Yog'"), 'g')),
+              const SizedBox(width: 8),
+              Expanded(child: field(c, tr('Uglevod'), 'g')),
+            ]),
+          ]),
         ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(tr('Bekor'))),
+          FilledButton(
+            style: FilledButton.styleFrom(minimumSize: const Size(0, 44)),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(tr('Saqlash')),
+          ),
+        ],
       ),
     );
     if (ok == true && name.text.trim().isNotEmpty) {
@@ -93,7 +74,6 @@ class FoodsScreen extends StatefulWidget {
         protein: n(p),
         fat: n(fat),
         carbs: n(c),
-        image: img.text.trim(),
       ));
     }
   }
@@ -147,7 +127,7 @@ class _FoodsScreenState extends State<FoodsScreen> {
           final foods = snap.data!;
           if (foods.isEmpty) {
             return EmptyState(
-              icon: Icons.egg_alt_outlined,
+              icon: Icons.restaurant_outlined,
               title: tr("Mahsulotlar bazasi bo'sh"),
               subtitle: trf(
                   "{0} ta asosiy mahsulotni (100 g uchun KBJU) "
@@ -220,7 +200,7 @@ class _FoodTile extends StatelessWidget {
         onTap: onTap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.lg)),
         contentPadding: const EdgeInsets.fromLTRB(12, 8, 4, 8),
-        leading: FoodImage(name: f.name, url: f.image, size: 52),
+        leading: FoodImage(name: f.name, url: f.imageUrl, size: 52),
         title: Text(tr(f.name), style: const TextStyle(fontWeight: FontWeight.w600)),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 6),

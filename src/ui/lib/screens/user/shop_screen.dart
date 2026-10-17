@@ -45,7 +45,6 @@ class _ShopScreenState extends State<ShopScreen> {
           if (qty > max && max > 0) qty = max;
           return Column(mainAxisSize: MainAxisSize.min, children: [
             const SizedBox(height: AppSpace.md),
-            // rasm galereyasi — rang variantlari
             if (p.gallery.length > 1) ...[
               SizedBox(
                 height: 150,
@@ -209,10 +208,7 @@ class _ShopScreenState extends State<ShopScreen> {
       builder: (context, snap) {
         if (snap.hasError) return ErrorState(error: snap.error);
         if (!snap.hasData) return const Center(child: CircularProgressIndicator());
-        // Shogird faqat sotuvdagi tovarlarni ko'radi (qoldig'i tugagani ham ko'rinadi,
-        // lekin tugmasi ochilmaydi — trener yana keltiradi)
         final all = snap.data!.where((p) => p.active && p.price > 0).toList();
-        // Tovari bor bo'limlar; biri doim tanlangan turadi ("Hammasi" yo'q)
         final groups =
             shopGroups.where((g) => all.any((p) => shopGroupOf(p.category) == g)).toList();
         final group = groups.contains(_group) ? _group! : (groups.isEmpty ? '' : groups.first);
@@ -232,14 +228,11 @@ class _ShopScreenState extends State<ShopScreen> {
             final orders = oSnap.data ?? const <ShopOrder>[];
             final waiting = orders.where((o) => o.isNew).toList();
 
-            // AppBar yo'q - ro'yxat telefon status bari ostiga kirib ketmasin
-            return SafeArea(
-              bottom: false,
-              // tovarlar dangasa chiziladi (faqat ko'ringani) - bo'limda 20-30 ta rasmli qator bor
-              child: CustomScrollView(slivers: [
+            return Scaffold(
+              appBar: AppBar(title: Text(tr("Do'kon"))),
+              body: CustomScrollView(slivers: [
                 SliverPadding(
-                  // tepadan bo'sh joy - bo'lim tugmalari ekran chetiga yopishib qolmasin
-                  padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, 0),
+                  padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, 0),
                   sliver: SliverList.list(children: [
                     if (waiting.isNotEmpty) ...[
                       SectionHeader(tr('Mening buyurtmalarim'),
@@ -292,7 +285,6 @@ class _ShopScreenState extends State<ShopScreen> {
                             ),
                         ]),
                       ),
-                      // Dobavkalar tanlansa — ichidagi kichik bo'limlar
                       if (subs.isNotEmpty) ...[
                         const SizedBox(height: AppSpace.sm),
                         SingleChildScrollView(
@@ -396,7 +388,6 @@ class _ProductTile extends StatelessWidget {
     return BentoTile(
       padding: const EdgeInsets.all(AppSpace.md),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // rasm bosilsa to'liq ekranda ochiladi
         GestureDetector(
           onTap: p.gallery.isEmpty ? null : () => showImageViewer(context, p.gallery),
           child: ProductImage(category: p.category, name: p.name, url: p.image, size: 60),

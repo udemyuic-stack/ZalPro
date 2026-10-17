@@ -11,7 +11,6 @@ import 'package:kotta_qani_diet/models/models.dart';
 import 'package:kotta_qani_diet/models/shop.dart';
 import 'package:kotta_qani_diet/models/stats.dart';
 import 'package:kotta_qani_diet/models/subscription.dart';
-import 'package:kotta_qani_diet/models/video_link.dart';
 import 'package:kotta_qani_diet/screens/admin/exercises_admin_screen.dart';
 import 'package:kotta_qani_diet/screens/admin/plans_screen.dart';
 import 'package:kotta_qani_diet/screens/notifications_screen.dart';
@@ -948,14 +947,14 @@ void main() {
   });
 
   group("Tovar rasmlari va o-lchamlari", () {
-    test('galereya: asosiy rasm birinchi, takror yo-q', () {
+    test('galereya: tartib saqlanadi, bo-sh va takror yo-q', () {
       const p = Product(
         category: 'Forma',
         name: 'Venum',
-        image: 'a.jpg',
-        images: ['b.jpg', 'a.jpg', '  ', 'c.jpg'],
+        imageUrls: ['a.jpg', 'b.jpg', 'a.jpg', '  ', 'c.jpg'],
       );
       expect(p.gallery, ['a.jpg', 'b.jpg', 'c.jpg']);
+      expect(p.image, 'a.jpg');
     });
 
     test('rasmsiz tovarda galereya bo-sh', () {
@@ -1422,7 +1421,7 @@ void main() {
 
     testWidgets('zal kuni — faqat bugungi mushaklar mashqlari', (t) async {
       await open(t, days: evenDays, weekday: DateTime.tuesday);
-      expect(find.text('BUGUNGI MASHQLAR'), findsOneWidget);
+      expect(find.text('Bugungi mashqlar'), findsOneWidget);
       expect(find.text('Shtanga bilan yotib siqish'), findsOneWidget, reason: 'ko-krak — bugun');
       expect(find.text(exercisesFor('quads').first.name), findsNothing,
           reason: 'oyoq — boshqa kun');
@@ -1433,7 +1432,7 @@ void main() {
       expect(find.text(muscleById('quads')!.name), findsNothing, reason: 'oyoq — boshqa kun');
       expect(find.text(muscleById('shoulders')!.name), findsNothing);
       // bugungi mushak tanlansa — faqat o'shaning mashqlari qoladi
-      await t.tap(find.text(muscleById('biceps')!.name));
+      await t.tap(find.text(muscleById('biceps')!.name).first);
       await t.pump(const Duration(seconds: 1));
       expect(find.text(exercisesFor('biceps').first.name), findsOneWidget);
       expect(find.text('Shtanga bilan yotib siqish'), findsNothing, reason: 'ko-krak tanlanmagan');
@@ -1444,7 +1443,7 @@ void main() {
       expect(find.text("Mashg'ulotni boshlash"), findsNothing,
           reason: 'dam olish kunida boshlab bo-lmaydi');
       expect(find.text('Dam olish kuni'), findsOneWidget);
-      expect(find.text("KEYINGI MASHG'ULOT MASHQLARI"), findsOneWidget);
+      expect(find.text("Keyingi mashg'ulot mashqlari"), findsOneWidget);
     });
 
     testWidgets('kunlar tanlanmagan — hamma mushak ochiq', (t) async {
@@ -1460,31 +1459,12 @@ void main() {
     final now = DateTime(2026, 10, 12, 12);
     Exercise custom({String muscle = 'chest', DateTime? at, String name = 'Trener mashqi'}) =>
         Exercise(name, muscle, '5 × 5', 'Sekin tushiring',
-            also: const ['triceps'],
-            id: 'e1',
-            video: 'https://example.com/v',
-            createdAt: at ?? now,
-            createdBy: 't1');
+            also: const ['triceps'], id: 'e1', createdAt: at ?? now, createdBy: 't1');
 
     test('bazaga yozilib qaytganda o-zgarmaydi', () {
       final e = Exercise.fromMap('e1', custom().toMap())!;
-      expect([
-        e.id,
-        e.name,
-        e.muscle,
-        e.sets,
-        e.tip,
-        e.video,
-        e.createdBy
-      ], [
-        'e1',
-        'Trener mashqi',
-        'chest',
-        '5 × 5',
-        'Sekin tushiring',
-        'https://example.com/v',
-        't1'
-      ]);
+      expect([e.id, e.name, e.muscle, e.sets, e.tip, e.createdBy],
+          ['e1', 'Trener mashqi', 'chest', '5 × 5', 'Sekin tushiring', 't1']);
       expect(e.also, ['triceps']);
       expect(e.createdAt, now);
       expect(e.isCustom, isTrue);
@@ -1540,18 +1520,13 @@ void main() {
     test('namunaviy mashqqa video: o-rniga chiqadi, kaliti va tartibi saqlanadi', () {
       final first = exercisesFor('chest').first;
       final over = Exercise(first.name, first.muscle, first.sets, first.tip,
-          also: first.also,
-          id: 'o1',
-          video: 'https://example.com/v',
-          createdAt: now,
-          createdBy: 't1',
-          base: first.name);
+          also: first.also, id: 'o1', createdAt: now, createdBy: 't1', base: first.name);
       final back = Exercise.fromMap('o1', over.toMap())!;
       expect(back.base, first.name);
       expect(back.isOverride, isTrue);
       final list = exercisesFor('chest', [back]);
       expect(list.length, exercisesFor('chest').length, reason: 'qo-shilmaydi — almashtiriladi');
-      expect(list.first.video, 'https://example.com/v');
+      expect(list.first.id, 'o1');
       expect(list.first.key, first.key, reason: 'bajardim belgisi yo-qolmaydi');
       expect(back.isNew(now), isFalse, reason: 'o-zgartirilgan namunaviy — yangi emas');
       // o'zini tahrirlash takror hisoblanmaydi, boshqa mashq nomini olish — hisoblanadi
@@ -1561,7 +1536,8 @@ void main() {
           'Otjimaniya');
     });
 
-    testWidgets('shogird trener qo-shgan mashqni va video havolasini ko-radi', (t) async {
+    testWidgets('shogird trener qo-shgan mashqni ko-radi; videosiz mashqda video bloki yo-q',
+        (t) async {
       t.view.physicalSize = const Size(420, 7000);
       t.view.devicePixelRatio = 1;
       addTearDown(t.view.reset);
@@ -1575,12 +1551,12 @@ void main() {
       ));
       await t.pump(const Duration(seconds: 3));
       expect(find.text('Trener mashqi'), findsOneWidget);
-      expect(find.text('YANGI'), findsOneWidget);
+      expect(find.text('Yangi'), findsOneWidget);
       await t.tap(find.text('Trener mashqi'));
       await t.pump(const Duration(seconds: 1));
-      expect(find.text('https://example.com/v'), findsOneWidget);
-      expect(find.text("Videoni ko'rish"), findsOneWidget);
-      expect(find.text('Havolani nusxalash'), findsOneWidget);
+      expect(find.text('Sekin tushiring'), findsOneWidget);
+      expect(find.text("Videoni ko'rish"), findsNothing);
+      expect(find.text('Havolani nusxalash'), findsNothing);
     });
 
     testWidgets('qo-shish varag-i: chizma bosilsa mushak o-zgaradi, nomsiz saqlanmaydi', (t) async {
@@ -1656,7 +1632,7 @@ void main() {
       expect(started, isTrue);
       expect(find.text("Mashg'ulotni boshlash"), findsNothing,
           reason: 'boshlangach tugma yo-qoladi');
-      expect(find.text("HOZIR: KO'KRAK"), findsOneWidget);
+      expect(find.text("Hozir: Ko'krak"), findsOneWidget);
       expect(find.text('0 / 3 bajarildi'), findsOneWidget);
       expect(find.text("Hozir: Ko'krak · 0 / 3 bajarildi"), findsOneWidget,
           reason: 'tepada ham holat');
@@ -1668,7 +1644,7 @@ void main() {
         await t.pump(const Duration(seconds: 1));
       }
       expect(marked.length, 3);
-      expect(find.text("HOZIR: QO'LNING OLDI (BICEPS)"), findsOneWidget,
+      expect(find.text("Hozir: Qo'lning oldi (biceps)"), findsOneWidget,
           reason: 'ko-krak tugadi — qo-l ochildi');
       expect(find.text("✓ Ko'krak — tugadi"), findsOneWidget);
       expect(find.text('Shtanga bilan yotib siqish'), findsNothing);
@@ -1692,70 +1668,6 @@ void main() {
       expect(find.text("Bugungi mashg'ulot tugadi"), findsNWidgets(2),
           reason: 'tepada va mashqlar o-rnida');
       expect(find.text('Bajardim'), findsNothing);
-    });
-  });
-
-  group('Video havolasi', () {
-    test('YouTube id har xil havoladan ajratiladi', () {
-      for (final u in [
-        'https://youtu.be/dQw4w9WgXcQ',
-        'https://youtu.be/dQw4w9WgXcQ?si=abc',
-        'https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=10s',
-        'https://m.youtube.com/watch?v=dQw4w9WgXcQ',
-        'https://youtube.com/shorts/dQw4w9WgXcQ',
-        'https://www.youtube.com/embed/dQw4w9WgXcQ',
-        'https://www.youtube.com/live/dQw4w9WgXcQ?feature=share',
-        '  https://youtu.be/dQw4w9WgXcQ  ',
-      ]) {
-        expect(youtubeId(u), 'dQw4w9WgXcQ', reason: u);
-      }
-      expect(youtubeThumb('https://youtu.be/dQw4w9WgXcQ'),
-          'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg');
-    });
-
-    test('YouTube bo-lmagan yoki buzuq havola — null', () {
-      for (final u in [
-        '',
-        'https://t.me/kanal/123',
-        'https://example.com/watch?v=dQw4w9WgXcQ',
-        'https://www.youtube.com/watch?v=qisqa',
-        'https://www.youtube.com/@kanal',
-        'youtu.be/dQw4w9WgXcQ',
-      ]) {
-        expect(youtubeId(u), isNull, reason: u);
-        expect(youtubeThumb(u), isNull, reason: u);
-      }
-    });
-
-    testWidgets('YouTube havolali mashqda muqova va o-ynatish tugmasi; havola matni yo-q',
-        (t) async {
-      t.view.physicalSize = const Size(420, 7000);
-      t.view.devicePixelRatio = 1;
-      addTearDown(t.view.reset);
-      String? asked;
-      debugVideoThumb = (u) {
-        asked = u;
-        return const SizedBox();
-      };
-      addTearDown(() => debugVideoThumb = null);
-      final e = Exercise('Video mashq', 'chest', '3 × 10', 'Sekin',
-          id: 'v1',
-          video: 'https://youtu.be/dQw4w9WgXcQ',
-          createdAt: DateTime.now(),
-          createdBy: 't1');
-      await t.pumpWidget(MaterialApp(
-        home: MusclesScreen(
-            gymDays: evenDays, weekday: DateTime.tuesday, onBack: () {}, custom: Stream.value([e])),
-      ));
-      await t.pump(const Duration(seconds: 3));
-      await t.tap(find.text('Video mashq'));
-      await t.pump(const Duration(seconds: 1));
-      expect(find.byIcon(Icons.play_arrow), findsOneWidget);
-      expect(asked, 'https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
-          reason: 'muqova so-raldi');
-      expect(find.text('https://youtu.be/dQw4w9WgXcQ'), findsNothing,
-          reason: 'havola matni emas — muqova');
-      expect(find.text('Havolani nusxalash'), findsNothing);
     });
   });
 

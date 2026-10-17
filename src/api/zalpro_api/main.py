@@ -7,15 +7,19 @@ from sqlalchemy import text
 
 from zalpro_api.api.deps import SessionDep
 from zalpro_api.api.routes import (
+    analytics,
+    announcements,
     app_config,
     attendance,
     auth,
     chat_ws,
+    checkin,
     days,
     exercises,
     finance,
     foods,
     gyms,
+    leaderboard,
     memberships,
     messages,
     orders,
@@ -38,6 +42,7 @@ from zalpro_api.db.session import create_engine, create_sessionmaker
 from zalpro_api.services.chat_hub import ChatHub
 from zalpro_api.services.login_throttle import LoginThrottle
 from zalpro_api.services.storage import build_storage
+from zalpro_api.services.video_transcode import VideoWorker
 
 
 @asynccontextmanager
@@ -45,9 +50,11 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     engine = create_engine(app.state.settings.database_url)
     app.state.engine = engine
     app.state.sessionmaker = create_sessionmaker(engine)
+    await app.state.video_worker.start()
     try:
         yield
     finally:
+        await app.state.video_worker.stop()
         await engine.dispose()
 
 
@@ -67,9 +74,13 @@ def build_v1_router() -> APIRouter:
         ratings,
         subscriptions,
         memberships,
+        announcements,
         attendance,
+        checkin,
+        leaderboard,
         reminders,
         finance,
+        analytics,
         products,
         orders,
         messages,
@@ -90,6 +101,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.state.settings.login_max_attempts, app.state.settings.login_window_seconds
     )
     app.state.storage = build_storage(app.state.settings)
+    app.state.video_worker = VideoWorker(app.state)
     register_error_handlers(app)
     if app.state.settings.min_app_build > 0:
         app.add_middleware(

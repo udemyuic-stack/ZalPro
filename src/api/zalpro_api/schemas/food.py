@@ -14,7 +14,6 @@ class FoodIn(StrictModel):
     protein: Nutrient = 0.0
     fat: Nutrient = 0.0
     carbs: Nutrient = 0.0
-    image: str = Field(default="", max_length=500)
 
 
 class FoodOut(OutModel):
@@ -24,4 +23,4 @@ class FoodOut(OutModel):
     protein: float
     fat: float
     carbs: float
-    image: str
+    image_url: str | None = None

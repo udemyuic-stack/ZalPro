@@ -13,7 +13,7 @@ UserFactory = Callable[..., Awaitable[User]]
 PlanFactory = Callable[..., Awaitable[Plan]]
 HeadersFactory = Callable[[User], dict[str, str]]
 
-ITEM = {"name": "Oatmeal", "grams": 80, "kcal": 300, "protein": 10, "image": "https://i/o.png"}
+ITEM = {"name": "Oatmeal", "grams": 80, "kcal": 300, "protein": 10}
 MEAL = {"time": "08:00", "title": "Breakfast", "items": [ITEM]}
 VALID_PLAN = {
     "title": "Mass gain",
@@ -189,25 +189,45 @@ async def test_create_plan_with_only_title_defaults_rest(
     assert body["photos"] == {}
 
 
-async def test_meal_item_image_is_optional(
-    client: AsyncClient, make_user: UserFactory, auth_headers: HeadersFactory
+async def test_meal_item_rejects_image_url(
+    client: AsyncClient,
+    make_user: UserFactory,
+    auth_headers: HeadersFactory,
+    db_session: AsyncSession,
 ) -> None:
     actor = await make_user(role="admin")
     payload = {
         "title": "T",
-        "meals": [
-            {
-                "time": "09:00",
-                "title": "Snack",
-                "items": [{"name": "Nut", "grams": 10, "kcal": 60, "protein": 2}],
-            }
-        ],
+        "meals": [{"items": [{"name": "Nut", "kcal": 60, "image": "https://i/o.png"}]}],
     }
 
     response = await client.post("/v1/plans", json=payload, headers=auth_headers(actor))
 
-    assert response.status_code == 201
-    assert response.json()["meals"][0]["items"][0]["image"] == ""
+    assert response.status_code == 422
+    assert await plan_count(db_session) == 0
+
+
+async def test_legacy_meal_item_image_is_not_returned(
+    client: AsyncClient,
+    make_user: UserFactory,
+    make_plan: PlanFactory,
+    auth_headers: HeadersFactory,
+) -> None:
+    legacy = {"time": "09:00", "title": "Snack", "items": [{"name": "Nut", "image": "https://i/o"}]}
+    plan = await make_plan(meals=[legacy], week={"2": [legacy]})
+    actor = await make_user(role="user")
+
+    response = await client.get(f"/v1/plans/{plan.id}", headers=auth_headers(actor))
+
+    assert response.status_code == 200
+    expected = {
+        "time": "09:00",
+        "title": "Snack",
+        "items": [{"name": "Nut", "grams": 0, "kcal": 0, "protein": 0}],
+    }
+    assert response.json()["meals"] == [expected]
+    assert response.json()["week"] == {"2": [expected]}
+    assert "https://i/o" not in response.text
 
 
 @pytest.mark.parametrize("role", NON_STAFF_ROLES)
@@ -424,7 +444,7 @@ INVALID_PLANS: list[dict[str, Any]] = [
     {"title": ""},
     {"title": "   "},
     {"title": "t" * 121},
-    {"title": "ok", "note": "n" * 1001},
+    {"title": "ok", "note": "n" * 5001},
     {"title": "ok", "forbidden": ["f"] * 51},
     {"title": "ok", "forbidden": ["f" * 81]},
     {"title": "ok", "forbidden": "sugar"},
@@ -439,7 +459,7 @@ INVALID_PLANS: list[dict[str, Any]] = [
     {"title": "ok", "meals": meal_with_item(item_with(kcal=-1))},
     {"title": "ok", "meals": meal_with_item(item_with(protein=-0.5))},
     {"title": "ok", "meals": meal_with_item(item_with(grams="lots"))},
-    {"title": "ok", "meals": meal_with_item(item_with(image="i" * 501))},
+    {"title": "ok", "meals": meal_with_item(item_with(image="https://i/o.png"))},
     {"title": "ok", "meals": meal_with_item(item_with(extra=1))},
     {"title": "ok", "meals": meal_with_item({"grams": 1})},
     {"title": "ok", "week": {"0": []}},
@@ -522,11 +542,11 @@ async def test_plan_accepts_values_at_exact_limits(
     full_meal = {
         "time": "t" * 10,
         "title": "m" * 60,
-        "items": [item_with(name="n" * 80, image="i" * 500)] * 50,
+        "items": [item_with(name="n" * 80)] * 50,
     }
     payload = {
         "title": "t" * 120,
-        "note": "n" * 1000,
+        "note": "n" * 5000,
         "forbidden": ["f" * 80] * 50,
         "meals": [full_meal] * 20,
         "week": {str(day): [full_meal] * 20 for day in range(1, 8)},

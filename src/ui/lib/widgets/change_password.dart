@@ -84,7 +84,7 @@ class _ChangePasswordSheetState extends State<_ChangePasswordSheet> {
         Text(tr("Parolni o'zgartirish"), style: t.titleLarge),
         const SizedBox(height: AppSpace.lg),
         _field(_current, tr('Hozirgi parol'), autofocus: true),
-        _field(_next, tr('Yangi parol (kamida 6 belgi)')),
+        _field(_next, tr('Yangi parol (kamida 8 belgi)')),
         _field(_repeat, tr('Yangi parolni takrorlang')),
         Align(
           alignment: Alignment.centerLeft,

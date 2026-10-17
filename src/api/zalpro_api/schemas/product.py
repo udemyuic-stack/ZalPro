@@ -12,7 +12,6 @@ Currency = Literal["UZS", "USD"]
 Money = Annotated[int, Field(strict=True, ge=0, le=MAX_INT)]
 ProductName = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=120)]
 Variant = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=30)]
-Url = Annotated[str, StringConstraints(max_length=500)]
 Note = Annotated[str, StringConstraints(max_length=500)]
 ShortName = Annotated[str, StringConstraints(max_length=120)]
 SizeStock = dict[Variant, Annotated[int, Field(strict=True, ge=0, le=MAX_INT)]]
@@ -26,8 +25,6 @@ class ProductIn(StrictModel):
     name_en: ShortName = ""
     note_ru: Note = ""
     note_en: Note = ""
-    image: Url = ""
-    images: list[Url] = Field(default_factory=list, max_length=20)
     sizes: list[Variant] = Field(default_factory=list, max_length=30)
     colors: list[Variant] = Field(default_factory=list, max_length=30)
     price: Money
@@ -70,8 +67,6 @@ class ProductPatch(PatchModel):
     name_en: ShortName | None = None
     note_ru: Note | None = None
     note_en: Note | None = None
-    image: Url | None = None
-    images: list[Url] | None = Field(default=None, max_length=20)
     sizes: list[Variant] | None = Field(default=None, max_length=30)
     colors: list[Variant] | None = Field(default=None, max_length=30)
     price: Money | None = None
@@ -91,8 +86,8 @@ class ProductOut(OutModel):
     name_en: str
     note_ru: str
     note_en: str
-    image: str
-    images: list[str]
+    image_urls: list[str] = []
+    image_keys: list[str] = []
     sizes: list[str]
     colors: list[str]
     price: int

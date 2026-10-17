@@ -24,13 +24,25 @@ class MealItem(StrictModel):
     grams: Amount = 0.0
     kcal: Amount = 0.0
     protein: Amount = 0.0
-    image: str = Field(default="", max_length=500)
 
 
 class Meal(StrictModel):
     time: str = Field(default="", max_length=10)
     title: str = Field(default="", max_length=60)
     items: list[MealItem] = Field(default_factory=list, max_length=MAX_ITEMS_PER_MEAL)
+
+
+class MealItemOut(OutModel):
+    name: str
+    grams: float = 0.0
+    kcal: float = 0.0
+    protein: float = 0.0
+
+
+class MealOut(OutModel):
+    time: str = ""
+    title: str = ""
+    items: list[MealItemOut] = []
 
 
 MealList = Annotated[list[Meal], Field(max_length=MAX_MEALS_PER_DAY)]
@@ -42,7 +54,7 @@ DayPhotos = Annotated[
 
 class PlanIn(StrictModel):
     title: PlanTitle
-    note: str = Field(default="", max_length=1000)
+    note: str = Field(default="", max_length=5000)
     forbidden: list[Annotated[str, Field(max_length=80)]] = Field(
         default_factory=list, max_length=MAX_FORBIDDEN
     )
@@ -56,6 +68,6 @@ class PlanOut(OutModel):
     title: str
     note: str
     forbidden: list[str]
-    meals: list[Meal]
-    week: dict[str, list[Meal]]
+    meals: list[MealOut]
+    week: dict[str, list[MealOut]]
     photos: dict[str, str]

@@ -20,7 +20,7 @@ MUSCLES = (
     "calves",
 )
 LEVELS = ("", "beginner", "middle", "pro")
-MAX_VIDEO_BYTES = 60 * 1024 * 1024
+MAX_VIDEO_BYTES = 100 * 1024 * 1024
 
 
 def _in_list(column: str, values: tuple[str, ...]) -> str:
@@ -46,6 +46,7 @@ class Exercise(Base):
     base: Mapped[str] = mapped_column(Text, default="", server_default="")
     level: Mapped[str] = mapped_column(Text, default="", server_default="")
     video_key: Mapped[str | None] = mapped_column(Text, default=None)
+    video_status: Mapped[str | None] = mapped_column(Text, default=None)
 
     @property
     def has_video(self) -> bool:

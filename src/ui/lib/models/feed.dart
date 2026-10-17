@@ -64,7 +64,7 @@ List<FeedItem> studentFeed({
     items.add(FeedItem(
       kind: FeedKind.chat,
       title: tr('Trener xabar yozdi'),
-      body: trChat(m.text),
+      body: m.preview,
       at: m.createdAt,
     ));
   }
@@ -86,8 +86,8 @@ List<FeedItem> studentFeed({
       kind: FeedKind.weighIn,
       title: tr('Vazn kiritish vaqti keldi'),
       body: last == null
-          ? tr('Birinchi o‘lchov — ertalab, nahorga tortiling')
-          : trf('Oxirgi o‘lchovdan {0} kun o‘tdi', [WeightLog.daysSince(last.date, n)]),
+          ? tr("Birinchi o'lchov — ertalab, nahorga tortiling")
+          : trf("Oxirgi o'lchovdan {0} kun o'tdi", [WeightLog.daysSince(last.date, n)]),
       at: last == null ? n : last.date.add(const Duration(days: weighInIntervalDays)),
       action: true,
     ));
@@ -117,7 +117,7 @@ List<FeedItem> studentFeed({
       final names = meals[i].items.map((e) => e.name.split('(').first.trim()).take(3);
       items.add(FeedItem(
         kind: FeedKind.meal,
-        title: trf('{0} vaqti o‘tdi', [meals[i].title.isEmpty ? tr('Ovqat') : tr(meals[i].title)]),
+        title: trf("{0} vaqti o'tdi", [meals[i].title.isEmpty ? tr('Ovqat') : tr(meals[i].title)]),
         body: names.isEmpty ? tr('Belgilashni unutmang') : names.join(', '),
         at: at,
         action: true,
@@ -166,7 +166,7 @@ List<FeedItem> trainerFeed({
       items.add(FeedItem(
         kind: FeedKind.chat,
         title: nameOf[e.key] ?? tr('Shogird'),
-        body: trChat(m.text),
+        body: m.preview,
         at: m.createdAt,
       ));
     }
@@ -192,7 +192,7 @@ List<FeedItem> trainerFeed({
     items.add(FeedItem(
       kind: FeedKind.attention,
       title: tr('Reja berilmagan'),
-      body: trf('{0} — hali ovqatlanish rejasi yo‘q', [nameOf[c.id]]),
+      body: trf("{0} — hali ovqatlanish rejasi yo'q", [nameOf[c.id]]),
       at: n,
       action: true,
     ));
@@ -204,7 +204,7 @@ List<FeedItem> trainerFeed({
     items.add(FeedItem(
       kind: FeedKind.gym,
       title: tr('Zal kunlari tanlanmagan'),
-      body: trf('{0} — mashg‘ulot kunlarini tanlamagan', [nameOf[c.id]]),
+      body: trf("{0} — mashg'ulot kunlarini tanlamagan", [nameOf[c.id]]),
       at: n.subtract(const Duration(seconds: 1)),
       action: true,
     ));
@@ -217,7 +217,8 @@ List<FeedItem> trainerFeed({
     items.add(FeedItem(
       kind: FeedKind.subscription,
       title: tr('Abonement tugashi yaqinlashdi'),
-      body: '${nameOf[c.id]} — ${left <= 0 ? 'tugadi' : '$left kundan keyin tugaydi'}',
+      body:
+          '${nameOf[c.id]} — ${left <= 0 ? tr('tugadi') : trf('{0} kundan keyin tugaydi', [left])}',
       at: n.subtract(const Duration(seconds: 2)),
       action: true,
     ));

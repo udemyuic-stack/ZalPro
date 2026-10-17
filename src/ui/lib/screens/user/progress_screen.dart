@@ -311,9 +311,9 @@ class _WeeklyCard extends StatelessWidget {
           )
         : (
             left == 1
-                ? tr('Keyingi o’lchov ertaga')
-                : trf('Keyingi o’lchov {0} kundan keyin', [left]),
-            tr('Haftada faqat 1 marta — ungacha vaznni o’zgartirib bo’lmaydi'),
+                ? tr("Keyingi o'lchov ertaga")
+                : trf("Keyingi o'lchov {0} kundan keyin", [left]),
+            tr("Haftada faqat 1 marta — ungacha vaznni o'zgartirib bo'lmaydi"),
             AppColors.success,
             Icons.event_available_outlined,
           );
@@ -359,7 +359,7 @@ class _ChangePanel extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpace.xl),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Eyebrow(tr('Umumiy o’zgarish'), color: AppColors.textFaint),
+          Eyebrow(tr("Umumiy o'zgarish"), color: AppColors.textFaint),
           const Spacer(),
           Icon(
             diff == 0

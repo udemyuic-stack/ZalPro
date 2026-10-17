@@ -24,6 +24,28 @@ class CatalogApi extends ApiService {
 
   Future<void> deleteFood(String id) => write('DELETE', '/v1/foods/$id', null, ['foods']);
 
+  Future<Food> uploadFoodImage(
+    String id,
+    Uint8List bytes, {
+    String contentType = 'image/jpeg',
+    void Function(int sent, int total)? onProgress,
+  }) async {
+    final key = await uploadImage(
+      '/v1/foods/$id/image/upload-url',
+      bytes,
+      contentType: contentType,
+      onProgress: onProgress,
+    );
+    final saved = await bus.after(
+      client.request<Map<String, dynamic>>('PUT', '/v1/foods/$id/image', data: {'key': key}),
+      ['foods'],
+    );
+    return Food.fromJson(saved ?? const {});
+  }
+
+  Future<void> deleteFoodImage(String id) =>
+      write('DELETE', '/v1/foods/$id/image', null, ['foods']);
+
   Stream<List<Exercise>> customExercises() => poll(() async {
         final rows = await client.getList('/v1/exercises');
         return [
@@ -32,48 +54,91 @@ class CatalogApi extends ApiService {
         ];
       }, _rare, {'exercises'});
 
-  Future<void> saveExercise(Exercise e) {
+  Future<String> saveExercise(Exercise e) async {
     final body = {
       'name': e.name,
       'muscle': e.muscle,
       'sets': e.sets,
       'tip': e.tip,
       'also': e.also,
-      'video': e.video,
       'level': e.level,
     };
-    if (e.id.isNotEmpty) return write('PUT', '/v1/exercises/${e.id}', body, ['exercises']);
-    return write('POST', '/v1/exercises', {...body, 'base': e.base}, ['exercises']);
+    if (e.id.isNotEmpty) {
+      await write('PUT', '/v1/exercises/${e.id}', body, ['exercises']);
+      return e.id;
+    }
+    final created = await bus.after(
+      client
+          .request<Map<String, dynamic>>('POST', '/v1/exercises', data: {...body, 'base': e.base}),
+      ['exercises'],
+    );
+    return jsonString(created?['id']);
   }
 
   Future<void> deleteExercise(String id) =>
       write('DELETE', '/v1/exercises/$id', null, ['exercises']);
 
   Future<void> uploadExerciseVideo(
-    String id,
-    Uint8List bytes, {
+    String id, {
+    required int size,
+    required String contentType,
+    Uint8List? bytes,
+    Stream<List<int>> Function()? open,
     void Function(int sent, int total)? onProgress,
   }) async {
-    if (bytes.length > Exercise.maxVideoBytes) {
+    if (size > Exercise.maxVideoBytes) {
       throw const ApiException(code: 'video_too_large', message: '');
+    }
+    if (!Exercise.videoTypes.containsValue(contentType) || (bytes == null && open == null)) {
+      throw const ApiException(code: 'video_type_unsupported', message: '');
     }
     final slot = await client.request<Map<String, dynamic>>(
       'POST',
       '/v1/exercises/$id/video/upload-url',
-      data: {'size': bytes.length},
+      data: {'size': size, 'content_type': contentType},
     );
     final key = jsonString(slot?['key']);
     final target = jsonString(slot?['upload_url']);
     if (key.isEmpty || target.isEmpty) {
       throw const ApiException(code: 'upload_slot_missing', message: '');
     }
-    await client.uploadBytes(target, bytes, contentType: 'video/mp4', onProgress: onProgress);
+    if (bytes != null) {
+      await client.uploadBytes(target, bytes, contentType: contentType, onProgress: onProgress);
+    } else {
+      await client.uploadStream(target, open!(), size,
+          contentType: contentType, onProgress: onProgress);
+    }
     await write('PUT', '/v1/exercises/$id/video', {'key': key}, ['exercises']);
   }
 
-  Future<String> exerciseVideoUrl(String id) async {
+  Future<ExerciseVideo> exerciseVideo(String id) async {
     final res = await client.getJson('/v1/exercises/$id/video');
-    return jsonString(res['url']);
+    return ExerciseVideo(jsonString(res['status']), jsonString(res['url']));
+  }
+
+  Future<String> exerciseVideoUrl(String id) async => (await exerciseVideo(id)).url;
+
+  Future<String> waitVideoReady(
+    String id, {
+    bool Function()? cancelled,
+    Duration interval = const Duration(seconds: 3),
+    Duration timeout = const Duration(minutes: 15),
+  }) async {
+    final deadline = DateTime.now().add(timeout);
+    while (true) {
+      if (cancelled?.call() ?? false) return 'processing';
+      try {
+        final status = (await exerciseVideo(id)).status;
+        if (status == 'ready' || status == '' || status == 'failed') {
+          bus.touchAll(['exercises']);
+          return status == 'failed' ? 'failed' : 'ready';
+        }
+      } on ApiException catch (e) {
+        if (!e.isNetwork && (e.status ?? 0) < 500) rethrow;
+      }
+      if (!DateTime.now().isBefore(deadline)) return 'failed';
+      await Future<void>.delayed(interval);
+    }
   }
 
   Future<void> deleteExerciseVideo(String id) =>

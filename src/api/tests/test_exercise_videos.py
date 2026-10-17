@@ -1,3 +1,4 @@
+import re
 import uuid
 from collections.abc import Awaitable, Callable
 from typing import Any
@@ -25,7 +26,11 @@ def video_url(exercise: Exercise) -> str:
 
 
 def new_key(exercise: Exercise) -> str:
-    return f"videos/{exercise.id}/{uuid.uuid4().hex}"
+    return f"exercises/{exercise.id}/raw/{uuid.uuid4().hex}"
+
+
+def legacy_key() -> str:
+    return f"videos/abc/{uuid.uuid4().hex}"
 
 
 async def refresh(db_session: AsyncSession, exercise: Exercise) -> Exercise:
@@ -52,7 +57,7 @@ async def test_staff_gets_upload_url_for_exercise_prefix(
 
     assert response.status_code == 201
     body = response.json()
-    assert body["key"].startswith(f"videos/{exercise.id}/")
+    assert re.fullmatch(rf"exercises/{exercise.id}/raw/[0-9a-f]{{32}}", body["key"])
     assert body["upload_url"].startswith("https://storage.test/put/")
     assert body["expires_in"] == 3600
     assert storage.put_calls == [(body["key"], 5_000_000)]
@@ -77,6 +82,53 @@ async def test_upload_url_rejects_bad_size(
 
     assert response.status_code == 422
     assert storage.put_calls == []
+
+
+@pytest.mark.parametrize("content_type", ["video/mp4", "video/quicktime", "video/webm"])
+async def test_upload_url_accepts_phone_video_types(
+    client: AsyncClient,
+    storage: FakeStorage,
+    make_user: UserFactory,
+    make_exercise: ExerciseFactory,
+    auth_headers: HeadersFactory,
+    content_type: str,
+) -> None:
+    actor = await make_user(role="admin")
+    exercise = await make_exercise()
+
+    response = await client.post(
+        f"{video_url(exercise)}/upload-url",
+        headers=auth_headers(actor),
+        json={"size": 5, "content_type": content_type},
+    )
+
+    assert response.status_code == 201
+
+
+@pytest.mark.parametrize("content_type", ["image/png", "video/x-msvideo", ""])
+async def test_upload_url_rejects_other_content_types(
+    client: AsyncClient,
+    storage: FakeStorage,
+    make_user: UserFactory,
+    make_exercise: ExerciseFactory,
+    auth_headers: HeadersFactory,
+    content_type: str,
+) -> None:
+    actor = await make_user(role="admin")
+    exercise = await make_exercise()
+
+    response = await client.post(
+        f"{video_url(exercise)}/upload-url",
+        headers=auth_headers(actor),
+        json={"size": 5, "content_type": content_type},
+    )
+
+    assert response.status_code == 422
+    assert storage.put_calls == []
+
+
+def test_raw_limit_is_100_mb() -> None:
+    assert MAX_VIDEO_BYTES == 100 * 1024 * 1024
 
 
 async def test_upload_url_accepts_max_size(
@@ -105,12 +157,14 @@ async def test_non_staff_cannot_manage_video(
     make_user: UserFactory,
     make_exercise: ExerciseFactory,
     auth_headers: HeadersFactory,
+    db_session: AsyncSession,
     role: str,
 ) -> None:
     actor = await make_user(role=role)
-    exercise = await make_exercise(video_key=new_key(Exercise(id="x")))
+    exercise = await make_exercise(video_key=legacy_key())
     headers = auth_headers(actor)
     key = new_key(exercise)
+    storage.objects[key] = 100
 
     responses = [
         await client.post(f"{video_url(exercise)}/upload-url", headers=headers, json={"size": 5}),
@@ -121,6 +175,9 @@ async def test_non_staff_cannot_manage_video(
     assert [response.status_code for response in responses] == [403, 403, 403]
     assert storage.put_calls == []
     assert storage.deleted == []
+    refreshed = await refresh(db_session, exercise)
+    assert refreshed.video_status is None
+    assert refreshed.video_key is not None
 
 
 async def test_unknown_exercise_is_404_on_every_video_endpoint(
@@ -135,7 +192,7 @@ async def test_unknown_exercise_is_404_on_every_video_endpoint(
 
     responses = [
         await client.post(f"{url}/upload-url", headers=headers, json={"size": 5}),
-        await client.put(url, headers=headers, json={"key": "videos/missing/" + "a" * 32}),
+        await client.put(url, headers=headers, json={"key": "exercises/missing/raw/" + "a" * 32}),
         await client.get(url, headers=headers),
         await client.delete(url, headers=headers),
     ]
@@ -180,9 +237,10 @@ async def test_upload_url_with_unconfigured_storage_is_503(
     assert response.json()["detail"]["code"] == "storage_unavailable"
 
 
-async def test_confirm_sets_video_key_and_has_video(
+async def test_confirm_is_accepted_and_ends_with_compressed_video(
     client: AsyncClient,
     storage: FakeStorage,
+    video_worker: Any,
     make_user: UserFactory,
     make_exercise: ExerciseFactory,
     auth_headers: HeadersFactory,
@@ -194,13 +252,14 @@ async def test_confirm_sets_video_key_and_has_video(
     storage.objects[key] = 10_000_000
 
     response = await client.put(video_url(exercise), headers=auth_headers(actor), json={"key": key})
+    await video_worker.join()
 
-    assert response.status_code == 200
-    body = response.json()
-    assert body["has_video"] is True
-    assert "video_key" not in body
-    assert key not in response.text
-    assert (await refresh(db_session, exercise)).video_key == key
+    assert response.status_code == 202
+    assert response.json() == {"status": "processing"}
+    refreshed = await refresh(db_session, exercise)
+    assert refreshed.video_status == "ready"
+    assert re.fullmatch(rf"exercises/{exercise.id}/video/[0-9a-f]{{32}}\.mp4", refreshed.video_key)
+    assert key in storage.deleted
 
 
 async def test_confirm_without_uploaded_object_is_422(
@@ -226,14 +285,16 @@ async def test_confirm_without_uploaded_object_is_422(
 @pytest.mark.parametrize(
     "key",
     [
-        "videos/other/" + "a" * 32,
+        "exercises/other/raw/" + "a" * 32,
+        "videos/{id}/" + "a" * 32,
         "images/{id}/" + "a" * 32,
-        "videos/{id}/short",
-        "videos/{id}/" + "A" * 32,
-        "videos/{id}/" + "a" * 32 + "/extra",
-        "videos/{id}/../other/" + "a" * 32,
-        "videos/{id}/" + "a" * 32 + "x",
-        "{id}/" + "a" * 32,
+        "exercises/{id}/video/" + "a" * 32 + ".mp4",
+        "exercises/{id}/raw/short",
+        "exercises/{id}/raw/" + "A" * 32,
+        "exercises/{id}/raw/" + "a" * 32 + "/extra",
+        "exercises/{id}/raw/../other/" + "a" * 32,
+        "exercises/{id}/raw/" + "a" * 32 + "x",
+        "exercises/{id}/" + "a" * 32,
     ],
 )
 async def test_confirm_rejects_foreign_or_malformed_keys(
@@ -254,7 +315,9 @@ async def test_confirm_rejects_foreign_or_malformed_keys(
 
     assert response.status_code == 422
     assert response.json()["detail"]["code"] == "video_key_invalid"
-    assert (await refresh(db_session, exercise)).video_key is None
+    refreshed = await refresh(db_session, exercise)
+    assert refreshed.video_key is None
+    assert refreshed.video_status is None
 
 
 async def test_confirm_rejects_other_exercises_key(
@@ -295,51 +358,34 @@ async def test_confirm_oversized_object_is_422_and_removed(
     assert response.status_code == 422
     assert response.json()["detail"]["code"] == "video_too_large"
     assert storage.deleted == [key]
-    assert (await refresh(db_session, exercise)).video_key is None
+    refreshed = await refresh(db_session, exercise)
+    assert refreshed.video_key is None
+    assert refreshed.video_status is None
 
 
-async def test_replacing_video_deletes_old_object(
+async def test_replacing_video_deletes_old_object_after_new_one_is_ready(
     client: AsyncClient,
     storage: FakeStorage,
+    video_worker: Any,
     make_user: UserFactory,
     make_exercise: ExerciseFactory,
     auth_headers: HeadersFactory,
     db_session: AsyncSession,
 ) -> None:
     actor = await make_user(role="admin")
-    exercise = await make_exercise()
-    old = new_key(exercise)
-    new = new_key(exercise)
-    exercise.video_key = old
-    await db_session.commit()
-    storage.objects[new] = 100
+    old = legacy_key()
+    exercise = await make_exercise(video_key=old, video_status="ready")
+    raw = new_key(exercise)
+    storage.objects[raw] = 100
 
-    response = await client.put(video_url(exercise), headers=auth_headers(actor), json={"key": new})
+    response = await client.put(video_url(exercise), headers=auth_headers(actor), json={"key": raw})
+    await video_worker.join()
 
-    assert response.status_code == 200
-    assert storage.deleted == [old]
-    assert (await refresh(db_session, exercise)).video_key == new
-
-
-async def test_confirming_same_key_twice_does_not_delete_it(
-    client: AsyncClient,
-    storage: FakeStorage,
-    make_user: UserFactory,
-    make_exercise: ExerciseFactory,
-    auth_headers: HeadersFactory,
-) -> None:
-    actor = await make_user(role="admin")
-    exercise = await make_exercise()
-    key = new_key(exercise)
-    storage.objects[key] = 100
-
-    for _ in range(2):
-        response = await client.put(
-            video_url(exercise), headers=auth_headers(actor), json={"key": key}
-        )
-        assert response.status_code == 200
-
-    assert storage.deleted == []
+    assert response.status_code == 202
+    assert sorted(storage.deleted) == sorted([raw, old])
+    refreshed = await refresh(db_session, exercise)
+    assert refreshed.video_key != old
+    assert refreshed.video_status == "ready"
 
 
 @pytest.mark.parametrize("role", ALL_ROLES)
@@ -352,18 +398,20 @@ async def test_any_signed_in_user_gets_video_url(
     role: str,
 ) -> None:
     actor = await make_user(role=role)
-    key = f"videos/abc/{uuid.uuid4().hex}"
+    key = legacy_key()
     exercise = await make_exercise(video_key=key)
 
     response = await client.get(video_url(exercise), headers=auth_headers(actor))
 
     assert response.status_code == 200
-    body = response.json()
-    assert body["url"] == f"https://storage.test/get/{key}?type=video/mp4"
-    assert body["expires_in"] == 3600
+    assert response.json() == {
+        "status": "ready",
+        "url": f"https://storage.test/get/{key}?type=video/mp4",
+        "expires_in": 3600,
+    }
 
 
-async def test_get_video_without_video_is_404(
+async def test_get_video_without_video_has_no_url(
     client: AsyncClient,
     storage: FakeStorage,
     make_user: UserFactory,
@@ -375,7 +423,33 @@ async def test_get_video_without_video_is_404(
 
     response = await client.get(video_url(exercise), headers=auth_headers(actor))
 
-    assert response.status_code == 404
+    assert response.status_code == 200
+    assert response.json() == {"status": None, "url": None, "expires_in": None}
+
+
+@pytest.mark.parametrize(
+    ("video_key", "video_status"),
+    [(None, "processing"), (None, "failed"), ("legacy", "processing"), ("legacy", "failed")],
+)
+async def test_get_video_reports_status_and_keeps_old_video_playable(
+    client: AsyncClient,
+    storage: FakeStorage,
+    make_user: UserFactory,
+    make_exercise: ExerciseFactory,
+    auth_headers: HeadersFactory,
+    video_key: str | None,
+    video_status: str,
+) -> None:
+    actor = await make_user()
+    key = legacy_key() if video_key else None
+    exercise = await make_exercise(video_key=key, video_status=video_status)
+
+    response = await client.get(video_url(exercise), headers=auth_headers(actor))
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == video_status
+    assert (body["url"] is not None) is (key is not None)
 
 
 async def test_delete_video_clears_key_and_deletes_object(
@@ -387,14 +461,16 @@ async def test_delete_video_clears_key_and_deletes_object(
     db_session: AsyncSession,
 ) -> None:
     actor = await make_user(role="admin")
-    key = f"videos/abc/{uuid.uuid4().hex}"
-    exercise = await make_exercise(video_key=key)
+    key = legacy_key()
+    exercise = await make_exercise(video_key=key, video_status="failed")
 
     response = await client.delete(video_url(exercise), headers=auth_headers(actor))
 
     assert response.status_code == 204
     assert storage.deleted == [key]
-    assert (await refresh(db_session, exercise)).video_key is None
+    refreshed = await refresh(db_session, exercise)
+    assert refreshed.video_key is None
+    assert refreshed.video_status is None
 
 
 async def test_delete_video_when_none_is_noop_204(
@@ -421,7 +497,7 @@ async def test_delete_exercise_deletes_video_object(
     auth_headers: HeadersFactory,
 ) -> None:
     actor = await make_user(role="admin")
-    key = f"videos/abc/{uuid.uuid4().hex}"
+    key = legacy_key()
     exercise = await make_exercise(video_key=key)
 
     response = await client.delete(f"/v1/exercises/{exercise.id}", headers=auth_headers(actor))
@@ -454,13 +530,13 @@ async def test_exercise_update_does_not_touch_video_key(
     db_session: AsyncSession,
 ) -> None:
     actor = await make_user(role="admin")
-    key = f"videos/abc/{uuid.uuid4().hex}"
+    key = legacy_key()
     exercise = await make_exercise(video_key=key)
 
     response = await client.put(
         f"/v1/exercises/{exercise.id}",
         headers=auth_headers(actor),
-        json={"name": "Renamed", "muscle": "chest", "video": "https://youtu.be/x"},
+        json={"name": "Renamed", "muscle": "chest"},
     )
 
     assert response.status_code == 200
@@ -477,15 +553,16 @@ async def test_exercise_out_has_video_flag_and_never_exposes_key(
     role: str,
 ) -> None:
     actor = await make_user(role=role)
-    key = f"videos/abc/{uuid.uuid4().hex}"
+    key = legacy_key()
     with_video = await make_exercise(name="A", video_key=key)
     without = await make_exercise(name="B")
 
     listing = await client.get("/v1/exercises", headers=auth_headers(actor))
     single = await client.get(f"/v1/exercises/{with_video.id}", headers=auth_headers(actor))
 
-    flags = {item["id"]: item["has_video"] for item in listing.json()}
-    assert flags == {with_video.id: True, without.id: False}
+    flags = {item["id"]: (item["has_video"], item["video_status"]) for item in listing.json()}
+    assert flags == {with_video.id: (True, "ready"), without.id: (False, None)}
     assert single.json()["has_video"] is True
+    assert single.json()["video_status"] == "ready"
     assert key not in listing.text + single.text
     assert "video_key" not in single.json()

@@ -7,6 +7,7 @@ import '../../services/db.dart';
 import '../../theme.dart';
 import '../../widgets/lazy_stack.dart';
 import '../../widgets/product_image.dart';
+import '../../widgets/product_photos.dart';
 import '../../widgets/ui.dart';
 
 /// Trener (va bosh admin) uchun do'kon: buyurtmalar va tovarlar.
@@ -339,7 +340,7 @@ Future<void> editProduct(BuildContext context, [Product? p]) async {
   final stock = TextEditingController(text: '${p?.stock ?? 1}');
   final costPrice =
       TextEditingController(text: p == null || p.costPrice == 0 ? '' : '${p.costPrice}');
-  final image = TextEditingController(text: p?.gallery.join('\n'));
+  var cover = p?.image ?? '';
   final sizes = TextEditingController(text: p?.sizes.join(', '));
   final colors = TextEditingController(text: p?.colors.join(', '));
   final sizeStockControllers = <String, TextEditingController>{};
@@ -360,7 +361,7 @@ Future<void> editProduct(BuildContext context, [Product? p]) async {
             ProductImage(
               category: category,
               name: name.text,
-              url: image.text.split(RegExp(r'[\n,]')).first.trim(),
+              url: cover,
               size: 52,
             ),
             const SizedBox(width: AppSpace.md),
@@ -472,18 +473,7 @@ Future<void> editProduct(BuildContext context, [Product? p]) async {
             ]),
           ),
           const SizedBox(height: AppSpace.md),
-          TextField(
-            controller: image,
-            keyboardType: TextInputType.url,
-            minLines: 1,
-            maxLines: 4,
-            onChanged: (_) => setS(() {}),
-            decoration: InputDecoration(
-              labelText: tr('Rasm havolalari (ixtiyoriy)'),
-              hintText: 'https://...',
-              helperText: tr('Bir nechta bo\'lsa — har birini yangi qatorga yozing'),
-            ),
-          ),
+          ProductPhotos(product: p, onCover: (url) => setS(() => cover = url)),
           const SizedBox(height: AppSpace.md),
           TextField(
             controller: sizes,
@@ -569,8 +559,6 @@ Future<void> editProduct(BuildContext context, [Product? p]) async {
 
   if (saved == true) {
     if (name.text.trim().isEmpty) return;
-    final urls =
-        image.text.split(RegExp(r'[\n,]')).map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
     final sizeList = sizes.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
     await Db.saveProduct(Product(
       id: p?.id ?? '',
@@ -581,8 +569,6 @@ Future<void> editProduct(BuildContext context, [Product? p]) async {
       nameEn: nameEn.text.trim(),
       noteRu: noteRu.text.trim(),
       noteEn: noteEn.text.trim(),
-      image: urls.isEmpty ? '' : urls.first,
-      images: urls.length > 1 ? urls.sublist(1) : const [],
       sizes: sizeList,
       colors: colors.text
           .split(',')

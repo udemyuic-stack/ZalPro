@@ -27,6 +27,8 @@ const _months = [
   'dekabr',
 ];
 
+String microLabel(String text) => text;
+
 String uzDate(DateTime d) =>
     trf('{0}, {1}-{2}', [tr(_weekdays[d.weekday - 1]), d.day, tr(_months[d.month - 1])]);
 
@@ -132,7 +134,7 @@ Future<bool> confirm(
           const SizedBox(height: AppSpace.sm),
           OutlinedButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text(tr('Bekor qilish')),
+            child: Text(ok == tr('Bekor qilish') ? tr('Orqaga') : tr('Bekor qilish')),
           ),
         ]),
   );
@@ -183,7 +185,7 @@ class Eyebrow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(
-        text.toUpperCase(),
+        microLabel(text),
         style:
             Theme.of(context).textTheme.labelSmall?.copyWith(color: color ?? AppColors.textFaint),
       );
@@ -200,13 +202,13 @@ class Heading extends StatelessWidget {
     final base = style ?? Theme.of(context).textTheme.headlineSmall!;
     return Text.rich(
       TextSpan(children: [
-        TextSpan(text: text.toUpperCase()),
+        TextSpan(text: text),
         if (accent != null) ...[
           const TextSpan(text: ' '),
-          TextSpan(text: accent!.toUpperCase(), style: TextStyle(color: AppColors.accentText)),
+          TextSpan(text: accent!, style: TextStyle(color: AppColors.accentText)),
         ],
       ]),
-      style: base.copyWith(fontStyle: FontStyle.italic, fontWeight: FontWeight.w800),
+      style: base,
     );
   }
 }
@@ -521,7 +523,7 @@ class StatTile extends StatelessWidget {
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
               child: Text(
-                label.toUpperCase(),
+                microLabel(label),
                 maxLines: 1,
                 style: t.labelSmall?.copyWith(color: AppColors.textFaint),
               ),
@@ -578,7 +580,7 @@ class KcalRing extends StatelessWidget {
           CountUp(value, style: t.headlineMedium?.copyWith(color: fg)),
           const SizedBox(height: 2),
           Text(
-            trf('gacha {0}', [total.round()]),
+            '/ ${trf('{0} kkal', [total.round()])}',
             style: t.labelSmall?.copyWith(color: AppColors.textFaint, fontFeatures: tabular),
           ),
         ]),
@@ -619,9 +621,8 @@ class AuraLogo extends StatelessWidget {
       style: TextStyle(
         color: AppColors.text,
         fontSize: size * 0.55,
-        fontWeight: FontWeight.w800,
-        fontStyle: FontStyle.italic,
-        letterSpacing: 2,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 1.5,
       ),
     );
     return Semantics(

@@ -38,6 +38,17 @@ void main() {
     expect(logs.map((l) => l.weight), [82.0, 81.5]);
   });
 
+  test('weights: concurrent listeners share one request', () async {
+    respond = (o) async => jsonBody([
+          {'id': 'a', 'date': '2026-05-01T10:00:00Z', 'weight': 82.0},
+        ], 200);
+    final first = api.weights('u1').listen((_) {});
+    final logs = await api.weights('u1').first;
+    expect(logs.single.weight, 82.0);
+    expect(adapter.count('/v1/users/u1/weights'), 1);
+    await first.cancel();
+  });
+
   test('addWeight: POST weight, touches weights and user tags', () async {
     respond = (o) async => jsonBody({'id': 'x', 'date': '2026-05-10T10:00:00Z', 'weight': 80}, 201);
     await api.addWeight('u1', 80);

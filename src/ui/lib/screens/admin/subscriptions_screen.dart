@@ -67,7 +67,7 @@ class _ClientsTab extends StatelessWidget {
         if (!snap.hasData) return const Center(child: CircularProgressIndicator());
         final list = [...snap.data!]..sort((a, b) => a.name.compareTo(b.name));
         if (list.isEmpty) {
-          return EmptyState(icon: Icons.card_membership_outlined, title: tr("Hali mijoz yo'q"));
+          return EmptyState(icon: Icons.event_repeat_outlined, title: tr("Hali mijoz yo'q"));
         }
         return ListView(
           padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.xl),
@@ -108,9 +108,9 @@ class _SubscriptionTile extends StatelessWidget {
     final expiringSoon = Subscription.isExpiringSoon(exp);
     final expired = Subscription.isExpired(exp);
     final status = exp == null
-        ? Pill(text: tr('Abonement yo‘q'), color: AppColors.textMuted)
+        ? Pill(text: tr("Abonement yo'q"), color: AppColors.textMuted)
         : expired
-            ? Pill(text: tr('Muddati o‘tdi'), color: AppColors.danger)
+            ? Pill(text: tr("Muddati o'tdi"), color: AppColors.danger)
             : expiringSoon
                 ? Pill(text: trf('{0} kun qoldi', [daysLeft]), color: AppColors.warning)
                 : Pill(text: trf('{0} kun qoldi', [daysLeft]), color: AppColors.success);
@@ -206,7 +206,7 @@ Future<void> addSubscriptionSheet(BuildContext context, AppUser client) async {
           paidDate: DateTime.now(),
         ),
       );
-      if (context.mounted) showSnack(context, tr('Abonement qo‘shildi'));
+      if (context.mounted) showSnack(context, tr("Abonement qo'shildi"));
     } catch (e) {
       if (context.mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
     }

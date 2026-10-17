@@ -5,7 +5,9 @@ import '../../models/gym.dart';
 import '../../models/models.dart';
 import '../../services/db.dart';
 import '../../theme.dart';
+import '../../widgets/workout_feedback.dart';
 import '../../widgets/ui.dart';
+import '../../services/api/api_error.dart';
 
 /// Trener: shogird kartasidagi "Mashqlar" tabi — har mushak uchun shu shogird qiladigan
 /// mashqlarni kutubxonadan tanlaydi (kimga ko'p, kimga kam). Trener o'zgartirmaguncha
@@ -45,7 +47,7 @@ class _StudentProgramTabState extends State<StudentProgramTab> {
       await Db.setProgram(widget.student.id, muscle, chosen);
       if (mounted) showSnack(context, tr('Mashqlar saqlandi'));
     } catch (e) {
-      if (mounted) showSnack(context, trf("Saqlab bo'lmadi: {0}", [e]));
+      if (mounted) showSnack(context, trf("Saqlab bo'lmadi: {0}", [apiErrorText(e)]));
     }
   }
 
@@ -66,6 +68,8 @@ class _StudentProgramTabState extends State<StudentProgramTab> {
                   'tanlov turadi. Tanlanmagan mushakda — "Boshlovchi" mashqlar.'),
               style: t.bodyMedium?.copyWith(color: AppColors.textMuted),
             ),
+            const SizedBox(height: AppSpace.lg),
+            WorkoutFeedbackStrip(uid: u.id),
             for (final (title, ids) in _groups(u)) ...[
               const SizedBox(height: AppSpace.lg),
               Text(title, style: t.titleMedium),
@@ -188,7 +192,10 @@ class _PickSheetState extends State<_PickSheet> {
                       [
                         if (e.sets.isNotEmpty) tr(e.sets),
                         if (levels[e.level] case final l?) tr(l),
-                        if (e.video.isNotEmpty) tr('Video'),
+                        if (e.videoProcessing)
+                          tr('Tayyorlanmoqda')
+                        else if (e.hasVideo)
+                          tr('Video'),
                       ].join(' · '),
                     ),
                     controlAffinity: ListTileControlAffinity.leading,

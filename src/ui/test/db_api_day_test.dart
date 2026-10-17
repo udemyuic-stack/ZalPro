@@ -15,6 +15,7 @@ Map<String, dynamic> dayJson({
   bool started = false,
   List<String> gymDone = const [],
   int water = 0,
+  int? feedback,
 }) =>
     {
       'day': '2026-05-01',
@@ -23,6 +24,7 @@ Map<String, dynamic> dayJson({
       'gym_started': started,
       'gym_done': gymDone,
       'water': water,
+      'feedback': feedback,
     };
 
 void main() {
@@ -107,6 +109,33 @@ void main() {
     await api.startWorkout(uid, day);
     expect(last().method, 'PUT');
     expect(last().path, '/v1/users/u1/days/2026-05-01/workout/start');
+  });
+
+  test('workout: feedback is read from the day', () async {
+    respond = (o) async => jsonBody(dayJson(started: true, feedback: 3), 200);
+    expect((await api.workout(uid, day).first).feedback, 3);
+    respond = (o) async => jsonBody(dayJson(feedback: 9), 200);
+    expect((await api.workout(uid, day).first).feedback, isNull);
+  });
+
+  test('setFeedback: PUT /workout/feedback with rating', () async {
+    await api.setFeedback(uid, day, 2);
+    expect(last().method, 'PUT');
+    expect(last().path, '/v1/users/u1/days/2026-05-01/workout/feedback');
+    expect(last().data, {'rating': 2});
+  });
+
+  test('feedbackWeek: maps day to rating and skips empty days', () async {
+    respond = (o) async => jsonBody([
+          {...dayJson(feedback: 1), 'day': '2026-05-01'},
+          {...dayJson(), 'day': '2026-05-02'},
+          {...dayJson(feedback: 3), 'day': '2026-05-03'},
+        ], 200);
+    final week = await api.feedbackWeek(uid).first;
+    expect(week, {'2026-05-01': 1, '2026-05-03': 3});
+    expect(last().method, 'GET');
+    expect(last().path, '/v1/users/u1/days');
+    expect(last().queryParameters.keys, containsAll(['from', 'to']));
   });
 
   test('toggleExercise: key is percent-encoded', () async {

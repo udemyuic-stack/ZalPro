@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Suv belgisi — [child] ustida, ekran o'rtasida juda xira rasm (`assets/brand/suv_belgisi.png`).
+/// Suv belgisi — [child] ostida, ekran o'rtasida juda xira rasm (`assets/brand/suv_belgisi.png`).
 /// Shaffof PNG matn rangiga bo'yaladi — qorong'i va yorug' rejimda ham ko'rinadi.
 /// Bosish va aylantirishga xalaqit bermaydi.
 ///
@@ -14,7 +14,6 @@ class Watermark extends StatelessWidget {
   Widget build(BuildContext context) {
     final onSurface = Theme.of(context).colorScheme.onSurface;
     return Stack(children: [
-      child,
       Positioned.fill(
         child: IgnorePointer(
           child: Center(
@@ -23,7 +22,7 @@ class Watermark extends StatelessWidget {
               child: Image.asset(
                 'assets/brand/suv_belgisi.png',
                 fit: BoxFit.contain,
-                color: onSurface.withValues(alpha: 0.10),
+                color: onSurface.withValues(alpha: 0.06),
                 colorBlendMode: BlendMode.srcIn,
                 errorBuilder: (_, __, ___) => const SizedBox.shrink(),
               ),
@@ -31,6 +30,7 @@ class Watermark extends StatelessWidget {
           ),
         ),
       ),
+      child,
     ]);
   }
 }

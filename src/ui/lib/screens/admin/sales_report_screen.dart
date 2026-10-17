@@ -90,7 +90,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                     const SizedBox(height: AppSpace.xl),
                     SectionHeader(tr('Kim sotdi'), eyebrow: tr('Hisobot')),
                     if (sellers.isEmpty)
-                      Text(tr('Bu davrda sotuv bo‘lmagan'),
+                      Text(tr("Bu davrda sotuv bo'lmagan"),
                           style: TextStyle(color: AppColors.textMuted)),
                     for (final e
                         in (sellers.entries.toList()
@@ -100,7 +100,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                         child: BentoTile(
                           padding: const EdgeInsets.all(AppSpace.md),
                           child: Row(children: [
-                            UserAvatar(name: names[e.key] ?? tr('Noma’lum'), size: 38),
+                            UserAvatar(name: names[e.key] ?? tr("Noma'lum"), size: 38),
                             const SizedBox(width: AppSpace.md),
                             Expanded(
                               child:
@@ -126,7 +126,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                   const SizedBox(height: AppSpace.xl),
                   SectionHeader(tr('Qaysi tovar'), eyebrow: tr('Sotilgani')),
                   if (products.isEmpty)
-                    Text(tr('Bu davrda sotuv bo‘lmagan'),
+                    Text(tr("Bu davrda sotuv bo'lmagan"),
                         style: TextStyle(color: AppColors.textMuted)),
                   for (final e
                       in (products.entries.toList()
@@ -168,7 +168,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                         const SizedBox(width: AppSpace.sm),
                         Text(
                           SalesReport.soldAt(o) == null ? '' : uzDate(SalesReport.soldAt(o)!),
-                          style: TextStyle(color: AppColors.textFaint, fontSize: 11.5),
+                          style: TextStyle(color: AppColors.textFaint, fontSize: 12),
                         ),
                         const SizedBox(width: AppSpace.sm),
                         Text(o.totalText, style: t.bodySmall?.copyWith(fontFeatures: tabular)),

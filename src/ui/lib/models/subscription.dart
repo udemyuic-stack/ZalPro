@@ -208,5 +208,4 @@ class Membership {
       expiresAt: jsonDate(j['expires_at']),
     );
   }
-
 }

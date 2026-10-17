@@ -62,6 +62,10 @@ class ExerciseMark(StrictModel):
     done: bool
 
 
+class FeedbackIn(StrictModel):
+    rating: int = Field(strict=True, ge=1, le=3)
+
+
 class WaterIn(StrictModel):
     glasses: int = Field(ge=0, le=MAX_WATER)
 
@@ -101,6 +105,7 @@ class DayOut(OutModel):
     gym_started: bool
     gym_done: list[str]
     water: int
+    feedback: int | None = None
 
     @field_validator("extras")
     @classmethod

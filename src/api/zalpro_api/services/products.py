@@ -9,7 +9,8 @@ from zalpro_api.core.errors import not_found
 from zalpro_api.models import Product, User
 from zalpro_api.models.product import PRODUCT_CATEGORIES
 from zalpro_api.schemas.product import ProductIn, ProductOut, ProductPatch
-from zalpro_api.services import permissions
+from zalpro_api.services import images, permissions
+from zalpro_api.services.storage import Storage
 
 INPUT_FIELDS = tuple(ProductIn.model_fields)
 
@@ -41,11 +42,12 @@ async def list_products(session: AsyncSession) -> list[Product]:
     return list(result.all())
 
 
-def to_out(product: Product, actor: User) -> ProductOut:
+async def to_out(storage: Storage, product: Product, actor: User, expires: int) -> ProductOut:
     out = ProductOut.model_validate(product)
-    if permissions.can_see_cost_price(actor):
-        return out
-    return out.model_copy(update={"cost_price": None})
+    update: dict[str, Any] = {"image_urls": await images.product_urls(storage, product, expires)}
+    if not permissions.can_see_cost_price(actor):
+        update["cost_price"] = None
+    return out.model_copy(update=update)
 
 
 def merge_patch(product: Product, patch: ProductPatch) -> ProductIn:

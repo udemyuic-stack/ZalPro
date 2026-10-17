@@ -1,35 +1,55 @@
 import 'package:flutter/material.dart';
 import '../../l10n/tr.dart';
 import '../../models/gym.dart' show weekdayNames;
+import '../../models/kcal_target.dart';
 import '../../models/models.dart';
+import '../../models/streak.dart';
 import '../../services/db.dart';
 import '../../theme.dart';
+import '../../widgets/announcement_banner.dart';
+import '../../widgets/checkin_qr_sheet.dart';
 import '../../widgets/extra_food_sheet.dart';
 import '../../widgets/food_image.dart';
 import '../../widgets/plan_photo.dart';
+import '../../widgets/today_workout_card.dart';
 import '../../widgets/ui.dart';
 import '../../widgets/watermark.dart';
+import '../notifications_screen.dart';
+import 'shop_screen.dart';
 
 /// "Bugun" — bento setka: yirik ink bloki + kichik ko'rsatkich kataklari,
 /// so'ng ovqatlar ro'yxati. Har blok ochilishda pastdan suzib chiqadi.
 class TodayScreen extends StatelessWidget {
   final AppUser user;
-  const TodayScreen({super.key, required this.user});
+  final VoidCallback? onStartWorkout;
+  const TodayScreen({super.key, required this.user, this.onStartWorkout});
 
   @override
   Widget build(BuildContext context) {
     final day = todayKey();
+    final workout = onStartWorkout == null ? null : todayWorkoutName(user, DateTime.now());
     Widget page(List<Widget> children) => ListView(
           padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.lg, AppSpace.xxl),
-          children: [_Header(user: user), ...children],
+          children: [
+            _Header(user: user),
+            if (workout != null) ...[
+              TodayWorkoutCard(name: workout, onStart: onStartWorkout!),
+              const SizedBox(height: AppSpace.md),
+            ],
+            AnnouncementBanner(userId: user.id),
+            ...children,
+          ],
         );
 
     return Scaffold(
-      // Suv belgisi: ekran o'rtasida xira rasm
       body: Watermark(
         child: SafeArea(
           child: user.planId == null
-              ? page(const [SizedBox(height: AppSpace.xxl), _NoPlan()])
+              ? page([
+                  _CheckinSection(user: user),
+                  const SizedBox(height: AppSpace.xxl),
+                  _NoPlan(hasTrainer: user.trainerId != null),
+                ])
               : StreamBuilder<Plan?>(
                   stream: Db.plan(user.planId!),
                   builder: (context, snap) {
@@ -47,7 +67,11 @@ class TodayScreen extends StatelessWidget {
                     }
                     final plan = snap.data;
                     if (plan == null) {
-                      return page(const [SizedBox(height: AppSpace.xxl), _NoPlan()]);
+                      return page([
+                        _CheckinSection(user: user),
+                        const SizedBox(height: AppSpace.xxl),
+                        _NoPlan(hasTrainer: user.trainerId != null),
+                      ]);
                     }
                     // Maqsadga mos kelmaydigan reja bloklangan — shogirdga ko'rsatilmaydi
                     if (!user.fitsPlan(plan)) {
@@ -101,7 +125,9 @@ class TodayScreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: AppSpace.md),
-                              FadeInUp(index: 2, child: _WaterCard(uid: user.id, day: day)),
+                              FadeInUp(index: 2, child: _CheckinSection(user: user)),
+                              const SizedBox(height: AppSpace.md),
+                              FadeInUp(index: 2, child: WaterCard(uid: user.id, day: day)),
                               const SizedBox(height: AppSpace.xl),
                               SectionHeader(
                                 tr('Bugungi ovqatlar'),
@@ -154,7 +180,7 @@ class TodayScreen extends StatelessWidget {
                                 const SizedBox(height: AppSpace.md),
                                 _ForbiddenCard(items: plan.forbidden),
                               ],
-                              if (plan.note.isNotEmpty) ...[
+                              if (plan.note.isNotEmpty && user.trainerId != null) ...[
                                 const SizedBox(height: AppSpace.md),
                                 _NoteCard(note: plan.note),
                               ],
@@ -194,11 +220,44 @@ class _Header extends StatelessWidget {
             ),
           ]),
         ),
-        const SizedBox(width: AppSpace.md),
+        const SizedBox(width: AppSpace.sm),
+        _HeaderAction(
+          key: const Key('open-shop'),
+          tooltip: tr("Do'kon"),
+          icon: const Icon(Icons.storefront_outlined),
+          onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => Scaffold(body: ShopScreen(user: user)))),
+        ),
+        _HeaderAction(
+          key: const Key('open-notifications'),
+          tooltip: tr('Eslatma'),
+          icon: FeedBadge(user: user, icon: const Icon(Icons.notifications_none)),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(
+              builder: (_) => Scaffold(
+                    appBar: AppBar(title: Text(tr('Eslatma'))),
+                    body: NotificationsScreen(user: user),
+                  ))),
+        ),
+        const SizedBox(width: AppSpace.xs),
         UserAvatar(name: user.name, size: 46),
       ]),
     );
   }
+}
+
+class _HeaderAction extends StatelessWidget {
+  final String tooltip;
+  final Widget icon;
+  final VoidCallback onTap;
+  const _HeaderAction({super.key, required this.tooltip, required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => IconButton(
+        onPressed: onTap,
+        tooltip: tooltip,
+        icon: icon,
+        constraints: const BoxConstraints.tightFor(width: kTouchTarget, height: kTouchTarget),
+      );
 }
 
 /// Biriktirilgan reja shogird maqsadiga mos emas — bloklangan
@@ -215,14 +274,17 @@ class _PlanMismatch extends StatelessWidget {
 }
 
 class _NoPlan extends StatelessWidget {
-  const _NoPlan();
+  final bool hasTrainer;
+  const _NoPlan({required this.hasTrainer});
 
   @override
   Widget build(BuildContext context) => EmptyState(
         icon: Icons.restaurant_menu,
         title: tr('Reja hali biriktirilmagan'),
-        subtitle: tr("Trener tez orada sizga shaxsiy ovqatlanish rejasini tuzadi. "
-            "Savollaringizni 'Trener' bo'limida yozing."),
+        subtitle: hasTrainer
+            ? tr("Trener tez orada sizga shaxsiy ovqatlanish rejasini tuzadi. "
+                "Savollaringizni 'Trener' bo'limida yozing.")
+            : tr("Shaxsiy ovqatlanish rejasi uchun 'Trener' bo'limidan trener tanlang."),
       );
 }
 
@@ -266,22 +328,18 @@ class _HeroPanel extends StatelessWidget {
               style: t.titleMedium?.copyWith(color: AppColors.text),
             ),
             const SizedBox(height: AppSpace.lg),
-            Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  CountUp(
-                    over > 0 ? over : left,
-                    style: t.displaySmall
-                        ?.copyWith(color: over > 0 ? AppColors.danger : AppColors.accent),
-                  ),
-                  const SizedBox(width: AppSpace.sm),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3),
-                    child: Text(over > 0 ? tr('kkal ortiqcha') : tr('kkal qoldi'),
-                        style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
-                  ),
-                ]),
+            Wrap(crossAxisAlignment: WrapCrossAlignment.end, spacing: AppSpace.sm, children: [
+              CountUp(
+                over > 0 ? over : left,
+                style:
+                    t.displaySmall?.copyWith(color: over > 0 ? AppColors.danger : AppColors.accent),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: Text(over > 0 ? tr('kkal ortiqcha') : tr('kkal qoldi'),
+                    style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
+              ),
+            ]),
             const SizedBox(height: AppSpace.md),
             _ProgressBar(value: total > 0 ? (eaten / total).clamp(0.0, 1.0) : 0),
             const SizedBox(height: AppSpace.sm),
@@ -336,49 +394,83 @@ class _MetricsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final diff = plan.kcalFor(weekday) - user.targetKcal;
-    final onTarget = user.targetKcal == 0 || diff.abs() <= 300;
-    return Row(children: [
-      Expanded(
-        child: StatTile(
-          icon: Icons.egg_alt_outlined,
-          label: tr('Oqsil'),
-          value: trf('{0} g', [plan.proteinFor(weekday).round()]),
-          color: AppColors.protein,
+    final goal = kcalTargetOf(user, plan, weekday);
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        Expanded(
+          child: StatTile(
+            icon: Icons.restaurant_outlined,
+            label: tr('Oqsil'),
+            value: trf('{0} g', [plan.proteinFor(weekday).round()]),
+            color: AppColors.protein,
+          ),
         ),
-      ),
-      const SizedBox(width: AppSpace.md),
-      Expanded(
-        child: StatTile(
-          icon: onTarget ? Icons.flag_outlined : Icons.warning_amber_rounded,
-          label: tr('Norma'),
-          value: user.targetKcal == 0 ? '—' : '${user.targetKcal}',
-          color: onTarget ? AppColors.success : AppColors.warning,
+        const SizedBox(width: AppSpace.md),
+        Expanded(
+          child: StatTile(
+            icon: Icons.flag_outlined,
+            label: tr('Maqsad'),
+            value: goal.target == 0 ? '—' : trf('{0} kkal', [goal.target]),
+            color: AppColors.accent,
+          ),
         ),
-      ),
-      const SizedBox(width: AppSpace.md),
-      Expanded(
-        child: StatTile(
-          icon: Icons.restaurant_outlined,
-          label: tr('Ovqat'),
-          value: '$doneCount/$mealCount',
-          color: AppColors.accent,
+        const SizedBox(width: AppSpace.md),
+        Expanded(
+          child: StatTile(
+            icon: Icons.restaurant_outlined,
+            label: tr('Ovqat'),
+            value: '$doneCount/$mealCount',
+            color: AppColors.accent,
+          ),
         ),
-      ),
+      ]),
+      if (goal.recommended != null) ...[
+        const SizedBox(height: AppSpace.sm),
+        Text(trf('Tavsiya: {0} kkal', [goal.recommended]),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textMuted)),
+      ],
     ]);
   }
 }
 
-class _WaterCard extends StatelessWidget {
+const _maxGlasses = 30;
+
+class _WaterStep extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+  const _WaterStep({super.key, required this.icon, required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: label,
+      child: IconButton.outlined(
+        onPressed: onTap,
+        icon: Icon(icon),
+        constraints: const BoxConstraints.tightFor(width: kTouchTarget, height: kTouchTarget),
+        tooltip: label,
+      ),
+    );
+  }
+}
+
+class WaterCard extends StatelessWidget {
   final String uid, day;
-  const _WaterCard({required this.uid, required this.day});
+  final Stream<int>? source;
+  final Future<void> Function(int glasses)? setGlasses;
+  const WaterCard({super.key, required this.uid, required this.day, this.source, this.setGlasses});
+
+  Future<void> _set(int glasses) =>
+      setGlasses != null ? setGlasses!(glasses) : Db.setWater(uid, day, glasses);
 
   @override
   Widget build(BuildContext context) {
     final s = Theme.of(context).colorScheme;
     final t = Theme.of(context).textTheme;
     return StreamBuilder<int>(
-      stream: Db.water(uid, day),
+      stream: source ?? Db.water(uid, day),
       builder: (context, snap) {
         if (snap.hasError) return ErrorState(error: snap.error, compact: true);
         final g = snap.data ?? 0;
@@ -395,24 +487,26 @@ class _WaterCard extends StatelessWidget {
                 Pill(text: tr('Bajarildi'), color: AppColors.success, icon: Icons.check_rounded),
             ]),
             const SizedBox(height: AppSpace.sm),
-            // Birlik aniq ko'rinsin: nechta stakan va necha ml
-            Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text(
-                    '$g',
-                    style: t.headlineSmall?.copyWith(
-                      color: g > 0 ? AppColors.water : s.onSurfaceVariant,
-                      fontFeatures: tabular,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpace.xs),
-                  Text(
-                    tr('stakan / 8'),
-                    style: t.bodyMedium?.copyWith(color: s.onSurfaceVariant),
-                  ),
-                  const Spacer(),
+            Row(children: [
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        Text(
+                          '$g',
+                          style: t.headlineSmall?.copyWith(
+                            color: g > 0 ? AppColors.water : s.onSurfaceVariant,
+                            fontFeatures: tabular,
+                          ),
+                        ),
+                        const SizedBox(width: AppSpace.xs),
+                        Text(
+                          tr('stakan / 8'),
+                          style: t.bodyMedium?.copyWith(color: s.onSurfaceVariant),
+                        ),
+                      ]),
                   Text(
                     trf('{0} ml / 2000 ml', [g * 250]),
                     style: t.bodySmall?.copyWith(
@@ -421,6 +515,21 @@ class _WaterCard extends StatelessWidget {
                     ),
                   ),
                 ]),
+              ),
+              _WaterStep(
+                key: const Key('water-minus'),
+                icon: Icons.remove_rounded,
+                label: tr('Bitta stakan kamaytirish'),
+                onTap: g > 0 ? () => _set(g - 1) : null,
+              ),
+              const SizedBox(width: AppSpace.sm),
+              _WaterStep(
+                key: const Key('water-plus'),
+                icon: Icons.add_rounded,
+                label: tr("Bitta stakan qo'shish"),
+                onTap: g < _maxGlasses ? () => _set(g + 1) : null,
+              ),
+            ]),
             const SizedBox(height: AppSpace.xs),
             Row(
               children: List.generate(8, (i) {
@@ -431,18 +540,30 @@ class _WaterCard extends StatelessWidget {
                     label: trf('{0} stakan', [i + 1]),
                     child: InkResponse(
                       radius: 26,
-                      // oxirgi to'la stakanni bossangiz — bittaga kamayadi
-                      onTap: () => Db.setWater(uid, day, i + 1 == g ? i : i + 1),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
+                      onTap: () => _set(i + 1 == g ? i : i + 1),
+                      child: Container(
+                        height: 48,
+                        margin: const EdgeInsets.symmetric(horizontal: 2, vertical: AppSpace.xs),
+                        decoration: BoxDecoration(
+                          color: full
+                              ? AppColors.water.withValues(alpha: 0.14)
+                              : AppColors.cardHigh.withValues(alpha: 0.6),
+                          borderRadius: BorderRadius.circular(AppRadius.sm),
+                          border: Border.all(
+                            color: full
+                                ? AppColors.water.withValues(alpha: 0.5)
+                                : AppColors.hairlineStrong,
+                          ),
+                        ),
+                        alignment: Alignment.center,
                         child: AnimatedSwitcher(
                           duration: const Duration(milliseconds: 220),
                           transitionBuilder: (c, a) => ScaleTransition(scale: a, child: c),
                           child: Icon(
                             full ? Icons.water_drop : Icons.water_drop_outlined,
                             key: ValueKey(full),
-                            size: 28,
-                            color: full ? AppColors.water : s.outlineVariant,
+                            size: 24,
+                            color: full ? AppColors.water : s.onSurfaceVariant,
                           ),
                         ),
                       ),
@@ -451,6 +572,14 @@ class _WaterCard extends StatelessWidget {
                 );
               }),
             ),
+            if (g == 0)
+              Padding(
+                padding: const EdgeInsets.only(top: AppSpace.xs, bottom: AppSpace.sm),
+                child: Text(
+                  tr('Ichgan stakaningizni bosib belgilang'),
+                  style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+                ),
+              ),
           ]),
         );
       },
@@ -536,7 +665,7 @@ class _MealCard extends StatelessWidget {
                   padding: const EdgeInsets.only(right: 6),
                   child: Opacity(
                     opacity: done ? 0.45 : 1,
-                    child: FoodImage(name: i.name, url: i.image, size: 32),
+                    child: FoodImage(name: i.name, size: 32),
                   ),
                 ),
             ]),
@@ -547,7 +676,7 @@ class _MealCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: Row(children: [
-                FoodImage(name: i.name, url: i.image, size: 44),
+                FoodImage(name: i.name, size: 44),
                 const SizedBox(width: AppSpace.md),
                 Expanded(child: Text(tr(i.name), style: t.bodyMedium)),
                 const SizedBox(width: AppSpace.sm),
@@ -707,5 +836,133 @@ class _NoteCard extends StatelessWidget {
         Text(tr(note), style: t.bodyMedium?.copyWith(height: 1.5)),
       ]),
     );
+  }
+}
+
+class _CheckinSection extends StatelessWidget {
+  final AppUser user;
+  const _CheckinSection({required this.user});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      _WeekCard(user: user),
+      const SizedBox(height: AppSpace.md),
+      BentoTile(
+        onTap: () => showCheckinQr(context),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: kTouchTarget - AppSpace.md * 2),
+          child: Row(children: [
+            Icon(Icons.qr_code_2_outlined, size: 22, color: AppColors.accent),
+            const SizedBox(width: AppSpace.md),
+            Expanded(
+              child: Text(
+                tr('Zalga kirish'),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ),
+            Icon(Icons.chevron_right_rounded, size: 22, color: AppColors.textMuted),
+          ]),
+        ),
+      ),
+    ]);
+  }
+}
+
+class _WeekCard extends StatelessWidget {
+  final AppUser user;
+  const _WeekCard({required this.user});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context).textTheme;
+    final today = todayKey();
+    return StreamBuilder<Set<String>>(
+      stream: Db.attendanceRange(user.id),
+      builder: (context, snap) {
+        final failed = snap.hasError && !snap.hasData;
+        final ready = snap.hasData;
+        final present = snap.data ?? const <String>{};
+        final week = weekProgress(present, today, user.gymDays);
+        final streak = ready ? streakWeeks(present, today, user.gymDays) : 0;
+        return BentoTile(
+          padding: const EdgeInsets.all(AppSpace.lg),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              Icon(Icons.local_fire_department_outlined, size: 17, color: AppColors.accent),
+              const SizedBox(width: AppSpace.sm),
+              Expanded(child: Eyebrow(tr('Bu hafta'))),
+            ]),
+            const SizedBox(height: AppSpace.sm),
+            Text(
+              ready ? '${week.done}/${week.goal}' : '–/${week.goal}',
+              style: t.displaySmall?.copyWith(
+                fontFeatures: tabular,
+                color: week.reached && ready ? AppColors.success : AppColors.text,
+              ),
+            ),
+            const SizedBox(height: AppSpace.md),
+            Row(children: [
+              for (var i = 0; i < 7; i++)
+                Expanded(
+                  child: _DayDot(
+                    label: tr(weekdayNames[i + 1] ?? '').characters.take(1).toString(),
+                    present: ready && week.days[i],
+                    isToday: i == week.todayIndex,
+                  ),
+                ),
+            ]),
+            if (!failed) ...[
+              const SizedBox(height: AppSpace.md),
+              Text(
+                streak > 0 ? trf('{0} hafta ketma-ket', [streak]) : tr('Bu haftani boshlang'),
+                style: t.bodyMedium?.copyWith(
+                  color: streak > 0 ? AppColors.accentText : AppColors.textMuted,
+                ),
+              ),
+            ],
+          ]),
+        );
+      },
+    );
+  }
+}
+
+class _DayDot extends StatelessWidget {
+  final String label;
+  final bool present, isToday;
+  const _DayDot({required this.label, required this.present, required this.isToday});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context).textTheme;
+    return Column(children: [
+      Container(
+        width: 28,
+        height: 28,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isToday ? AppColors.accent : Colors.transparent,
+            width: 1.5,
+          ),
+        ),
+        child: Container(
+          width: 18,
+          height: 18,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: present ? AppColors.accent : AppColors.cardHigh,
+          ),
+          child: present ? Icon(Icons.check_rounded, size: 12, color: AppColors.onAccent) : null,
+        ),
+      ),
+      const SizedBox(height: AppSpace.xs),
+      Text(label, style: t.labelSmall?.copyWith(color: AppColors.textFaint)),
+    ]);
   }
 }

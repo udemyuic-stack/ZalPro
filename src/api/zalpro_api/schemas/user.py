@@ -30,6 +30,7 @@ class UserOut(OutModel):
     home_workout_date: str | None
     subscription_expires_at: AwareDatetime | None
     last_weigh_in: AwareDatetime | None
+    show_in_leaderboard: bool
     program: dict[str, Any]
     created_at: AwareDatetime
 
