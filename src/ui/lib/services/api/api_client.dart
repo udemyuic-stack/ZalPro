@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 
 import '../../core/api_config.dart';
 import 'api_error.dart';
@@ -42,6 +43,13 @@ class ApiClient {
   String? get accessToken => _access;
   String? get userId => _userId;
   Stream<String?> get userChanges => _changes.stream;
+
+  @visibleForTesting
+  void useAdapter(HttpClientAdapter adapter) {
+    _dio.httpClientAdapter = adapter;
+    _bare.httpClientAdapter = adapter;
+    _upload.httpClientAdapter = adapter;
+  }
 
   void setAppVersion(String version) {
     _dio.options.headers[appVersionHeader] = version;
