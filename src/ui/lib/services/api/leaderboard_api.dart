@@ -10,5 +10,5 @@ class LeaderboardApi extends ApiService {
   Stream<Leaderboard> leaderboard() => poll(() async {
         final json = await client.getJson('/v1/leaderboard');
         return Leaderboard.fromJson(json);
-      }, _every, {_tag});
+      }, _every, {_tag}, key: 'leaderboard');
 }

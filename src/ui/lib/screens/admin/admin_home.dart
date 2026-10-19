@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/tr.dart';
+import '../../models/models.dart';
 import '../../services/db.dart';
 import '../../theme.dart';
 import '../../widgets/announcement_sheet.dart';
@@ -51,54 +52,32 @@ class _AdminHomeState extends ConsumerState<AdminHome> {
     if (ok) await AuthService.signOut();
   }
 
+  Future<void> _showMore(AppUser me) async {
+    final action = await showSheet<String>(
+      context,
+      const AdminMoreSheet(),
+    );
+    if (!mounted) return;
+    if (action == 'ann') {
+      showAnnouncementManager(context, me);
+    } else if (action == 'settings') {
+      showSettings(context, student: false, onSignOut: _signOut);
+    } else if (action == 'out') {
+      await _signOut();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final me = ref.watch(meProvider).value;
     if (me == null) return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    final s = Theme.of(context).colorScheme;
     final titles = me.isOwner ? _ownerTitles : _trainerTitles;
     final tab = _tab < titles.length ? _tab : 0;
     final scaffold = Scaffold(
-      appBar: AppBar(
-        title: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(tr(titles[tab])),
-            Text(
-              me.isOwner ? tr('Bosh admin • Aura Fit') : tr('Trener paneli • Aura Fit'),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: me.isOwner ? AppColors.accent : s.onSurfaceVariant),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            tooltip: tr("E'lonlar"),
-            constraints: const BoxConstraints(minWidth: kTouchTarget, minHeight: kTouchTarget),
-            onPressed: () => showAnnouncementManager(context, me),
-            icon: const Icon(Icons.campaign_outlined),
-          ),
-          IconButton(
-            tooltip: tr('Skaner'),
-            constraints: const BoxConstraints(minWidth: kTouchTarget, minHeight: kTouchTarget),
-            onPressed: () => showCheckinScanner(context),
-            icon: const Icon(Icons.qr_code_scanner_outlined),
-          ),
-          IconButton(
-            tooltip: tr("Ro'yxatdan o'tish QR kodi"),
-            onPressed: () => showJoinQr(context),
-            icon: const Icon(Icons.person_add_alt_outlined),
-          ),
-          IconButton(
-            tooltip: tr('Sozlamalar'),
-            onPressed: () => showSettings(context, student: false, onSignOut: _signOut),
-            icon: const Icon(Icons.settings_outlined),
-          ),
-          const SizedBox(width: 4),
-        ],
+      appBar: AdminAppBar(
+        title: tr(titles[tab]),
+        isOwner: me.isOwner,
+        onMore: () => _showMore(me),
       ),
       body: Column(children: [
         Expanded(
@@ -168,5 +147,91 @@ class _AdminHomeState extends ConsumerState<AdminHome> {
       ),
     );
     return me.isTrainer ? TrainerNotificationSync(trainer: me, child: scaffold) : scaffold;
+  }
+}
+
+class AdminMoreSheet extends StatelessWidget {
+  const AdminMoreSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) => Column(mainAxisSize: MainAxisSize.min, children: [
+        ListTile(
+          minTileHeight: kTouchTarget,
+          leading: const Icon(Icons.campaign_outlined),
+          title: Text(tr("E'lonlar")),
+          onTap: () => Navigator.pop(context, 'ann'),
+        ),
+        ListTile(
+          minTileHeight: kTouchTarget,
+          leading: const Icon(Icons.settings_outlined),
+          title: Text(tr('Sozlamalar')),
+          onTap: () => Navigator.pop(context, 'settings'),
+        ),
+        ListTile(
+          key: const Key('more-sign-out'),
+          minTileHeight: kTouchTarget,
+          leading: Icon(Icons.logout, color: AppColors.danger),
+          title: Text(tr('Chiqish'), style: TextStyle(color: AppColors.danger)),
+          onTap: () => Navigator.pop(context, 'out'),
+        ),
+        const SizedBox(height: AppSpace.sm),
+      ]);
+}
+
+class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  final bool isOwner;
+  final VoidCallback onMore;
+  const AdminAppBar({super.key, required this.title, required this.isOwner, required this.onMore});
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    final s = Theme.of(context).colorScheme;
+    return AppBar(
+      title: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, maxLines: 1, softWrap: false),
+            Text(
+              isOwner ? tr('Bosh admin • Aura Fit') : tr('Trener paneli • Aura Fit'),
+              maxLines: 1,
+              softWrap: false,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: isOwner ? AppColors.accent : s.onSurfaceVariant),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        IconButton(
+          tooltip: tr('Skaner'),
+          constraints: const BoxConstraints(minWidth: kTouchTarget, minHeight: kTouchTarget),
+          onPressed: () => showCheckinScanner(context),
+          icon: const Icon(Icons.qr_code_scanner_outlined),
+        ),
+        IconButton(
+          tooltip: tr("Ro'yxatdan o'tish QR kodi"),
+          constraints: const BoxConstraints(minWidth: kTouchTarget, minHeight: kTouchTarget),
+          onPressed: () => showJoinQr(context),
+          icon: const Icon(Icons.person_add_alt_outlined),
+        ),
+        IconButton(
+          tooltip: tr("Ko'proq"),
+          constraints: const BoxConstraints(minWidth: kTouchTarget, minHeight: kTouchTarget),
+          onPressed: onMore,
+          icon: const Icon(Icons.more_horiz),
+        ),
+        const SizedBox(width: 4),
+      ],
+    );
   }
 }

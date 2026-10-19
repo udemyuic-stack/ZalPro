@@ -2,8 +2,7 @@
 // Manba: tools/l10n/tarjima.json;  python tools/l10n/l10n.py gen
 
 const ru = <String, String>{
-  '\n\nUnga biriktirilgan {0} ta shogird trenersiz qoladi.':
-      '\n\nЕго ученики ({0}) останутся без тренера.',
+  '\n\nUnga biriktirilgan {0} ta shogird trenersiz qoladi.': '\n\nЕго ученики ({0}) останутся без тренера.',
   ' (o\'rtacha)': '(в среднем)',
   ' (o‘rtacha)': ' (в среднем)',
   ' · vazn {0} kg': ' · вес {0} кг',
@@ -12,18 +11,13 @@ const ru = <String, String>{
   '"Qiyin" bo\'yicha': 'По «Тяжело»',
   '"Qiyin" ulushi': 'Доля «Тяжело»',
   '"Xayrli tong" egilishi': 'Наклоны «гуд морнинг»',
-  '"{0}" bazadan o\'chirilsinmi? Mavjud rejalarga ta\'sir qilmaydi.':
-      'Удалить «{0}» из базы? На существующие планы это не повлияет.',
-  '"{0}" butunlay o\'chiriladi. Unga biriktirilgan mijozlar rejasiz qoladi.':
-      '«{0}» будет удалён полностью. Клиенты с этим планом останутся без плана.',
+  '"{0}" bazadan o\'chirilsinmi? Mavjud rejalarga ta\'sir qilmaydi.': 'Удалить «{0}» из базы? На существующие планы это не повлияет.',
+  '"{0}" butunlay o\'chiriladi. Unga biriktirilgan mijozlar rejasiz qoladi.': '«{0}» будет удалён полностью. Клиенты с этим планом останутся без плана.',
   '"{0}" buyurtmasi bekor qilinsinmi?': 'Отменить заказ «{0}»?',
   '"{0}" do\'kondan o\'chirilsinmi?': 'Удалить «{0}» из магазина?',
-  '"{0}" namunaviy holiga qaytadi: siz kiritgan o\'zgarishlar va video havolasi o\'chadi.':
-      '«{0}» вернётся к образцу: ваши изменения и ссылка на видео удалятся.',
-  '"{0}" o\'chiriladi. Shogirdlar uni boshqa ko\'rmaydi.':
-      '«{0}» будет удалено. Ученики больше его не увидят.',
-  '"{0}" o\'chiriladi. Undagi trenerlar zalsiz qoladi — ularni boshqa zalga biriktirasiz. Shogirdlarga ta\'sir qilmaydi.':
-      '«{0}» будет удалён. Его тренеры останутся без зала — прикрепите их к другому. На учеников это не влияет.',
+  '"{0}" namunaviy holiga qaytadi: siz kiritgan o\'zgarishlar va video havolasi o\'chadi.': '«{0}» вернётся к образцу: ваши изменения и ссылка на видео удалятся.',
+  '"{0}" o\'chiriladi. Shogirdlar uni boshqa ko\'rmaydi.': '«{0}» будет удалено. Ученики больше его не увидят.',
+  '"{0}" o\'chiriladi. Undagi trenerlar zalsiz qoladi — ularni boshqa zalga biriktirasiz. Shogirdlarga ta\'sir qilmaydi.': '«{0}» будет удалён. Его тренеры останутся без зала — прикрепите их к другому. На учеников это не влияет.',
   '"{0}" olib tashlansinmi?': 'Убрать «{0}»?',
   '"{0}" va undagi mahsulotlar olib tashlanadi.': '«{0}» и его продукты будут убраны.',
   '1 kun': '1 день',
@@ -41,15 +35,13 @@ const ru = <String, String>{
   'Abonement': 'Абонемент',
   'Abonement qo\'shildi': 'Абонемент добавлен',
   'Abonement qo‘shildi': 'Абонемент добавлен',
-  'Abonement to\'langan sanasi bo\'yicha, do\'kon — buyurtma berilgan sanasi bo\'yicha hisoblanadi. Foyda tovarning hozirgi tan narxidan. Trener haqi — shogirdlari to\'lagan abonementning tanlangan foizi; foiz shu qurilmada eslab qolinadi.':
-      'Абонементы считаются по дате оплаты, магазин — по дате заказа. Прибыль — от текущей себестоимости товара. Доля тренера — выбранный процент от абонементов его учеников; процент запоминается на этом устройстве.',
+  'Abonement to\'langan sanasi bo\'yicha, do\'kon — buyurtma berilgan sanasi bo\'yicha hisoblanadi. Foyda tovarning hozirgi tan narxidan. Trener haqi — shogirdlari to\'lagan abonementning tanlangan foizi; foiz shu qurilmada eslab qolinadi.': 'Абонементы считаются по дате оплаты, магазин — по дате заказа. Прибыль — от текущей себестоимости товара. Доля тренера — выбранный процент от абонементов его учеников; процент запоминается на этом устройстве.',
   'Abonement tugadi': 'Абонемент закончился',
   'Abonement tugagan': 'Абонемент закончился',
   'Abonement tugashi yaqinlashdi': 'Абонемент скоро закончится',
   'Abonement tugayapti': 'Абонемент заканчивается',
   'Abonement tushumidan ulush': 'Доля от выручки за абонементы',
-  'Abonement va do\'kon tushumi, foyda — oy va zal bo\'yicha':
-      'Выручка за абонементы и магазин, прибыль — по месяцам и залам',
+  'Abonement va do\'kon tushumi, foyda — oy va zal bo\'yicha': 'Выручка за абонементы и магазин, прибыль — по месяцам и залам',
   'Abonement yo\'q': 'Нет абонемента',
   'Abonement yo‘q': 'Нет абонемента',
   'Abonement · {0}': 'Абонемент · {0}',
@@ -61,15 +53,13 @@ const ru = <String, String>{
   'Akkaunt topilmadi': 'Аккаунт не найден',
   'Akkaunt yaratish': 'Создать аккаунт',
   'Akkauntdan chiqmoqchimisiz?': 'Выйти из аккаунта?',
-  'Akkauntingiz o\'chirilgan bo\'lishi mumkin. Shu raqam bilan qaytadan ro\'yxatdan o\'tishingiz mumkin.':
-      'Возможно, ваш аккаунт удалён. Вы можете заново зарегистрироваться с этим номером.',
+  'Akkauntingiz o\'chirilgan bo\'lishi mumkin. Shu raqam bilan qaytadan ro\'yxatdan o\'tishingiz mumkin.': 'Возможно, ваш аккаунт удалён. Вы можете заново зарегистрироваться с этим номером.',
   'Akkauntni o\'chirish': 'Удалить аккаунт',
   'Akkauntni o’chirish': 'Удалить аккаунт',
   'Almashtirib bo\'lmadi: {0}': 'Не удалось сменить: {0}',
   'Almashtirish': 'Сменить',
   'Amal kutilmoqda': 'Требует действия',
-  'Amal qiladi: {0} gacha — keyingi to\'lov shu kuni':
-      'Действует до {0} — следующая оплата в этот день',
+  'Amal qiladi: {0} gacha — keyingi to\'lov shu kuni': 'Действует до {0} — следующая оплата в этот день',
   'Amal qiladi: {0} kuni': 'Действует: {0}',
   'Amallar': 'Действия',
   'Amudaryo': 'Амударья',
@@ -95,33 +85,27 @@ const ru = <String, String>{
   'Asosiy mushak: {0}': 'Основная мышца: {0}',
   'Audio 5 MB dan katta': 'Аудио больше 5 МБ',
   'Audio — ovoz yozish': 'Аудио — записать голос',
-  'Aura Fit zal shablonidan boshlang yoki yangi reja tuzing.':
-      'Начните с шаблона зала Aura Fit или составьте новый план.',
+  'Aura Fit zal shablonidan boshlang yoki yangi reja tuzing.': 'Начните с шаблона зала Aura Fit или составьте новый план.',
   'Aura Fit zali': 'Зал Aura Fit',
   'Avgust': 'Август',
-  'Avval \'Mahsulotlar\' bo\'limida mahsulot qo\'shing':
-      'Сначала добавьте продукты в разделе «Продукты»',
+  'Avto: {0}': 'Авто: {0}',
+  'Avval \'Mahsulotlar\' bo\'limida mahsulot qo\'shing': 'Сначала добавьте продукты в разделе «Продукты»',
   'Avval joyini tanlang, keyin nom bering': 'Сначала выберите место, затем дайте название',
   'Avval o\'lchamni tanlang': 'Сначала выберите размер',
   'Avval rangni tanlang': 'Сначала выберите цвет',
   'Avval viloyatni tanlang': 'Сначала выберите область',
   'Ayol': 'Женщина',
-  'Ayol yoki erkak — farqi yo\'q, faqat to\'g\'ri ovqatlanish bilan ozasiz. Ovqatlanmaslik yoki kuniga 1 mahal ovqatlanish ozdirmaydi: organizm o\'zini "blokirovka" qiladi va vazn ketmaydi. Kuniga 5 mahal ovqatlaning.\nKo\'proq oqsil va salat; tez singuvchi uglevodlar kerak emas. Kechqurun uglevodlarni iloji boricha olib tashlang.\nKardio: 40 daqiqa velotrenajyor yoki yugurish yo\'lakchasi, mashqdan keyin darhol protein kokteyli.\nErkaklar va baland bo\'yli mijozlar uchun porsiyalarni kattalashtiring.':
-      'Женщина или мужчина — разницы нет, похудеть можно только правильным питанием. Голодание или еда 1 раз в день не помогают: организм «блокируется», и вес не уходит. Ешьте 5 раз в день.\nБольше белка и салатов; быстрые углеводы не нужны. Вечером по возможности убирайте углеводы.\nКардио: 40 минут на велотренажёре или беговой дорожке, сразу после тренировки — протеиновый коктейль.\nДля мужчин и высоких клиентов увеличьте порции.',
+  'Ayol yoki erkak — farqi yo\'q, faqat to\'g\'ri ovqatlanish bilan ozasiz. Ovqatlanmaslik yoki kuniga 1 mahal ovqatlanish ozdirmaydi: organizm o\'zini "blokirovka" qiladi va vazn ketmaydi. Kuniga 5 mahal ovqatlaning.\nKo\'proq oqsil va salat; tez singuvchi uglevodlar kerak emas. Kechqurun uglevodlarni iloji boricha olib tashlang.\nKardio: 40 daqiqa velotrenajyor yoki yugurish yo\'lakchasi, mashqdan keyin darhol protein kokteyli.\nErkaklar va baland bo\'yli mijozlar uchun porsiyalarni kattalashtiring.': 'Женщина или мужчина — разницы нет, похудеть можно только правильным питанием. Голодание или еда 1 раз в день не помогают: организм «блокируется», и вес не уходит. Ешьте 5 раз в день.\nБольше белка и салатов; быстрые углеводы не нужны. Вечером по возможности убирайте углеводы.\nКардио: 40 минут на велотренажёре или беговой дорожке, сразу после тренировки — протеиновый коктейль.\nДля мужчин и высоких клиентов увеличьте порции.',
   'BMI': 'ИМТ',
-  'BMI 18,5 dan past — ozish tavsiya etilmaydi. Massa naborni tanlang.':
-      'ИМТ ниже 18,5 — худеть не рекомендуется. Выберите набор массы.',
-  'BMI {0} — vazn kam, faqat massa nabor mumkin.':
-      'ИМТ {0} — вес ниже нормы, возможен только набор массы.',
-  'BMI {0} — vazningiz kam, ozish tavsiya etilmaydi.':
-      'ИМТ {0} — вес ниже нормы, худеть не рекомендуется.',
+  'BMI 18,5 dan past — ozish tavsiya etilmaydi. Massa naborni tanlang.': 'ИМТ ниже 18,5 — худеть не рекомендуется. Выберите набор массы.',
+  'BMI {0} — vazn kam, faqat massa nabor mumkin.': 'ИМТ {0} — вес ниже нормы, возможен только набор массы.',
+  'BMI {0} — vazningiz kam, ozish tavsiya etilmaydi.': 'ИМТ {0} — вес ниже нормы, худеть не рекомендуется.',
   'Baho saqlandi': 'Оценка сохранена',
   'Bahongiz: {0}/5': 'Ваша оценка: {0}/5',
   'Bahoni saqlash': 'Сохранить оценку',
   'Bajardim': 'Сделал',
   'Bajarildi': 'Выполнено',
-  'Baliq / tovuq / mol go\'shti (yoki 100 g fosol / noxat)':
-      'Рыба / курица / говядина (или 100 г фасоли / нута)',
+  'Baliq / tovuq / mol go\'shti (yoki 100 g fosol / noxat)': 'Рыба / курица / говядина (или 100 г фасоли / нута)',
   'Baliq 150 g (yoki dimlangan go\'sht)': 'Рыба 150 г (или тушёное мясо)',
   'Baliq filesi (oq baliq)': 'Рыбное филе (белая рыба)',
   'Baliq yoki mol go\'shti': 'Рыба или говядина',
@@ -133,8 +117,7 @@ const ru = <String, String>{
   'Bandixon': 'Бандихан',
   'Barakalla!': 'Отлично!',
   'Barmen': 'Бармен',
-  'Barmen faqat do\'kon bilan ishlaydi: tovar, buyurtma va qoldiq. Shogirdlar, rejalar va chatni ko\'rmaydi.':
-      'Бармен работает только с магазином: товары, заказы и остатки. Учеников, планы и чат он не видит.',
+  'Barmen faqat do\'kon bilan ishlaydi: tovar, buyurtma va qoldiq. Shogirdlar, rejalar va chatni ko\'rmaydi.': 'Бармен работает только с магазином: товары, заказы и остатки. Учеников, планы и чат он не видит.',
   'Barmen panelidan chiqmoqchimisiz?': 'Выйти из панели бармена?',
   'Barmen qilinsinmi?': 'Сделать барменом?',
   'Barmen qilish': 'Сделать барменом',
@@ -151,43 +134,34 @@ const ru = <String, String>{
   'Bekor qilish': 'Отмена',
   'Bektemir': 'Бектемир',
   'Bekzod aka': 'Бекзод ака',
-  'Bel tekis, oldinga egiling. Yelkaning orqa qismi ishlaydi.':
-      'Спина ровная, наклон вперёд. Работает задняя часть плеч.',
+  'Bel tekis, oldinga egiling. Yelkaning orqa qismi ishlaydi.': 'Спина ровная, наклон вперёд. Работает задняя часть плеч.',
   'Bel tekis, shtangani qoringa torting.': 'Спина ровная, тяните штангу к животу.',
-  'Bel tekis, tizzalar oyoq uchi yo\'nalishida. Son polga parallel bo\'lguncha.':
-      'Спина ровная, колени по направлению носков. До параллели бёдер с полом.',
-  'Bel tekis, tosni orqaga suring. Shtanga oyoq bo\'ylab sirpanadi.':
-      'Спина ровная, таз отводите назад. Штанга скользит вдоль ног.',
-  'Bel tik, gantellarni quloq balandligidan tepaga siqing.':
-      'Спина прямая; выжимайте гантели вверх от уровня ушей.',
+  'Bel tekis, tizzalar oyoq uchi yo\'nalishida. Son polga parallel bo\'lguncha.': 'Спина ровная, колени по направлению носков. До параллели бёдер с полом.',
+  'Bel tekis, tosni orqaga suring. Shtanga oyoq bo\'ylab sirpanadi.': 'Спина ровная, таз отводите назад. Штанга скользит вдоль ног.',
+  'Bel tik, gantellarni quloq balandligidan tepaga siqing.': 'Спина прямая; выжимайте гантели вверх от уровня ушей.',
   'Belgilashni unutmang': 'Не забудьте отметить',
   'Belgini olib tashlash': 'Снять отметку',
   'Belgisiz': 'Без уровня',
-  'Belni bukmasdan, oyoqni dumba kuchi bilan ko\'taring.':
-      'Не прогибая поясницу, поднимайте ногу силой ягодиц.',
-  'Belni poldan uzmang, iyakni ko\'krakka tortmang.':
-      'Поясницу не отрывайте от пола, подбородок не прижимайте к груди.',
-  'Belning pastki qismi ishlaydi. Keskin harakat qilmang.':
-      'Работает низ спины. Без резких движений.',
+  'Belni bukmasdan, oyoqni dumba kuchi bilan ko\'taring.': 'Не прогибая поясницу, поднимайте ногу силой ягодиц.',
+  'Belni poldan uzmang, iyakni ko\'krakka tortmang.': 'Поясницу не отрывайте от пола, подбородок не прижимайте к груди.',
+  'Belning pastki qismi ishlaydi. Keskin harakat qilmang.': 'Работает низ спины. Без резких движений.',
   'Berildi': 'Выдан',
   'Berildi deb belgilandi': 'Отмечено как выданное',
+  'Berildi deb belgilash': 'Отметить как выдано',
   'Berilgan buyurtmalar shu yerda ko\'rinadi': 'Выданные заказы появятся здесь',
   'Beruniy': 'Беруни',
   'Beshariq': 'Бешарык',
   'Bilak': 'Предплечья',
-  'Bilak sonda yotadi, faqat kaft harakatlanadi.':
-      'Предплечья лежат на бёдрах, двигается только кисть.',
+  'Bilak sonda yotadi, faqat kaft harakatlanadi.': 'Предплечья лежат на бёдрах, двигается только кисть.',
   'Bildirishnoma yo\'q': 'Нет уведомлений',
   'Bildirishnoma yo‘q': 'Уведомлений нет',
   'Bildirishnomalar': 'Уведомления',
-  'Bildirishnomalar telefondagi (Android) ilovada ishlaydi.':
-      'Уведомления работают в приложении на телефоне (Android).',
+  'Bildirishnomalar telefondagi (Android) ilovada ishlaydi.': 'Уведомления работают в приложении на телефоне (Android).',
+  'Bir mahalda eng ko\'pi {0} ta mahsulot bo\'lishi mumkin': 'В одном приёме пищи не более {0} продуктов',
   'Bir nechta bo\'lsa — har birini yangi qatorga yozing': 'Если несколько — каждую с новой строки',
   'Biriktirilgan': 'Назначен',
-  'Biriktirilgan reja maqsadga mos emas — bloklangan, shogirdga ko\'rsatilmaydi. Yuqoridagi variantlardan birini tanlang.':
-      'Назначенный план не соответствует цели — он заблокирован и ученику не показывается. Выберите один из вариантов выше.',
-  'Biriktirilgan reja maqsadingizga mos emas. Trener sizga mos rejani biriktiradi. Savollaringizni \'Trener\' bo\'limida yozing.':
-      'Назначенный план не подходит вашей цели. Тренер подберёт подходящий. Вопросы пишите в разделе «Тренер».',
+  'Biriktirilgan reja maqsadga mos emas — bloklangan, shogirdga ko\'rsatilmaydi. Yuqoridagi variantlardan birini tanlang.': 'Назначенный план не соответствует цели — он заблокирован и ученику не показывается. Выберите один из вариантов выше.',
+  'Biriktirilgan reja maqsadingizga mos emas. Trener sizga mos rejani biriktiradi. Savollaringizni \'Trener\' bo\'limida yozing.': 'Назначенный план не подходит вашей цели. Тренер подберёт подходящий. Вопросы пишите в разделе «Тренер».',
   'Biriktirilgan trener': 'Назначенный тренер',
   'Biriktirilmagan': 'Не прикреплены',
   'Biriktirish kerak': 'Нужно прикрепить',
@@ -202,8 +176,7 @@ const ru = <String, String>{
   'Bo\'ka': 'Бука',
   'Bo\'lmadi: {0}': 'Не получилось: {0}',
   'Bo\'sh bo\'lsa, nomiga qarab rasm tanlanadi': 'Если пусто, картинка подбирается по названию',
-  'Bo\'sh qolsa, rus va ingliz tilida ham o\'zbekcha nom chiqadi':
-      'Если оставить пустым, на русском и английском будет показано узбекское название',
+  'Bo\'sh qolsa, rus va ingliz tilida ham o\'zbekcha nom chiqadi': 'Если оставить пустым, на русском и английском будет показано узбекское название',
   'Bo\'ston': 'Бустон',
   'Bo\'stonliq': 'Бостанлык',
   'Bo\'y': 'Рост',
@@ -225,8 +198,7 @@ const ru = <String, String>{
   'Boshlash': 'Начать',
   'Boshlovchi': 'Начинающий',
   'Boshqa': 'Другое',
-  'Boshqa ilova kamerani ishlatayotgan bo\'lishi mumkin':
-      'Возможно, камеру использует другое приложение',
+  'Boshqa ilova kamerani ishlatayotgan bo\'lishi mumkin': 'Возможно, камеру использует другое приложение',
   'Boshqa kunlarga nusxalash': 'Скопировать на другие дни',
   'Boshqasi': 'Другое',
   'Boshqa…': 'Другое…',
@@ -235,8 +207,7 @@ const ru = <String, String>{
   'Brokkoli yoki gulkaram': 'Брокколи или цветная капуста',
   'Brusda siqilish': 'Отжимания на брусьях',
   'Bu amal uchun ruxsat yo\'q': 'Нет прав для этого действия',
-  'Bu bo\'limda tuzatish ishlari olib borilmoqda — har bir mashg\'ulot mashqlari tez orada qo\'shiladi.':
-      'Раздел дорабатывается — упражнения для каждой тренировки скоро появятся.',
+  'Bu bo\'limda tuzatish ishlari olib borilmoqda — har bir mashg\'ulot mashqlari tez orada qo\'shiladi.': 'Раздел дорабатывается — упражнения для каждой тренировки скоро появятся.',
   'Bu darajada mashq yo\'q.': 'Упражнений этого уровня нет.',
   'Bu davrda sotuv bo\'lmagan': 'За этот период продаж не было',
   'Bu davrda sotuv bo‘lmagan': 'За этот период продаж не было',
@@ -245,22 +216,16 @@ const ru = <String, String>{
   'Bu foydalanuvchi mijoz emas': 'Этот пользователь не клиент',
   'Bu hafta': 'На этой неделе',
   'Bu haftani boshlang': 'Начните эту неделю',
-  'Bu ma\'lumotlar asosida kunlik kaloriya normangiz hisoblanadi.':
-      'По этим данным рассчитывается ваша дневная норма калорий.',
-  'Bu mushak bugungi rejada yo\'q. Rejadagi kuni: {0}.':
-      'Этой мышцы нет в плане на сегодня. День по плану: {0}.',
+  'Bu ma\'lumotlar asosida kunlik kaloriya normangiz hisoblanadi.': 'По этим данным рассчитывается ваша дневная норма калорий.',
+  'Bu mushak bugungi rejada yo\'q. Rejadagi kuni: {0}.': 'Этой мышцы нет в плане на сегодня. День по плану: {0}.',
   'Bu mushak haftalik rejada yo\'q.': 'Этой мышцы нет в недельном плане.',
   'Bu mushakda bor mashqlar: {0}': 'Упражнения этой мышцы: {0}',
   'Bu raqam allaqachon ro\'yxatdan o\'tgan': 'Этот номер уже зарегистрирован',
-  'Bu raqam bilan akkaunt allaqachon bor — Kirish\'ni bosing':
-      'Аккаунт с этим номером уже есть — нажмите «Войти»',
+  'Bu raqam bilan akkaunt allaqachon bor — Kirish\'ni bosing': 'Аккаунт с этим номером уже есть — нажмите «Войти»',
   'Bu rasm o\'chirilsinmi?': 'Удалить это фото?',
-  'Bu yagona bosh admin — tushirib bo\'lmaydi. Avval boshqa birovni bosh admin qiling.':
-      'Это единственный главный админ — его нельзя понизить. Сначала назначьте другого главного админа.',
-  'Bu yagona bosh admin — tushirib bo’lmaydi. Avval boshqa birovni bosh admin qiling.':
-      'Это единственный главный админ — понизить нельзя. Сначала назначьте главным админом кого-то ещё.',
-  'Bu zalda trener yo\'q — qo\'shing yoki boshqa zaldan ko\'chiring':
-      'В этом зале нет тренеров — добавьте или переведите из другого зала',
+  'Bu yagona bosh admin — tushirib bo\'lmaydi. Avval boshqa birovni bosh admin qiling.': 'Это единственный главный админ — его нельзя понизить. Сначала назначьте другого главного админа.',
+  'Bu yagona bosh admin — tushirib bo’lmaydi. Avval boshqa birovni bosh admin qiling.': 'Это единственный главный админ — понизить нельзя. Сначала назначьте главным админом кого-то ещё.',
+  'Bu zalda trener yo\'q — qo\'shing yoki boshqa zaldan ko\'chiring': 'В этом зале нет тренеров — добавьте или переведите из другого зала',
   'Bugun': 'Сегодня',
   'Bugun allaqachon belgilangan: {0}': 'Сегодня уже отмечено: {0}',
   'Bugun dam olish': 'Сегодня отдых',
@@ -272,8 +237,7 @@ const ru = <String, String>{
   'Bugun uyda mashq': 'Сегодня тренировка дома',
   'Bugun uyda mashq belgilandi': 'Назначена домашняя тренировка на сегодня',
   'Bugun zalga borish kuni': 'Сегодня день тренировки в зале',
-  'Bugun zalga kela olmasangiz — \'Trener\' bo\'limida "bugun kelolmayman" deb yozing, trener uyda mashq belgilaydi.':
-      'Не можете прийти в зал сегодня — напишите в разделе «Тренер»: «сегодня не смогу», и тренер назначит домашнюю тренировку.',
+  'Bugun zalga kela olmasangiz — \'Trener\' bo\'limida "bugun kelolmayman" deb yozing, trener uyda mashq belgilaydi.': 'Не можете прийти в зал сегодня — напишите в разделе «Тренер»: «сегодня не смогу», и тренер назначит домашнюю тренировку.',
   'Bugun zalga keladi': 'Сегодня придут в зал',
   'Bugun {0}': 'Сегодня {0}',
   'Bugun · {0}': 'Сегодня · {0}',
@@ -290,6 +254,7 @@ const ru = <String, String>{
   'Bulung\'ur': 'Булунгур',
   'Bunday mashq bor: {0} — {1}': 'Такое упражнение уже есть: {0} — {1}',
   'Bunyodkor 12': 'Бунёдкор, 12',
+  'Butun son kiriting': 'Введите целое число',
   'Butun tanangiz ko\'rinsin': 'Встаньте так, чтобы было видно всё тело',
   'Butun zal': 'Весь зал',
   'Buvayda': 'Бувайда',
@@ -307,8 +272,7 @@ const ru = <String, String>{
   'Buyurtmani bekor qilish': 'Отменить заказ',
   'Ch': 'Ср',
   'Chat': 'Чат',
-  'Chatda "bugun kelolmayman" deb yozsa, uyda mashq belgilash mumkin':
-      'Если напишет в чате «сегодня не смогу», можно назначить тренировку дома',
+  'Chatda "bugun kelolmayman" deb yozsa, uyda mashq belgilash mumkin': 'Если напишет в чате «сегодня не смогу», можно назначить тренировку дома',
   'Chatda bugun kela olmasligini yozdi': 'Написал в чате, что сегодня не придёт',
   'Chatga javob': 'Ответы в чате',
   'Chilonzor': 'Чиланзар',
@@ -352,41 +316,34 @@ const ru = <String, String>{
   'Egilib shtangani tortish': 'Тяга штанги в наклоне',
   'Ellikqal\'a': 'Элликкала',
   'Eng ko\'p sotilgan': 'Самые продаваемые',
-  'Eng ko\'p sotilgan tovarlar va hafta kunlari bo\'yicha savdo':
-      'Самые продаваемые товары и продажи по дням недели',
+  'Eng ko\'p sotilgan tovarlar va hafta kunlari bo\'yicha savdo': 'Самые продаваемые товары и продажи по дням недели',
+  'Eng ko\'pi {0} belgi': 'Не более {0} символов',
+  'Eng ko\'pi {0} ta bo\'lishi mumkin': 'Не более {0} шт.',
   'Erkak': 'Мужчина',
-  'Ertalab nahorga tortilib, Progress bo\'limida vazningizni kiriting':
-      'Взвесьтесь утром натощак и внесите вес в разделе «Прогресс»',
+  'Ertalab nahorga tortilib, Progress bo\'limida vazningizni kiriting': 'Взвесьтесь утром натощак и внесите вес в разделе «Прогресс»',
   'Eski e\'lonni o\'chiring': 'Удалите старое объявление',
-  'Eski kirish ma\'lumotlari o\'chiriladi, keyin shu raqam bilan yangidan ro\'yxatdan o\'tasiz. Tasdiqlash uchun hozirgi parolingizni kiriting.':
-      'Старые данные для входа будут удалены, затем вы заново зарегистрируетесь с этим номером. Для подтверждения введите текущий пароль.',
-  'Eski reja biriktirilgan — maqsad belgilangach mos variantni tanlang.':
-      'Назначен старый план — после выбора цели подберите подходящий вариант.',
+  'Eski kirish ma\'lumotlari o\'chiriladi, keyin shu raqam bilan yangidan ro\'yxatdan o\'tasiz. Tasdiqlash uchun hozirgi parolingizni kiriting.': 'Старые данные для входа будут удалены, затем вы заново зарегистрируетесь с этим номером. Для подтверждения введите текущий пароль.',
+  'Eski reja biriktirilgan — maqsad belgilangach mos variantni tanlang.': 'Назначен старый план — после выбора цели подберите подходящий вариант.',
   'Eslatma': 'Лента',
   'Eslatma yubor': 'Отправить напоминание',
   'Eslatma yuborildi': 'Напоминание отправлено',
   'Eslatmalar': 'Уведомления',
   'Faol e\'lon yo\'q': 'Нет активных объявлений',
   'Faol shogirdlar': 'Активные ученики',
-  'Faqat maslahatlar — mahallarni Rejalar bo\'limida qo\'shing':
-      'Только советы — добавьте приёмы пищи в разделе «Планы»',
-  'Faqat maslahatlar — mahallarni o\'zingiz qo\'shasiz':
-      'Только советы — приёмы пищи добавляете сами',
+  'Faqat maslahatlar — mahallarni Rejalar bo\'limida qo\'shing': 'Только советы — добавьте приёмы пищи в разделе «Планы»',
+  'Faqat maslahatlar — mahallarni o\'zingiz qo\'shasiz': 'Только советы — приёмы пищи добавляете сами',
   'Faqat shu maqsad rejalari beriladi': 'Выдаются планы только для этой цели',
-  'Faqat siz ko\'rasiz — trener bu bahoni ko\'rmaydi.':
-      'Видите только вы — тренер эту оценку не видит.',
+  'Faqat siz ko\'rasiz — trener bu bahoni ko\'rmaydi.': 'Видите только вы — тренер эту оценку не видит.',
   'Farg\'ona': 'Ферганская область',
   'Farg\'ona shahri': 'город Фергана',
   'Fayl hajmi juda katta': 'Файл слишком большой',
   'Fayl noto\'g\'ri. Qayta yuboring': 'Неверный файл. Отправьте заново',
-  'Fayl saqlash hozir ishlamayapti. Keyinroq urinib ko\'ring':
-      'Хранилище файлов сейчас недоступно. Повторите позже',
+  'Fayl saqlash hozir ishlamayapti. Keyinroq urinib ko\'ring': 'Хранилище файлов сейчас недоступно. Повторите позже',
   'Fayl serverga yetib bormagan. Qayta yuboring': 'Файл не дошёл до сервера. Отправьте заново',
   'Fevral': 'Февраль',
   'Forish': 'Фариш',
   'Forma': 'Форма',
-  'Forma, suv idishlari, anjomlar va dobavkalar shu yerga kiritiladi. Shogird narxini ko\'radi va buyurtma beradi, to\'lov zalda naqd.':
-      'Сюда добавляются форма, бутылки, инвентарь и добавки. Ученик видит цену и делает заказ, оплата в зале наличными.',
+  'Forma, suv idishlari, anjomlar va dobavkalar shu yerga kiritiladi. Shogird narxini ko\'radi va buyurtma beradi, to\'lov zalda naqd.': 'Сюда добавляются форма, бутылки, инвентарь и добавки. Ученик видит цену и делает заказ, оплата в зале наличными.',
   'Foyda': 'Прибыль',
   'Foyda: {0}': 'Прибыль: {0}',
   'Foyda: {0} {1}': 'Прибыль: {0} {1}',
@@ -405,8 +362,7 @@ const ru = <String, String>{
   'Gantelni tepaga ko\'tarish (o\'tirib)': 'Жим гантелей вверх (сидя)',
   'Gantelni yonga ko\'tarish': 'Разведение гантелей в стороны',
   'Giperekstenziya': 'Гиперэкстензия',
-  'Go\'sht (yog\'siz, qaynatilgan yoki soya yog\'ida dimlangan)':
-      'Мясо (нежирное, варёное или тушёное на соевом масле)',
+  'Go\'sht (yog\'siz, qaynatilgan yoki soya yog\'ida dimlangan)': 'Мясо (нежирное, варёное или тушёное на соевом масле)',
   'Grechka (quruq vazni)': 'Гречка (сухой вес)',
   'Grechka yoki 2-sort makaron (quruq vazni)': 'Гречка или макароны 2-го сорта (сухой вес)',
   'Grechka yoki guruch': 'Гречка или рис',
@@ -416,15 +372,11 @@ const ru = <String, String>{
   'Guruch (quruq vazni)': 'Рис (сухой вес)',
   'Ha': 'Да',
   'Hafta kunlari bo\'yicha': 'По дням недели',
-  'Hafta kunlari bo\'yicha 7 xil menyu — shogirdda o\'sha kunniki chiqadi':
-      '7 разных меню по дням недели — ученик видит меню на текущий день',
+  'Hafta kunlari bo\'yicha 7 xil menyu — shogirdda o\'sha kunniki chiqadi': '7 разных меню по дням недели — ученик видит меню на текущий день',
   'Haftada 1 marta — ertalab, nahorga tortiling': 'Раз в неделю — взвешивайтесь утром натощак',
-  'Haftada 1 marta, ertalab nahorga tortilib, vazningizni kiriting. Har kuni o\'lchash shart emas — vazn kun davomida 1–2 kg tebranadi.':
-      'Раз в неделю взвешивайтесь утром натощак и вносите вес. Каждый день не нужно — за день вес колеблется на 1–2 кг.',
-  'Haftada faqat 1 marta — ungacha vaznni o\'zgartirib bo\'lmaydi':
-      'Только раз в неделю — до этого вес изменить нельзя',
-  'Haftada faqat 1 marta — ungacha vaznni o’zgartirib bo’lmaydi':
-      'Только раз в неделю — до этого вес изменить нельзя',
+  'Haftada 1 marta, ertalab nahorga tortilib, vazningizni kiriting. Har kuni o\'lchash shart emas — vazn kun davomida 1–2 kg tebranadi.': 'Раз в неделю взвешивайтесь утром натощак и вносите вес. Каждый день не нужно — за день вес колеблется на 1–2 кг.',
+  'Haftada faqat 1 marta — ungacha vaznni o\'zgartirib bo\'lmaydi': 'Только раз в неделю — до этого вес изменить нельзя',
+  'Haftada faqat 1 marta — ungacha vaznni o’zgartirib bo’lmaydi': 'Только раз в неделю — до этого вес изменить нельзя',
   'Haftalik (7 kun) • ': 'Недельный (7 дней) • ',
   'Haftalik menyuni bekor qilish': 'Отменить недельное меню',
   'Haftalik vazn eslatmasi': 'Еженедельное напоминание о весе',
@@ -432,14 +384,12 @@ const ru = <String, String>{
   'Haftalik · 7 kun': 'Недельный · 7 дней',
   'Haftasiga 3 kun': '3 дня в неделю',
   'Haftasiga 3 kun mashg\'ulot': 'Тренировки 3 дня в неделю',
-  'Haftasiga 3 kun. Mashg\'ulotlar kunlar tartibida: 1) {0}, 2) {1}, 3) {2}.':
-      '3 дня в неделю. Тренировки по порядку дней: 1) {0}, 2) {1}, 3) {2}.',
+  'Haftasiga 3 kun. Mashg\'ulotlar kunlar tartibida: 1) {0}, 2) {1}, 3) {2}.': '3 дня в неделю. Тренировки по порядку дней: 1) {0}, 2) {1}, 3) {2}.',
   'Haftasiga kelish (shogirdga)': 'Визитов в неделю (на ученика)',
   'Hali ballingiz yo\'q': 'У вас пока нет баллов',
   'Hali kelgani belgilanmagan': 'Посещение ещё не отмечено',
   'Hali kelmagan': 'Ещё не приходил',
-  'Hali mahal yo\'q. Pastdagi "Mahal qo\'shish" tugmasini bosing.':
-      'Приёмов пищи пока нет. Нажмите «Добавить приём пищи» внизу.',
+  'Hali mahal yo\'q. Pastdagi "Mahal qo\'shish" tugmasini bosing.': 'Приёмов пищи пока нет. Нажмите «Добавить приём пищи» внизу.',
   'Hali mijoz yo\'q': 'Клиентов пока нет',
   'Hali mushak tanlanmagan.': 'Мышца ещё не выбрана.',
   'Hali reja yo\'q': 'Планов пока нет',
@@ -459,36 +409,29 @@ const ru = <String, String>{
   'Hammasi joyida': 'Всё в порядке',
   'Hammasi odatdagidek kelyapti': 'Все ходят как обычно',
   'Har bir sotuv': 'Каждая продажа',
+  'Har biri eng ko\'pi {0} belgi: "{1}"': 'Не более {0} символов в каждом: «{1}»',
   'Har kunga alohida menyu': 'Отдельное меню на каждый день',
-  'Har mahalda ro\'yxatdagi mahsulotlardan birini tanlab almashtirsa bo\'ladi.\nShokolad — shakari kam bo\'lsin.\nKechki go\'shtni kungaboqar yog\'ida pishirsa ham bo\'ladi.\nYotishdan oldin: meva va qaynagan (iliq) suvga yarimta limon siqib ichiladi.\nNonushtada suli bo\'tqasi o\'rniga guruch / grechka / makaron / manniy bo\'tqasi ham bo\'ladi. 2-nonushta va poldnikda protein kokteyl yoki kefir/yogurt — birini tanlang.\nPorsiyalar taxminiy (~2700 kkal, ~200 g oqsil) — mijozga qarab o\'zgartiring.':
-      'В каждом приёме пищи можно выбрать и заменить один из продуктов списка.\nШоколад — с низким содержанием сахара.\nМясо на ужин можно готовить и на подсолнечном масле.\nПеред сном: фрукт и тёплая кипячёная вода с соком половины лимона.\nНа завтрак вместо овсяной каши можно рис / гречку / макароны / манную кашу. На 2-й завтрак и полдник — протеиновый коктейль или кефир/йогурт, выберите одно.\nПорции примерные (~2700 ккал, ~200 г белка) — меняйте под клиента.',
-  'Har mushak uchun shu shogird qiladigan mashqlarni tanlang. O\'zgartirmaguningizcha tanlov turadi. Tanlanmagan mushakda — "Boshlovchi" mashqlar.':
-      'Выберите упражнения этого ученика для каждой мышцы. Выбор действует, пока вы его не измените. Где не выбрано — упражнения уровня «Начинающий».',
-  'Havola http:// yoki https:// bilan boshlanishi kerak':
-      'Ссылка должна начинаться с http:// или https://',
+  'Har mahalda ro\'yxatdagi mahsulotlardan birini tanlab almashtirsa bo\'ladi.\nShokolad — shakari kam bo\'lsin.\nKechki go\'shtni kungaboqar yog\'ida pishirsa ham bo\'ladi.\nYotishdan oldin: meva va qaynagan (iliq) suvga yarimta limon siqib ichiladi.\nNonushtada suli bo\'tqasi o\'rniga guruch / grechka / makaron / manniy bo\'tqasi ham bo\'ladi. 2-nonushta va poldnikda protein kokteyl yoki kefir/yogurt — birini tanlang.\nPorsiyalar taxminiy (~2700 kkal, ~200 g oqsil) — mijozga qarab o\'zgartiring.': 'В каждом приёме пищи можно выбрать и заменить один из продуктов списка.\nШоколад — с низким содержанием сахара.\nМясо на ужин можно готовить и на подсолнечном масле.\nПеред сном: фрукт и тёплая кипячёная вода с соком половины лимона.\nНа завтрак вместо овсяной каши можно рис / гречку / макароны / манную кашу. На 2-й завтрак и полдник — протеиновый коктейль или кефир/йогурт, выберите одно.\nПорции примерные (~2700 ккал, ~200 г белка) — меняйте под клиента.',
+  'Har mushak uchun shu shogird qiladigan mashqlarni tanlang. O\'zgartirmaguningizcha tanlov turadi. Tanlanmagan mushakda — "Boshlovchi" mashqlar.': 'Выберите упражнения этого ученика для каждой мышцы. Выбор действует, пока вы его не измените. Где не выбрано — упражнения уровня «Начинающий».',
+  'Havola http:// yoki https:// bilan boshlanishi kerak': 'Ссылка должна начинаться с http:// или https://',
   'Havola nusxalandi': 'Ссылка скопирована',
   'Havolani nusxalash': 'Скопировать ссылку',
-  'Havolani ochib bo\'lmadi — nusxalab brauzerda oching':
-      'Не удалось открыть ссылку — скопируйте и откройте в браузере',
+  'Havolani ochib bo\'lmadi — nusxalab brauzerda oching': 'Не удалось открыть ссылку — скопируйте и откройте в браузере',
   'Hazorasp': 'Хазарасп',
   'Hech kim uyda mashq qilmaydi': 'Никто не тренируется дома',
   'Hech narsa topilmadi': 'Ничего не найдено',
   'Hisobim': 'Мой отчёт',
   'Hisobot': 'Отчёт',
-  'Homilador bo\'lsangiz, 18 yoshgacha bo\'lsangiz yoki diabet, yurak, oshqozon kasalliklari bo\'lsa, diyetani boshlashdan oldin shifokor bilan maslahatlashing.':
-      'Если вы беременны, вам меньше 18 лет или есть диабет, болезни сердца или желудка — перед началом диеты посоветуйтесь с врачом.',
+  'Homilador bo\'lsangiz, 18 yoshgacha bo\'lsangiz yoki diabet, yurak, oshqozon kasalliklari bo\'lsa, diyetani boshlashdan oldin shifokor bilan maslahatlashing.': 'Если вы беременны, вам меньше 18 лет или есть диабет, болезни сердца или желудка — перед началом диеты посоветуйтесь с врачом.',
   'Hozir': 'Сейчас',
   'Hozir biriktirilgan: {0}': 'Сейчас назначен: {0}',
   'Hozir reja har kuni bir xil': 'Сейчас план одинаковый на каждый день',
   'Hozir yo\'q': 'Нет в наличии',
-  'Hozircha faqat zaldagi mashqlar. Uydagi mashqlar hali tayyor emas.':
-      'Пока только упражнения для зала. Упражнения для дома ещё не готовы.',
+  'Hozircha faqat zaldagi mashqlar. Uydagi mashqlar hali tayyor emas.': 'Пока только упражнения для зала. Упражнения для дома ещё не готовы.',
   'Hozircha reytingda hech kim yo\'q': 'В рейтинге пока никого нет',
-  'Hozircha shogird qabul qilayotgan boshqa trener yo\'q':
-      'Сейчас нет других тренеров, принимающих учеников',
+  'Hozircha shogird qabul qilayotgan boshqa trener yo\'q': 'Сейчас нет других тренеров, принимающих учеников',
   'Hozircha shogird qabul qilayotgan trener yo\'q': 'Пока нет тренеров, принимающих учеников',
-  'Hozircha shogird qabul qilayotgan trener yo\'q — trener keyin biriktiriladi.':
-      'Сейчас нет тренеров, принимающих учеников — тренера назначат позже.',
+  'Hozircha shogird qabul qilayotgan trener yo\'q — trener keyin biriktiriladi.': 'Сейчас нет тренеров, принимающих учеников — тренера назначат позже.',
   'Hozirgi parol': 'Текущий пароль',
   'Hozirgi parol noto\'g\'ri': 'Текущий пароль неверный',
   'Hozirgi parolni kiriting': 'Введите текущий пароль',
@@ -532,34 +475,25 @@ const ru = <String, String>{
   'Joriy parol noto\'g\'ri': 'Текущий пароль неверный',
   'Joylashtirish': 'Разместить',
   'Ju': 'Пт',
-  'Juda ko\'p urinish — birozdan keyin qayta urinib ko\'ring':
-      'Слишком много попыток — попробуйте чуть позже',
-  'Juda ko\'p urinish. Birozdan so\'ng qayta urinib ko\'ring':
-      'Слишком много попыток. Попробуйте чуть позже',
-  'Juda ko\'p urinish. {0} daqiqadan so\'ng qayta urinib ko\'ring':
-      'Слишком много попыток. Повторите через {0} мин.',
+  'Juda ko\'p urinish — birozdan keyin qayta urinib ko\'ring': 'Слишком много попыток — попробуйте чуть позже',
+  'Juda ko\'p urinish. Birozdan so\'ng qayta urinib ko\'ring': 'Слишком много попыток. Попробуйте чуть позже',
+  'Juda ko\'p urinish. {0} daqiqadan so\'ng qayta urinib ko\'ring': 'Слишком много попыток. Повторите через {0} мин.',
   'Juma': 'Пятница',
-  'KALORIYALARNI HISOBLASHNI O\'RGANAMIZ\n\nEslab qoling: kaloriya 1 kg vaznga nisbatan olinadi va shu grammni o\'z vazningizga ko\'paytirasiz. Ya\'ni 70 kg bo\'lsangiz, quyida berilgan raqamlarga ko\'paytirib, kunlik kaloriyani chiqarib olasiz:\n• Ayollar uchun, moddalar almashinuvi sekin bo\'lsa — 31\n• Ayollar uchun, moddalar almashinuvi tez bo\'lsa — 33\n• Erkaklar uchun, moddalar almashinuvi sekin bo\'lsa — 33\n• Erkaklar uchun, moddalar almashinuvi tez bo\'lsa — 35\n(Masalan: erkak, 70 kg, metabolizmi sekin — 70 × 33 = 2310 kkal.)\n\nEndi moddalar almashinuvi haqida gapirsak — «Alisher, bu nima?» degan savol keldi, to\'g\'rimi? Moddalar almashinuvi hamma insonda bo\'ladi, u ruschada «metabolizm». Ya\'ni siz ovqatlandingiz — organizm tezda hazm qilib, yana talab qiladi; yoki teskarisi — juda sekin hazm bo\'lib, kuniga 2 mahalgina ovqat yeydigan bo\'lib qolasiz. Shunga qarab metabolizm tez yoki sekinligini ajratsangiz bo\'ladi!\n\nMetabolizmni tezlatish uchun to\'g\'ri ovqatlanish va kichkina porsiyada har 2 soatda ovqatlanib turish kerak — organizm kodlanadi, xuddi mashinaga proshivka qilingandek, va tezlashadi!\n\n«Tezlashish bizga nimaga kerak?» deysiz, to\'g\'rimi? Lekin metabolizm tez bo\'lsa, organizmingiz ortiqcha yog\'larni o\'zi ishlatadi va yoqadi, tanangiz relyef ko\'rinishda bo\'ladi. Kim xohlamaydi deysiz bunaqa tanani?\n\nKALORIYANI QANDAY ANIQLAYMIZ?\n\nMisol uchun, bitta gamburgerning kaloriyasi bilan guruch va tovuqning kaloriyasini solishtiramiz — taxminan internetdan yozib aniqlasangiz bo\'ladi. Misol: gamburgerda 100 g da 374 kkal bor. Guruch va tovuqda 250 kkal bor. Endi farqini ko\'radigan bo\'lsak: guruch va tovuqda juda kerakli sekin singuvchi uglevodlar va oqsillar bor, gamburgerda esa tez singuvchi uglevodlar va xolesterin. O\'zingiz ko\'rishingiz mumkin — pastdagi jadvalda.\n\nMUSKUL MASSASI YIG\'ISH (NABOR) UCHUN\n\nHamma massa oladiganlarga tegishli bo\'lgan maslahat: agar siz muskul massasini olmoqchi bo\'lsangiz, kunlik ratsionda uglevod va kaloriyani ko\'paytirish kerak. Bu degani — xohlaganingizcha ovqat yemaysiz, balki to\'g\'ri ratsion tuzamiz. Misol uchun: siz yog\'li semirishni xohlaysizmi yoki chiroyli mushak qomatinimi? Albatta mushak qomati, lekin bu darajaga erishish uchun ozgina o\'zingizni qiynashingizga to\'g\'ri keladi!\n\nUglevodlarni iste\'mol qilganingizda sekin singuvchi uglevodlarni tanlab oling. Bu mahsulotlar: guruch, grechka, 2-sort makaron, ovsyanka va gerkules bo\'tqalari. Bu mahsulotlarning hammasi do\'konda bor!\n\nKokteyl ko\'rinishidagi uglevodlar — asosan gainerlar, ya\'ni sport qo\'shimchalari; uy sharoitida ham tayyorlasangiz bo\'ladi. Ko\'pincha bu mahsulotlarni mashg\'ulotdan oldin va keyin tezda iste\'mol qilganingiz ma\'qul. Sababi: boshqa payt iste\'mol qilsangiz, uglevodlari tez singuvchi bo\'lgani uchun ortiqcha yog\' berishi mumkin. Tez singuvchi uglevodlar muskul tolalari ochiq bo\'lgan paytda keraklicha energiya beradi!\n\nYog\'lar massa naborda kerak bo\'ladi, lekin keragidan yuqori darajada emas. Agar kerakli yog\'larni iste\'mol qilmasangiz, gormonlaringizdan testosteronni oshira olmaysiz. Testosteron — muskulning o\'sishi, tiklanishi, umuman olganda erkakni erkak qiladigan gormon hisoblanadi!\n\nSEKIN SINGUVCHI UGLEVODLAR INDEKSI (100 g da)\n• Guruch — 78,9 g uglevod — 349 kkal\n• Grechka — 69,2 g uglevod — 349 kkal\n• Ovsyanka yormasi — 67,8 g uglevod — 349 kkal\n• No\'xat mahsulotlari — 60,2 g uglevod\n• Makaron (2 va 3-sort undan) — 52–62 g uglevod — 368 kkal\n\nMAHALLAR HAQIDA\nQuyidagi mahallar yuqoridagi maslahatlar asosida tuzilgan (porsiyalar taxminiy): har 2–3 soatda kichik porsiya, sekin singuvchi uglevodlar, gainer mashg\'ulotdan oldin va keyin, yog\' me\'yorida.':
-      'УЧИМСЯ СЧИТАТЬ КАЛОРИИ\n\nЗапомните: калории берутся на 1 кг веса, и это число вы умножаете на свой вес. То есть если вы весите 70 кг, умножьте вес на число ниже и получите дневную норму калорий:\n• Для женщин с медленным обменом веществ — 31\n• Для женщин с быстрым обменом веществ — 33\n• Для мужчин с медленным обменом веществ — 33\n• Для мужчин с быстрым обменом веществ — 35\n(Например: мужчина, 70 кг, метаболизм медленный — 70 × 33 = 2310 ккал.)\n\nТеперь об обмене веществ — возник вопрос «Алишер, а что это?», верно? Обмен веществ есть у каждого человека, по-русски это «метаболизм». То есть вы поели — организм быстро переварил и снова требует еды; или наоборот — еда переваривается очень медленно, и вы едите всего 2 раза в день. По этому и можно понять, быстрый у вас метаболизм или медленный!\n\nЧтобы ускорить метаболизм, нужно правильно питаться и есть небольшими порциями каждые 2 часа — организм перестраивается, как машина после прошивки, и ускоряется!\n\n«Зачем нам ускоряться?» — спросите вы, верно? Но при быстром метаболизме организм сам использует и сжигает лишний жир, и тело становится рельефным. Кто же не хочет такое тело?\n\nКАК ОПРЕДЕЛИТЬ КАЛОРИЙНОСТЬ?\n\nДля примера сравним калорийность одного гамбургера и риса с курицей — примерные цифры можно найти в интернете. Пример: в гамбургере 374 ккал на 100 г. В рисе с курицей — 250 ккал. Теперь посмотрим на разницу: в рисе и курице есть очень нужные медленные углеводы и белки, а в гамбургере — быстрые углеводы и холестерин. Можете убедиться сами — в таблице ниже.\n\nДЛЯ НАБОРА МЫШЕЧНОЙ МАССЫ\n\nСовет для всех, кто набирает массу: если хотите нарастить мышцы, в дневном рационе нужно увеличить углеводы и калории. Это не значит есть сколько хочется — мы составляем правильный рацион. Например: вы хотите набрать жир или красивую мышечную фигуру? Конечно, мышечную, но чтобы достичь этого, придётся немного потрудиться!\n\nКогда едите углеводы, выбирайте медленные. Это: рис, гречка, макароны 2-го сорта, овсянка и геркулесовая каша. Все эти продукты есть в магазине!\n\nУглеводы в виде коктейля — в основном гейнеры, то есть спортивные добавки; их можно приготовить и дома. Чаще всего их лучше принимать до и сразу после тренировки. Причина: в другое время быстрые углеводы могут дать лишний жир. Быстрые углеводы дают нужную энергию, когда мышечные волокна открыты!\n\nЖиры при наборе массы нужны, но не сверх меры. Если не есть нужные жиры, вы не сможете поднять тестостерон. Тестостерон — гормон роста и восстановления мышц, в целом гормон, который делает мужчину мужчиной!\n\nИНДЕКС МЕДЛЕННЫХ УГЛЕВОДОВ (на 100 г)\n• Рис — 78,9 г углеводов — 349 ккал\n• Гречка — 69,2 г углеводов — 349 ккал\n• Овсяная крупа — 67,8 г углеводов — 349 ккал\n• Продукты из гороха — 60,2 г углеводов\n• Макароны (из муки 2 и 3 сорта) — 52–62 г углеводов — 368 ккал\n\nО ПРИЁМАХ ПИЩИ\nПриёмы пищи ниже составлены по этим советам (порции примерные): небольшая порция каждые 2–3 часа, медленные углеводы, гейнер до и после тренировки, жиры в меру.',
-  'Kaftlar bir-biriga qaragan holda. Bilak ham kuchli ishlaydi.':
-      'Ладони смотрят друг на друга. Сильно работает и предплечье.',
+  'KALORIYALARNI HISOBLASHNI O\'RGANAMIZ\n\nEslab qoling: kaloriya 1 kg vaznga nisbatan olinadi va shu grammni o\'z vazningizga ko\'paytirasiz. Ya\'ni 70 kg bo\'lsangiz, quyida berilgan raqamlarga ko\'paytirib, kunlik kaloriyani chiqarib olasiz:\n• Ayollar uchun, moddalar almashinuvi sekin bo\'lsa — 31\n• Ayollar uchun, moddalar almashinuvi tez bo\'lsa — 33\n• Erkaklar uchun, moddalar almashinuvi sekin bo\'lsa — 33\n• Erkaklar uchun, moddalar almashinuvi tez bo\'lsa — 35\n(Masalan: erkak, 70 kg, metabolizmi sekin — 70 × 33 = 2310 kkal.)\n\nEndi moddalar almashinuvi haqida gapirsak — «Alisher, bu nima?» degan savol keldi, to\'g\'rimi? Moddalar almashinuvi hamma insonda bo\'ladi, u ruschada «metabolizm». Ya\'ni siz ovqatlandingiz — organizm tezda hazm qilib, yana talab qiladi; yoki teskarisi — juda sekin hazm bo\'lib, kuniga 2 mahalgina ovqat yeydigan bo\'lib qolasiz. Shunga qarab metabolizm tez yoki sekinligini ajratsangiz bo\'ladi!\n\nMetabolizmni tezlatish uchun to\'g\'ri ovqatlanish va kichkina porsiyada har 2 soatda ovqatlanib turish kerak — organizm kodlanadi, xuddi mashinaga proshivka qilingandek, va tezlashadi!\n\n«Tezlashish bizga nimaga kerak?» deysiz, to\'g\'rimi? Lekin metabolizm tez bo\'lsa, organizmingiz ortiqcha yog\'larni o\'zi ishlatadi va yoqadi, tanangiz relyef ko\'rinishda bo\'ladi. Kim xohlamaydi deysiz bunaqa tanani?\n\nKALORIYANI QANDAY ANIQLAYMIZ?\n\nMisol uchun, bitta gamburgerning kaloriyasi bilan guruch va tovuqning kaloriyasini solishtiramiz — taxminan internetdan yozib aniqlasangiz bo\'ladi. Misol: gamburgerda 100 g da 374 kkal bor. Guruch va tovuqda 250 kkal bor. Endi farqini ko\'radigan bo\'lsak: guruch va tovuqda juda kerakli sekin singuvchi uglevodlar va oqsillar bor, gamburgerda esa tez singuvchi uglevodlar va xolesterin. O\'zingiz ko\'rishingiz mumkin — pastdagi jadvalda.\n\nMUSKUL MASSASI YIG\'ISH (NABOR) UCHUN\n\nHamma massa oladiganlarga tegishli bo\'lgan maslahat: agar siz muskul massasini olmoqchi bo\'lsangiz, kunlik ratsionda uglevod va kaloriyani ko\'paytirish kerak. Bu degani — xohlaganingizcha ovqat yemaysiz, balki to\'g\'ri ratsion tuzamiz. Misol uchun: siz yog\'li semirishni xohlaysizmi yoki chiroyli mushak qomatinimi? Albatta mushak qomati, lekin bu darajaga erishish uchun ozgina o\'zingizni qiynashingizga to\'g\'ri keladi!\n\nUglevodlarni iste\'mol qilganingizda sekin singuvchi uglevodlarni tanlab oling. Bu mahsulotlar: guruch, grechka, 2-sort makaron, ovsyanka va gerkules bo\'tqalari. Bu mahsulotlarning hammasi do\'konda bor!\n\nKokteyl ko\'rinishidagi uglevodlar — asosan gainerlar, ya\'ni sport qo\'shimchalari; uy sharoitida ham tayyorlasangiz bo\'ladi. Ko\'pincha bu mahsulotlarni mashg\'ulotdan oldin va keyin tezda iste\'mol qilganingiz ma\'qul. Sababi: boshqa payt iste\'mol qilsangiz, uglevodlari tez singuvchi bo\'lgani uchun ortiqcha yog\' berishi mumkin. Tez singuvchi uglevodlar muskul tolalari ochiq bo\'lgan paytda keraklicha energiya beradi!\n\nYog\'lar massa naborda kerak bo\'ladi, lekin keragidan yuqori darajada emas. Agar kerakli yog\'larni iste\'mol qilmasangiz, gormonlaringizdan testosteronni oshira olmaysiz. Testosteron — muskulning o\'sishi, tiklanishi, umuman olganda erkakni erkak qiladigan gormon hisoblanadi!\n\nSEKIN SINGUVCHI UGLEVODLAR INDEKSI (100 g da)\n• Guruch — 78,9 g uglevod — 349 kkal\n• Grechka — 69,2 g uglevod — 349 kkal\n• Ovsyanka yormasi — 67,8 g uglevod — 349 kkal\n• No\'xat mahsulotlari — 60,2 g uglevod\n• Makaron (2 va 3-sort undan) — 52–62 g uglevod — 368 kkal\n\nMAHALLAR HAQIDA\nQuyidagi mahallar yuqoridagi maslahatlar asosida tuzilgan (porsiyalar taxminiy): har 2–3 soatda kichik porsiya, sekin singuvchi uglevodlar, gainer mashg\'ulotdan oldin va keyin, yog\' me\'yorida.': 'УЧИМСЯ СЧИТАТЬ КАЛОРИИ\n\nЗапомните: калории берутся на 1 кг веса, и это число вы умножаете на свой вес. То есть если вы весите 70 кг, умножьте вес на число ниже и получите дневную норму калорий:\n• Для женщин с медленным обменом веществ — 31\n• Для женщин с быстрым обменом веществ — 33\n• Для мужчин с медленным обменом веществ — 33\n• Для мужчин с быстрым обменом веществ — 35\n(Например: мужчина, 70 кг, метаболизм медленный — 70 × 33 = 2310 ккал.)\n\nТеперь об обмене веществ — возник вопрос «Алишер, а что это?», верно? Обмен веществ есть у каждого человека, по-русски это «метаболизм». То есть вы поели — организм быстро переварил и снова требует еды; или наоборот — еда переваривается очень медленно, и вы едите всего 2 раза в день. По этому и можно понять, быстрый у вас метаболизм или медленный!\n\nЧтобы ускорить метаболизм, нужно правильно питаться и есть небольшими порциями каждые 2 часа — организм перестраивается, как машина после прошивки, и ускоряется!\n\n«Зачем нам ускоряться?» — спросите вы, верно? Но при быстром метаболизме организм сам использует и сжигает лишний жир, и тело становится рельефным. Кто же не хочет такое тело?\n\nКАК ОПРЕДЕЛИТЬ КАЛОРИЙНОСТЬ?\n\nДля примера сравним калорийность одного гамбургера и риса с курицей — примерные цифры можно найти в интернете. Пример: в гамбургере 374 ккал на 100 г. В рисе с курицей — 250 ккал. Теперь посмотрим на разницу: в рисе и курице есть очень нужные медленные углеводы и белки, а в гамбургере — быстрые углеводы и холестерин. Можете убедиться сами — в таблице ниже.\n\nДЛЯ НАБОРА МЫШЕЧНОЙ МАССЫ\n\nСовет для всех, кто набирает массу: если хотите нарастить мышцы, в дневном рационе нужно увеличить углеводы и калории. Это не значит есть сколько хочется — мы составляем правильный рацион. Например: вы хотите набрать жир или красивую мышечную фигуру? Конечно, мышечную, но чтобы достичь этого, придётся немного потрудиться!\n\nКогда едите углеводы, выбирайте медленные. Это: рис, гречка, макароны 2-го сорта, овсянка и геркулесовая каша. Все эти продукты есть в магазине!\n\nУглеводы в виде коктейля — в основном гейнеры, то есть спортивные добавки; их можно приготовить и дома. Чаще всего их лучше принимать до и сразу после тренировки. Причина: в другое время быстрые углеводы могут дать лишний жир. Быстрые углеводы дают нужную энергию, когда мышечные волокна открыты!\n\nЖиры при наборе массы нужны, но не сверх меры. Если не есть нужные жиры, вы не сможете поднять тестостерон. Тестостерон — гормон роста и восстановления мышц, в целом гормон, который делает мужчину мужчиной!\n\nИНДЕКС МЕДЛЕННЫХ УГЛЕВОДОВ (на 100 г)\n• Рис — 78,9 г углеводов — 349 ккал\n• Гречка — 69,2 г углеводов — 349 ккал\n• Овсяная крупа — 67,8 г углеводов — 349 ккал\n• Продукты из гороха — 60,2 г углеводов\n• Макароны (из муки 2 и 3 сорта) — 52–62 г углеводов — 368 ккал\n\nО ПРИЁМАХ ПИЩИ\nПриёмы пищи ниже составлены по этим советам (порции примерные): небольшая порция каждые 2–3 часа, медленные углеводы, гейнер до и после тренировки, жиры в меру.',
+  'Kaftlar bir-biriga qaragan holda. Bilak ham kuchli ishlaydi.': 'Ладони смотрят друг на друга. Сильно работает и предплечье.',
   'Kaloriya': 'Калории',
   'Kaloriya kiritilmagan': 'Калории не указаны',
   'Kamera': 'Камера',
   'Kamera ishlamayapti. Kodni qo\'lda kiriting': 'Камера не работает. Введите код вручную',
   'Kamera mavjud emas. Kodni qo\'lda kiriting': 'Камера недоступна. Введите код вручную',
   'Kamera ochilmadi': 'Не удалось открыть камеру',
-  'Kamera ruxsati berilmagan. Sozlamalardan ruxsat bering yoki kodni qo\'lda kiriting':
-      'Нет доступа к камере. Разрешите его в настройках или введите код вручную',
+  'Kamera ruxsati berilmagan. Sozlamalardan ruxsat bering yoki kodni qo\'lda kiriting': 'Нет доступа к камере. Разрешите его в настройках или введите код вручную',
   'Kameraga ruxsat berilmagan': 'Нет доступа к камере',
-  'Kamida 6 belgi — xodimga shu parolni aytasiz':
-      'Минимум 6 символов — сообщите этот пароль сотруднику',
-  'Kamida 8 belgi — xodimga shu parolni aytasiz':
-      'Не менее 8 символов — этот пароль вы сообщите сотруднику',
+  'Kamida 6 belgi — xodimga shu parolni aytasiz': 'Минимум 6 символов — сообщите этот пароль сотруднику',
+  'Kamida 8 belgi — xodimga shu parolni aytasiz': 'Не менее 8 символов — этот пароль вы сообщите сотруднику',
   'Karmana': 'Кармана',
   'Kasbi': 'Касби',
-  'Katalogda ko\'rinmaysiz — yangi shogird tanlay olmaydi':
-      'Вас нет в каталоге — новые ученики не могут вас выбрать',
+  'Katalogda ko\'rinmaysiz — yangi shogird tanlay olmaydi': 'Вас нет в каталоге — новые ученики не могут вас выбрать',
   'Katalogdagi profilim': 'Мой профиль в каталоге',
   'Kategoriya': 'Категория',
   'Kategoriyani tanlang: Ozish yoki Massa nabor': 'Выберите категорию: похудение или набор массы',
@@ -572,15 +506,13 @@ const ru = <String, String>{
   'Keldi': 'Пришёл',
   'Keldi: {0}, bugun tugaydi': 'Пришёл: {0}, сегодня заканчивается',
   'Keldi: {0}, {1} kun qoldi': 'Пришёл: {0}, осталось {1} дн.',
-  'Kelgan kun — 10 ball, mashq — 5 ball, haftada 3 faol kun — +15 ball':
-      'Визит — 10 баллов, тренировка — 5 баллов, 3 активных дня в неделю — +15 баллов',
+  'Kelgan kun — 10 ball, mashq — 5 ball, haftada 3 faol kun — +15 ball': 'Визит — 10 баллов, тренировка — 5 баллов, 3 активных дня в неделю — +15 баллов',
   'Keling, tanishamiz 👋': 'Давайте знакомиться 👋',
   'Kelish bo\'yicha': 'По посещениям',
   'Kelishi kamaydi': 'Стал ходить реже',
   'Kelmay qo\'ydi': 'Перестал ходить',
   'Ketish xavfi ostida shogird yo\'q': 'Нет учеников в зоне риска',
-  'Ketish xavfi, qolish ulushi va trenerlar natijasi':
-      'Риск ухода, удержание и результаты тренеров',
+  'Ketish xavfi, qolish ulushi va trenerlar natijasi': 'Риск ухода, удержание и результаты тренеров',
   'Keyin': 'После',
   'Keyingi mashg\'ulot mashqlari': 'Упражнения следующей тренировки',
   'Keyingi o\'lchov ertaga': 'Следующее измерение завтра',
@@ -600,8 +532,7 @@ const ru = <String, String>{
   'Ko\'kat': 'Зелень',
   'Ko\'krak': 'Грудь',
   'Ko\'krak (grud) + qo\'lning oldi (biceps)': 'Грудь + бицепс',
-  'Ko\'krakni turnikka torting, kuraklarni siqing.':
-      'Тянитесь грудью к перекладине, сводите лопатки.',
+  'Ko\'krakni turnikka torting, kuraklarni siqing.': 'Тянитесь грудью к перекладине, сводите лопатки.',
   'Ko\'proq': 'Ещё',
   'Ko\'rinish': 'Оформление',
   'Ko\'rsatish': 'Показать',
@@ -612,9 +543,9 @@ const ru = <String, String>{
   'Konimex': 'Канимех',
   'Koson': 'Касан',
   'Kosonsoy': 'Касансай',
-  'Kotlet yoki go\'sht — 150 g norma (yoki 4 ta qaynatilgan tuxum oqi)':
-      'Котлета или мясо — норма 150 г (или 4 варёных яичных белка)',
+  'Kotlet yoki go\'sht — 150 g norma (yoki 4 ta qaynatilgan tuxum oqi)': 'Котлета или мясо — норма 150 г (или 4 варёных яичных белка)',
   'Kreatin': 'Креатин',
+  'Kuniga eng ko\'pi {0} ta mahal bo\'lishi mumkin': 'В день не более {0} приёмов пищи',
   'Kunlar tanlanmagan': 'Дни не выбраны',
   'Kunlarni tanlash': 'Выбрать дни',
   'Kunlik': 'Разовый',
@@ -622,8 +553,7 @@ const ru = <String, String>{
   'Kunlik norma': 'Дневная норма',
   'Kunlik norma · {0}': 'Дневная норма · {0}',
   'Kuraklar skameykada, tepada dumbani siqing.': 'Лопатки на скамье, вверху сожмите ягодицы.',
-  'Kuraklarni siqib yoting, shtangani ko\'krak o\'rtasiga tushiring.':
-      'Лягте, сведя лопатки; опускайте штангу к середине груди.',
+  'Kuraklarni siqib yoting, shtangani ko\'krak o\'rtasiga tushiring.': 'Лягте, сведя лопатки; опускайте штангу к середине груди.',
   'Kutilmoqda': 'Ожидает',
   'Kutmoqda': 'Ждут',
   'L-Arginin': 'L-аргинин',
@@ -651,8 +581,7 @@ const ru = <String, String>{
   'Manzil kiritilmagan': 'Адрес не указан',
   'Maqsad': 'Цель',
   'Maqsad ?': 'Цель ?',
-  'Maqsad: mushak massasini oshirish va ortiqcha yog\' to\'planishining oldini olish. Kunlik norma 2700–2900 kkal; rejadagi mahsulotlar ~2540 kkal beradi — kerak bo\'lsa porsiyalarni biroz kattalashtiring.\nOqsil, uglevod va yog\'lar muvozanatlangan.\n21:00 dagi tamaddi — sport zal kuni uchun.':
-      'Цель: увеличить мышечную массу и не допустить накопления лишнего жира. Дневная норма 2700–2900 ккал; продукты из плана дают ~2540 ккал — при необходимости немного увеличьте порции.\nБелки, углеводы и жиры сбалансированы.\nПерекус в 21:00 — для дня тренировки в зале.',
+  'Maqsad: mushak massasini oshirish va ortiqcha yog\' to\'planishining oldini olish. Kunlik norma 2700–2900 kkal; rejadagi mahsulotlar ~2540 kkal beradi — kerak bo\'lsa porsiyalarni biroz kattalashtiring.\nOqsil, uglevod va yog\'lar muvozanatlangan.\n21:00 dagi tamaddi — sport zal kuni uchun.': 'Цель: увеличить мышечную массу и не допустить накопления лишнего жира. Дневная норма 2700–2900 ккал; продукты из плана дают ~2540 ккал — при необходимости немного увеличьте порции.\nБелки, углеводы и жиры сбалансированы.\nПерекус в 21:00 — для дня тренировки в зале.',
   'Maqsad: {0}': 'Цель: {0}',
   'Maqsad?': 'Цель?',
   'Maqsadingizni tanlang: ozish yoki massa nabor': 'Выберите цель: похудение или набор массы',
@@ -674,8 +603,7 @@ const ru = <String, String>{
   'Mashq saqlandi, lekin video yuklanmadi: {0}': 'Упражнение сохранено, но видео не загружено: {0}',
   'Mashq yo\'q': 'Нет упражнений',
   'Mashqlar': 'Упражнения',
-  'Mashqlar hozir qo\'shilmoqda — har bir mashg\'ulotning mashqlari ro\'yxati ishlab chiqilmoqda.':
-      'Упражнения сейчас добавляются — список для каждой тренировки в разработке.',
+  'Mashqlar hozir qo\'shilmoqda — har bir mashg\'ulotning mashqlari ro\'yxati ishlab chiqilmoqda.': 'Упражнения сейчас добавляются — список для каждой тренировки в разработке.',
   'Mashqlar saqlandi': 'Упражнения сохранены',
   'Mashqni o\'chirish': 'Удалить упражнение',
   'Mashqni tahrirlash': 'Изменить упражнение',
@@ -701,13 +629,10 @@ const ru = <String, String>{
   'Meva — olma': 'Фрукт — яблоко',
   'Meva: banan / olma / kivi yoki boshqa': 'Фрукт: банан / яблоко / киви или другой',
   'Mijoz': 'Клиент',
-  'Mijoz shu kodni skanerlasa, ilovaga ro\'yxatdan o\'tish sahifasi ochiladi.':
-      'Клиент сканирует этот код — и открывается страница регистрации в приложении.',
+  'Mijoz shu kodni skanerlasa, ilovaga ro\'yxatdan o\'tish sahifasi ochiladi.': 'Клиент сканирует этот код — и открывается страница регистрации в приложении.',
   'Mijozlar': 'Клиенты',
-  'Mijozlar ilovada ro\'yxatdan o\'tgach, shu yerda paydo bo\'ladi.':
-      'Клиенты появятся здесь после регистрации в приложении.',
-  'Mikrofon ruxsati berilmagan. Sozlamalardan ruxsat bering':
-      'Нет доступа к микрофону. Разрешите его в настройках',
+  'Mijozlar ilovada ro\'yxatdan o\'tgach, shu yerda paydo bo\'ladi.': 'Клиенты появятся здесь после регистрации в приложении.',
+  'Mikrofon ruxsati berilmagan. Sozlamalardan ruxsat bering': 'Нет доступа к микрофону. Разрешите его в настройках',
   'Mingbuloq': 'Мингбулак',
   'Miqdori': 'Количество',
   'Mirishkor': 'Миришкор',
@@ -726,8 +651,7 @@ const ru = <String, String>{
   'Muddatsiz': 'Бессрочно',
   'Mumkin emas (vergul bilan)': 'Нельзя (через запятую)',
   'Muqova': 'Обложка',
-  'Mushakni bosing — shu joy uchun mashqlarni ko\'ring':
-      'Нажмите на мышцу — увидите упражнения для неё',
+  'Mushakni bosing — shu joy uchun mashqlarni ko\'ring': 'Нажмите на мышцу — увидите упражнения для неё',
   'Muzrabot': 'Музрабат',
   'Namangan': 'Наманганская область',
   'Namangan shahri': 'город Наманган',
@@ -777,6 +701,7 @@ const ru = <String, String>{
   'O\'lchov': 'Замеры',
   'O\'lchovlar': 'Замеры',
   'O\'rta': 'Средний',
+  'O\'rta xavf': 'Средний риск',
   'O\'rtachirchiq': 'Уртачирчик',
   'O\'simlik yog\'i': 'Растительное масло',
   'O\'tirib oyoq uchiga ko\'tarilish': 'Подъём на носки сидя',
@@ -786,16 +711,13 @@ const ru = <String, String>{
   'O\'zbekiston tumani': 'Узбекистанский район',
   'O\'zgartirib bo\'lmadi: {0}': 'Не удалось изменить: {0}',
   'O\'zgartirish': 'Изменить',
-  'O\'zingizga qulay variantni tanlang: Seshanba, Payshanba, Shanba yoki Dushanba, Chorshanba, Juma.':
-      'Выберите удобный вариант: вторник, четверг, суббота или понедельник, среда, пятница.',
+  'O\'zingizga qulay variantni tanlang: Seshanba, Payshanba, Shanba yoki Dushanba, Chorshanba, Juma.': 'Выберите удобный вариант: вторник, четверг, суббота или понедельник, среда, пятница.',
   'OK': 'OK',
   'OLD': 'СПЕРЕДИ',
   'ORQA': 'СЗАДИ',
   'Obuna': 'Абонемент',
-  'Och rang — oxirgi 7 kunda yangi mashq qo\'shilgan mushaklar.':
-      'Светлый цвет — мышцы, к которым за последние 7 дней добавлены упражнения.',
-  'Og\'ir gantellarni ushlab, tik qomat bilan yuring.':
-      'Держите тяжёлые гантели и идите с прямой осанкой.',
+  'Och rang — oxirgi 7 kunda yangi mashq qo\'shilgan mushaklar.': 'Светлый цвет — мышцы, к которым за последние 7 дней добавлены упражнения.',
+  'Og\'ir gantellarni ushlab, tik qomat bilan yuring.': 'Держите тяжёлые гантели и идите с прямой осанкой.',
   'Ohangaron': 'Ахангаран',
   'Oktabr': 'Октябрь',
   'Olaman': 'Беру',
@@ -833,8 +755,7 @@ const ru = <String, String>{
   'Ovqat vaqti, vazn, chat va reja eslatmalari': 'Напоминания о еде, весе, чате и плане',
   'Ovqatlanish mahallari ({0})': 'Приёмы пищи ({0})',
   'Ovqatlanish rejalari': 'Планы питания',
-  'Ovqatlanish, mashq yoki reja bo\'yicha savolingizni yozing.':
-      'Напишите вопрос о питании, тренировках или плане.',
+  'Ovqatlanish, mashq yoki reja bo\'yicha savolingizni yozing.': 'Напишите вопрос о питании, тренировках или плане.',
   'Ovsyanka yoki gerkules bo\'tqasi (quruq vazni)': 'Овсяная или геркулесовая каша (сухой вес)',
   'Oxirgi 14 kun: {0} · oldingi 14 kun: {1}': 'Последние 14 дней: {0} · предыдущие 14 дней: {1}',
   'Oxirgi 7 kun': 'Последние 7 дней',
@@ -845,16 +766,14 @@ const ru = <String, String>{
   'Oxirgi o\'lchovdan {0} kun o\'tdi': 'С последнего взвешивания прошло {0} дн.',
   'Oxirgi o‘lchovdan {0} kun o‘tdi': 'С последнего взвешивания прошло {0} дн.',
   'Oxirgi {0} kun': 'Последние {0} дн.',
-  'Oyiga bir marta bir xil joyda, bir xil yorug\'likda rasm oling — o\'zgarish tarozidan ko\'ra rasmda yaxshiroq ko\'rinadi. Rasmni faqat siz va treneringiz ko\'radi.':
-      'Раз в месяц делайте фото в одном месте при одинаковом свете — изменения на фото видны лучше, чем на весах. Фото видите только вы и ваш тренер.',
+  'Oyiga bir marta bir xil joyda, bir xil yorug\'likda rasm oling — o\'zgarish tarozidan ko\'ra rasmda yaxshiroq ko\'rinadi. Rasmni faqat siz va treneringiz ko\'radi.': 'Раз в месяц делайте фото в одном месте при одинаковом свете — изменения на фото видны лучше, чем на весах. Фото видите только вы и ваш тренер.',
   'Oylik': 'Месячный',
   'Oylik hisobot': 'Месячный отчёт',
   'Oyoq bilan platformani siqish': 'Жим ногами',
   'Oyoq uchida, past sakrang.': 'На носках, невысокие прыжки.',
   'Oyoqni orqaga ko\'tarish (blokda)': 'Отведение ноги назад (на блоке)',
   'Ozish': 'Похудение',
-  'Ozish uchun — 75 kg, 65 kg va 60 kg li insonlar uchun. Kotta Qani zal.\n\nNonushta: ovsyanka bo\'tqasi 50 g va tuxum omleti — piyoz bilan aralashtirib, soya yog\'ida qovurilsa bo\'ladi. 2 dona tuxum, 1 tasining sarig\'ini olib tashlaymiz.\n\n10:30 — keyingi nonushta: 50 g yong\'oq va meva (olma) yoki 1 porsiya protein.\n\n12:30 — tushlik: 50 g grechka yoki guruch, yonida kotlet yoki go\'sht yoki qaynatilgan 4 ta tuxum oqi. Go\'shtlarning grammi — 150 g norma.\n\n16:00 — poldnik: 1 porsiya protein. Agar mashg\'ulot bo\'lsa — faqat 50 g grechkaning o\'zini qaynatib, ustiga qatiq, ya\'ni kefir qo\'shib aralashtirib yeysiz.\n\nMashg\'ulotdan keyin yana 1 porsiya protein. Qo\'rqmang, zarari yo\'q — protein oddiy oqsil qo\'shimchasi.\n\n19:00 — kechki ovqat: salat (ko\'katlar, pomidor, bodring, bolgar qalampiri) va baliq 150 g, yoki go\'sht dimlangan holda.\n\nBundan tashqari, sport qo\'shimchalaridan vitamin komplekslar va protein olishingiz shart.':
-      'Для похудения — для людей весом 75 кг, 65 кг и 60 кг. Зал Kotta Qani.\n\nЗавтрак: овсяная каша 50 г и омлет — можно смешать с луком и обжарить на соевом масле. 2 яйца, у одного убираем желток.\n\n10:30 — второй завтрак: 50 г грецких орехов и фрукт (яблоко) или 1 порция протеина.\n\n12:30 — обед: 50 г гречки или риса, к ним котлета, или мясо, или 4 варёных яичных белка. Норма мяса — 150 г.\n\n16:00 — полдник: 1 порция протеина. Если есть тренировка — только 50 г отварной гречки, залитой кефиром.\n\nПосле тренировки ещё 1 порция протеина. Не бойтесь, вреда нет — протеин это обычная белковая добавка.\n\n19:00 — ужин: салат (зелень, помидор, огурец, болгарский перец) и рыба 150 г или тушёное мясо.\n\nКроме того, из спортивных добавок обязательно принимайте витаминные комплексы и протеин.',
+  'Ozish uchun — 75 kg, 65 kg va 60 kg li insonlar uchun. Kotta Qani zal.\n\nNonushta: ovsyanka bo\'tqasi 50 g va tuxum omleti — piyoz bilan aralashtirib, soya yog\'ida qovurilsa bo\'ladi. 2 dona tuxum, 1 tasining sarig\'ini olib tashlaymiz.\n\n10:30 — keyingi nonushta: 50 g yong\'oq va meva (olma) yoki 1 porsiya protein.\n\n12:30 — tushlik: 50 g grechka yoki guruch, yonida kotlet yoki go\'sht yoki qaynatilgan 4 ta tuxum oqi. Go\'shtlarning grammi — 150 g norma.\n\n16:00 — poldnik: 1 porsiya protein. Agar mashg\'ulot bo\'lsa — faqat 50 g grechkaning o\'zini qaynatib, ustiga qatiq, ya\'ni kefir qo\'shib aralashtirib yeysiz.\n\nMashg\'ulotdan keyin yana 1 porsiya protein. Qo\'rqmang, zarari yo\'q — protein oddiy oqsil qo\'shimchasi.\n\n19:00 — kechki ovqat: salat (ko\'katlar, pomidor, bodring, bolgar qalampiri) va baliq 150 g, yoki go\'sht dimlangan holda.\n\nBundan tashqari, sport qo\'shimchalaridan vitamin komplekslar va protein olishingiz shart.': 'Для похудения — для людей весом 75 кг, 65 кг и 60 кг. Зал Kotta Qani.\n\nЗавтрак: овсяная каша 50 г и омлет — можно смешать с луком и обжарить на соевом масле. 2 яйца, у одного убираем желток.\n\n10:30 — второй завтрак: 50 г грецких орехов и фрукт (яблоко) или 1 порция протеина.\n\n12:30 — обед: 50 г гречки или риса, к ним котлета, или мясо, или 4 варёных яичных белка. Норма мяса — 150 г.\n\n16:00 — полдник: 1 порция протеина. Если есть тренировка — только 50 г отварной гречки, залитой кефиром.\n\nПосле тренировки ещё 1 порция протеина. Не бойтесь, вреда нет — протеин это обычная белковая добавка.\n\n19:00 — ужин: салат (зелень, помидор, огурец, болгарский перец) и рыба 150 г или тушёное мясо.\n\nКроме того, из спортивных добавок обязательно принимайте витаминные комплексы и протеин.',
   'Ozish • 60 / 65 / 75 kg (2-versiya)': 'Похудение • 60 / 65 / 75 кг (версия 2)',
   'Ozish • 80-90 kg (asosiy)': 'Похудение • 80–90 кг (основной)',
   'O’chirish': 'Удалить',
@@ -875,6 +794,7 @@ const ru = <String, String>{
   'Parolni unutdim': 'Забыл пароль',
   'Parolni unutdingizmi?': 'Забыли пароль?',
   'Parolni yashirish': 'Скрыть пароль',
+  'Past xavf': 'Низкий риск',
   'Pastdarg\'om': 'Пастдаргом',
   'Pauza': 'Пауза',
   'Paxtachi': 'Пахтачи',
@@ -902,14 +822,12 @@ const ru = <String, String>{
   'Protein izolyat (yoki 100 g tvorog)': 'Изолят протеина (или 100 г творога)',
   'Protein izolyat 900 g (shokolad)': 'Изолят протеина 900 г (шоколад)',
   'Protein kokteyl (1 porsiya)': 'Протеиновый коктейль (1 порция)',
-  'Protein, 1 porsiya (mashg\'ulot bo\'lsa: 50 g grechka + kefir)':
-      'Протеин, 1 порция (если тренировка: 50 г гречки + кефир)',
+  'Protein, 1 porsiya (mashg\'ulot bo\'lsa: 50 g grechka + kefir)': 'Протеин, 1 порция (если тренировка: 50 г гречки + кефир)',
   'QR kod': 'QR-код',
   'QR kod eskirgan, mijoz yangilasin': 'QR-код устарел, пусть клиент обновит',
   'QR kod noto\'g\'ri': 'Неверный QR-код',
   'QR kodni kameraga ko\'rsating': 'Покажите QR-код камере',
-  'Qadam keng, oldingi tizza oyoq uchidan o\'tmasin.':
-      'Шаг широкий, переднее колено не выходит за носок.',
+  'Qadam keng, oldingi tizza oyoq uchidan o\'tmasin.': 'Шаг широкий, переднее колено не выходит за носок.',
   'Qamashi': 'Камаши',
   'Qancha yedingiz?': 'Сколько вы съели?',
   'Qanliko\'l': 'Канлыкуль',
@@ -922,8 +840,7 @@ const ru = <String, String>{
   'Qaynatilgan no\'xat': 'Варёный нут',
   'Qaynatilgan tovuq go\'shti': 'Варёная курица',
   'Qaynatilgan tuxum (2 dona)': 'Варёные яйца (2 шт.)',
-  'Qaynatilgan: guruch / grechka / kartoshka / makaron / perlovka / no\'xat':
-      'Варёные: рис / гречка / картофель / макароны / перловка / нут',
+  'Qaynatilgan: guruch / grechka / kartoshka / makaron / perlovka / no\'xat': 'Варёные: рис / гречка / картофель / макароны / перловка / нут',
   'Qaynatilgan: guruch / grechka / makaron': 'Варёные: рис / гречка / макароны',
   'Qaysi mushakni mashq qilamiz?': 'Какую мышцу тренируем?',
   'Qaysi tovar': 'Какой товар',
@@ -951,13 +868,11 @@ const ru = <String, String>{
   'Qo\'shko\'pir': 'Кушкупыр',
   'Qo\'shrabot': 'Кушрабат',
   'Qo\'shtepa': 'Куштепа',
-  'Qoldi = a\'zo bo\'lgandan {0} kun keyin keyingi 14 kun ichida kamida 1 marta kelgan':
-      'Остался = пришёл хотя бы 1 раз в течение 14 дней после {0}-го дня с момента вступления',
+  'Qoldi = a\'zo bo\'lgandan {0} kun keyin keyingi 14 kun ichida kamida 1 marta kelgan': 'Остался = пришёл хотя бы 1 раз в течение 14 дней после {0}-го дня с момента вступления',
   'Qoldi: {0}': 'Осталось: {0}',
   'Qoldiq': 'Остаток',
   'Qoldiq (o\'lcham bo\'yicha)': 'Остаток (по размерам)',
-  'Qoldiq: tovar berilganda avtomatik kamayadi. Tugasa shogird buyurtma bera olmaydi.':
-      'Остаток уменьшается автоматически при выдаче товара. Когда он закончится, ученик не сможет заказать.',
+  'Qoldiq: tovar berilganda avtomatik kamayadi. Tugasa shogird buyurtma bera olmaydi.': 'Остаток уменьшается автоматически при выдаче товара. Когда он закончится, ученик не сможет заказать.',
   'Qoldiq: {0}': 'Остаток: {0}',
   'Qolish': 'Удержание',
   'Qorako\'l': 'Каракуль',
@@ -979,15 +894,13 @@ const ru = <String, String>{
   'Rasm 5 MB dan katta': 'Фото больше 5 МБ',
   'Rasm havolalari (ixtiyoriy)': 'Ссылки на картинки (необязательно)',
   'Rasm havolasi (ixtiyoriy)': 'Ссылка на картинку (необязательно)',
-  'Rasm juda katta ({0} KB). Boshqasini tanlang.':
-      'Фото слишком большое ({0} КБ). Выберите другое.',
+  'Rasm juda katta ({0} KB). Boshqasini tanlang.': 'Фото слишком большое ({0} КБ). Выберите другое.',
   'Rasm manbalari': 'Источники изображений',
   'Rasm o\'chmadi: {0}': 'Не удалось удалить фото: {0}',
   'Rasm qo\'shildi': 'Фото добавлено',
   'Rasm qo\'shish uchun avval mahsulotni saqlang': 'Чтобы добавить фото, сначала сохраните продукт',
   'Rasm qo\'shish uchun avval tovarni saqlang': 'Чтобы добавить фото, сначала сохраните товар',
-  'Rasm saqlash hozir ishlamayapti. Keyinroq urinib ko\'ring':
-      'Сохранение фото сейчас недоступно. Попробуйте позже',
+  'Rasm saqlash hozir ishlamayapti. Keyinroq urinib ko\'ring': 'Сохранение фото сейчас недоступно. Попробуйте позже',
   'Rasm tanlash': 'Выбрать фото',
   'Rasm yoki video': 'Фото или видео',
   'Rasm yuklanmadi: {0}': 'Фото не загружено: {0}',
@@ -997,10 +910,8 @@ const ru = <String, String>{
   'Rasmni almashtirish': 'Заменить фото',
   'Rasmni o\'chirish': 'Удалить фото',
   'Reja': 'План',
-  'Reja ({0} kkal) mijoz normasidan ({1} kkal) 300 kkal dan ko\'proq farq qiladi.':
-      'План ({0} ккал) отличается от нормы клиента ({1} ккал) больше чем на 300 ккал.',
-  'Reja 1200 kkal dan kam. Ko\'pchilik uchun bu xavfli darajada past.':
-      'План меньше 1200 ккал. Для большинства это опасно мало.',
+  'Reja ({0} kkal) mijoz normasidan ({1} kkal) 300 kkal dan ko\'proq farq qiladi.': 'План ({0} ккал) отличается от нормы клиента ({1} ккал) больше чем на 300 ккал.',
+  'Reja 1200 kkal dan kam. Ko\'pchilik uchun bu xavfli darajada past.': 'План меньше 1200 ккал. Для большинства это опасно мало.',
   'Reja berilgan': 'План назначен',
   'Reja berilmagan': 'План не назначен',
   'Reja biriktirildi': 'План назначен',
@@ -1014,8 +925,7 @@ const ru = <String, String>{
   'Reja saqlandi': 'План сохранён',
   'Reja yangilanmoqda': 'План обновляется',
   'Reja · {0}': 'План · {0}',
-  'Rejada yo\'q narsa yesangiz, shu yerga qo\'shing — kunlik hisob to\'g\'ri chiqadi.':
-      'Съели что-то не из плана — добавьте сюда, и дневной подсчёт будет верным.',
+  'Rejada yo\'q narsa yesangiz, shu yerga qo\'shing — kunlik hisob to\'g\'ri chiqadi.': 'Съели что-то не из плана — добавьте сюда, и дневной подсчёт будет верным.',
   'Rejadagi har mahal vaqtida eslatadi': 'Напомнит о каждом приёме пищи по плану',
   'Rejadan tashqari': 'Вне плана',
   'Rejadan tashqari nima yedingiz?': 'Что вы съели вне плана?',
@@ -1033,19 +943,15 @@ const ru = <String, String>{
   'Rishton': 'Риштан',
   'Ro\'yxat': 'Список',
   'Ro\'yxatda yo\'q bo\'lsa — o\'zingiz yozing': 'Если нет в списке — введите сами',
-  'Ro\'yxatdan o\'tayotgan shogirdlar sizni tanlay oladi':
-      'Новые ученики могут выбрать вас при регистрации',
-  'Ro\'yxatdan o\'tgach, trener sizga shaxsiy ovqatlanish rejasini biriktiradi.':
-      'После регистрации тренер назначит вам личный план питания.',
+  'Ro\'yxatdan o\'tayotgan shogirdlar sizni tanlay oladi': 'Новые ученики могут выбрать вас при регистрации',
+  'Ro\'yxatdan o\'tgach, trener sizga shaxsiy ovqatlanish rejasini biriktiradi.': 'После регистрации тренер назначит вам личный план питания.',
   'Ro\'yxatdan o\'tish': 'Регистрация',
   'Ro\'yxatdan o\'tish QR kodi': 'QR-код для регистрации',
   'Ro\'yxatdan olib tashlash': 'Убрать из списка',
   'Romitan': 'Ромитан',
-  'SMS yuborilmaydi, shuning uchun parolni zal tiklaydi:\n\n1. Zal egasiga (bosh adminga) telefon raqamingizni ayting.\n2. U sizga vaqtinchalik yangi parol beradi.\n3. Shu parol bilan kiring va Profil → «Parolni o\'zgartirish» orqali o\'zingizning parolingizni qo\'ying.':
-      'SMS не отправляются, поэтому пароль восстанавливает зал:\n\n1. Сообщите владельцу зала (главному админу) свой номер телефона.\n2. Он выдаст вам временный новый пароль.\n3. Войдите с этим паролем и задайте свой в Профиль → «Сменить пароль».',
+  'SMS yuborilmaydi, shuning uchun parolni zal tiklaydi:\n\n1. Zal egasiga (bosh adminga) telefon raqamingizni ayting.\n2. U sizga vaqtinchalik yangi parol beradi.\n3. Shu parol bilan kiring va Profil → «Parolni o\'zgartirish» orqali o\'zingizning parolingizni qo\'ying.': 'SMS не отправляются, поэтому пароль восстанавливает зал:\n\n1. Сообщите владельцу зала (главному админу) свой номер телефона.\n2. Он выдаст вам временный новый пароль.\n3. Войдите с этим паролем и задайте свой в Профиль → «Сменить пароль».',
   'Salat (o\'simlik yog\'i bilan)': 'Салат (с растительным маслом)',
-  'Salat: ko\'katlar, pomidor, bodring, bolgar qalampiri':
-      'Салат: зелень, помидор, огурец, болгарский перец',
+  'Salat: ko\'katlar, pomidor, bodring, bolgar qalampiri': 'Салат: зелень, помидор, огурец, болгарский перец',
   'Salom': 'Привет',
   'Salom, {0}': 'Привет, {0}',
   'Samarqand': 'Самаркандская область',
@@ -1081,8 +987,7 @@ const ru = <String, String>{
   'Shanba': 'Суббота',
   'Sharbatlar': 'Соки',
   'Sharof Rashidov': 'Шароф Рашидов',
-  'Shaxsiy ovqatlanish rejasi uchun \'Trener\' bo\'limidan trener tanlang.':
-      'Для личного плана питания выберите тренера в разделе «Тренер».',
+  'Shaxsiy ovqatlanish rejasi uchun \'Trener\' bo\'limidan trener tanlang.': 'Для личного плана питания выберите тренера в разделе «Тренер».',
   'Shayxontohur': 'Шайхантахур',
   'Sherobod': 'Шерабад',
   'Shirin': 'Ширин',
@@ -1092,10 +997,8 @@ const ru = <String, String>{
   'Shofirkon': 'Шафиркан',
   'Shogird': 'Ученик',
   'Shogird biriktirilmagan': 'Ученики не прикреплены',
-  'Shogird do\'kondan tovar so\'rasa, shu yerda chiqadi va chatga xabar keladi.':
-      'Когда ученик закажет товар, заказ появится здесь, а в чат придёт сообщение.',
-  'Shogird maqsadini hali tanlamagan — yangi versiyada kirganda so\'raladi yoki shu yerda o\'zingiz belgilang. Maqsadsiz reja berib bo\'lmaydi.':
-      'Ученик ещё не выбрал цель — приложение спросит при входе в новой версии, либо задайте её здесь. Без цели план назначить нельзя.',
+  'Shogird do\'kondan tovar so\'rasa, shu yerda chiqadi va chatga xabar keladi.': 'Когда ученик закажет товар, заказ появится здесь, а в чат придёт сообщение.',
+  'Shogird maqsadini hali tanlamagan — yangi versiyada kirganda so\'raladi yoki shu yerda o\'zingiz belgilang. Maqsadsiz reja berib bo\'lmaydi.': 'Ученик ещё не выбрал цель — приложение спросит при входе в новой версии, либо задайте её здесь. Без цели план назначить нельзя.',
   'Shogird shu rasmni ko\'radi': 'Ученик видит это изображение',
   'Shogird yo\'q': 'Учеников нет',
   'Shogird yozganda': 'Когда пишет ученик',
@@ -1103,49 +1006,38 @@ const ru = <String, String>{
   'Shogirdi yo\'q — baho yo\'q': 'Нет учеников — нет оценки',
   'Shogirdi yo’q': 'Учеников нет',
   'Shogirdlar': 'Ученики',
-  'Shogirdlar biriktirilgach, natijalar shu yerda ko\'rinadi':
-      'Результаты появятся здесь после закрепления учеников',
+  'Shogirdlar biriktirilgach, natijalar shu yerda ko\'rinadi': 'Результаты появятся здесь после закрепления учеников',
   'Shogirdlar ko\'radi': 'Ученики видят',
   'Shogirdlar rioyasi': 'Соблюдение плана учениками',
-  'Shogirdlar ro\'yxatdan o\'tayotganda shu ma\'lumotni ko\'rib trener tanlaydi.':
-      'При регистрации ученики видят эти данные и выбирают тренера.',
-  'Shogirdlar ro\'yxatdan o\'tganda sizni katalogdan tanlaydi va shu yerda paydo bo\'ladi. "Shogird qabul qilaman" yoqilgan bo\'lsin.':
-      'При регистрации ученики выбирают вас в каталоге и появляются здесь. Убедитесь, что включено «Принимаю учеников».',
+  'Shogirdlar ro\'yxatdan o\'tayotganda shu ma\'lumotni ko\'rib trener tanlaydi.': 'При регистрации ученики видят эти данные и выбирают тренера.',
+  'Shogirdlar ro\'yxatdan o\'tganda sizni katalogdan tanlaydi va shu yerda paydo bo\'ladi. "Shogird qabul qilaman" yoqilgan bo\'lsin.': 'При регистрации ученики выбирают вас в каталоге и появляются здесь. Убедитесь, что включено «Принимаю учеников».',
   'Shogirdlarga ko\'rinmaydi': 'Ученики не видят',
-  'Shogirdni "Mijozlar" bo\'limidan tanlab, shu trenerga biriktirishingiz mumkin.':
-      'Выберите ученика в разделе «Клиенты» и закрепите его за этим тренером.',
-  'Shogirdni "Mijozlar" bo’limidan tanlab, shu trenerga biriktirishingiz mumkin.':
-      'Выберите ученика в разделе «Клиенты» и прикрепите к этому тренеру.',
+  'Shogirdni "Mijozlar" bo\'limidan tanlab, shu trenerga biriktirishingiz mumkin.': 'Выберите ученика в разделе «Клиенты» и закрепите его за этим тренером.',
+  'Shogirdni "Mijozlar" bo’limidan tanlab, shu trenerga biriktirishingiz mumkin.': 'Выберите ученика в разделе «Клиенты» и прикрепите к этому тренеру.',
   'Shokolad (shakari kam)': 'Шоколад (с низким содержанием сахара)',
   'Shovot': 'Шават',
   'Shtanga bilan kaftni bukish': 'Сгибание кистей со штангой',
   'Shtanga bilan o\'tirib-turish': 'Приседания со штангой',
   'Shtanga bilan tosni ko\'tarish': 'Ягодичный мост со штангой',
   'Shtanga bilan yotib siqish': 'Жим штанги лёжа',
-  'Shtanga yelkada, bel tekis holda oldinga egiling.':
-      'Штанга на плечах, наклон вперёд с ровной спиной.',
+  'Shtanga yelkada, bel tekis holda oldinga egiling.': 'Штанга на плечах, наклон вперёд с ровной спиной.',
   'Shtangani iyakka tortish': 'Тяга штанги к подбородку',
   'Shtangani tik turib bukish': 'Подъём штанги на бицепс стоя',
   'Shu kodni zal xodimiga skanerlating': 'Дайте сотруднику зала отсканировать этот код',
-  'Shu ma\'lumotni xodimga bering — ilovaga shu bilan kiradi:':
-      'Передайте эти данные сотруднику — с ними он войдёт в приложение:',
+  'Shu ma\'lumotni xodimga bering — ilovaga shu bilan kiradi:': 'Передайте эти данные сотруднику — с ними он войдёт в приложение:',
   'Shumanay': 'Шуманай',
   'Sinov': 'Тест',
-  'Sinov versiyasi: mashqlar ro\'yxati namunaviy — treneringiz bergan dastur ustun turadi.':
-      'Тестовая версия: список упражнений примерный — программа вашего тренера важнее.',
+  'Sinov versiyasi: mashqlar ro\'yxati namunaviy — treneringiz bergan dastur ustun turadi.': 'Тестовая версия: список упражнений примерный — программа вашего тренера важнее.',
   'Sirdaryo': 'Сырдарьинская область',
   'Sirdaryo tumani': 'Сырдарьинский район',
   'Siz': 'Вы',
-  'Siz katalogda yo\'qsiz — shogirdlar sizni tanlay olmaydi.':
-      'Вас нет в каталоге — ученики не могут вас выбрать.',
+  'Siz katalogda yo\'qsiz — shogirdlar sizni tanlay olmaydi.': 'Вас нет в каталоге — ученики не могут вас выбрать.',
   'Sizning bahoingiz': 'Ваша оценка',
   'Sizning o\'rningiz: {0}': 'Ваше место: {0}',
-  'Skameyka 30° qiya. Ko\'krakning tepa qismi ishlaydi.':
-      'Скамья под углом 30°. Работает верх груди.',
+  'Skameyka 30° qiya. Ko\'krakning tepa qismi ishlaydi.': 'Скамья под углом 30°. Работает верх груди.',
   'Skaner': 'Сканер',
   'So\'m': 'Сум',
-  'So\'nggi {0} kun. Ball shogirdlarga reja berilgani, chatga javob, shogirdlarning rejaga rioyasi va vazn natijasidan avtomatik hisoblanadi.':
-      'Последние {0} дн. Балл считается автоматически: назначенные планы, ответы в чате, соблюдение плана учениками и результат по весу.',
+  'So\'nggi {0} kun. Ball shogirdlarga reja berilgani, chatga javob, shogirdlarning rejaga rioyasi va vazn natijasidan avtomatik hisoblanadi.': 'Последние {0} дн. Балл считается автоматически: назначенные планы, ответы в чате, соблюдение плана учениками и результат по весу.',
   'So\'x': 'Сох',
   'Solishtirish': 'Сравнение',
   'Solishtirish, ball va kimga e\'tibor kerak': 'Сравнение, баллы и кому нужно внимание',
@@ -1167,8 +1059,7 @@ const ru = <String, String>{
   'Standartga qaytarish': 'Вернуть стандарт',
   'Start': 'Старт',
   'Suhbatni boshlang': 'Начните разговор',
-  'Suli bo\'tqasi (yoki guruch / grechka / makaron / manniy, quruq)':
-      'Овсяная каша (или рис / гречка / макароны / манка, в сухом виде)',
+  'Suli bo\'tqasi (yoki guruch / grechka / makaron / manniy, quruq)': 'Овсяная каша (или рис / гречка / макароны / манка, в сухом виде)',
   'Suli yormasi (ovsyanka)': 'Овсяная крупа (овсянка)',
   'Suli yormasi (ovsyanka), quruq': 'Овсяная крупа (овсянка), сухая',
   'Suli yormasi (suvda, shakarsiz)': 'Овсяная крупа (на воде, без сахара)',
@@ -1182,26 +1073,20 @@ const ru = <String, String>{
   'Tahrirlash': 'Изменить',
   'Takror sanagich': 'Счётчик повторений',
   'Takror sanagich (sinov)': 'Счётчик повторений (тест)',
+  'Takrorlangan: "{0}"': 'Повтор: «{0}»',
   'Tamaddi (sport zal kuni)': 'Перекус (в день зала)',
   'Tan narxi (ixtiyoriy)': 'Себестоимость (необязательно)',
   'Tana bir chiziqda, bel pastga cho\'kmasin.': 'Тело в одну линию, поясница не провисает.',
-  'Tana chizmasidan mushak tanlab, yangi mashq qo\'shing':
-      'Выберите мышцу на схеме тела и добавьте упражнение',
+  'Tana chizmasidan mushak tanlab, yangi mashq qo\'shing': 'Выберите мышцу на схеме тела и добавьте упражнение',
   'Tana massasi indeksi': 'Индекс массы тела',
   'Tana o\'lchamlari': 'Параметры тела',
-  'Tana tekis, tirsaklar 45° burchakda. Ko\'krak polga yaqin tushsin.':
-      'Тело прямое, локти под 45°. Грудь опускается близко к полу.',
-  'Tana tik, tirsaklar orqaga qaraydi. Chuqur tushmang.':
-      'Корпус вертикально, локти смотрят назад. Не опускайтесь слишком глубоко.',
+  'Tana tekis, tirsaklar 45° burchakda. Ko\'krak polga yaqin tushsin.': 'Тело прямое, локти под 45°. Грудь опускается близко к полу.',
+  'Tana tik, tirsaklar orqaga qaraydi. Chuqur tushmang.': 'Корпус вертикально, локти смотрят назад. Не опускайтесь слишком глубоко.',
   'Tana xaritasi': 'Карта тела',
-  'Tanadagi mushakni bosing yoki pastdagi ro\'yxatdan tanlang — shu joy uchun mashqlar chiqadi.':
-      'Нажмите на мышцу на теле или выберите из списка ниже — появятся упражнения для неё.',
-  'Tanadagi mushakni bosing — shu joy uchun mashqlar chiqadi.':
-      'Нажмите на мышцу на теле — появятся упражнения для неё.',
-  'Tanadan mushakni bosing — shu joy mashqlarini ko\'rasiz va yangisini qo\'shasiz.':
-      'Нажмите на мышцу — увидите её упражнения и добавите новое.',
-  'Tanlagan treneringiz rejangizni tuzadi va siz bilan yozishadi. Keyin Profil bo\'limida almashtirishingiz mumkin.':
-      'Выбранный тренер составит ваш план и будет с вами на связи. Позже его можно сменить в разделе «Профиль».',
+  'Tanadagi mushakni bosing yoki pastdagi ro\'yxatdan tanlang — shu joy uchun mashqlar chiqadi.': 'Нажмите на мышцу на теле или выберите из списка ниже — появятся упражнения для неё.',
+  'Tanadagi mushakni bosing — shu joy uchun mashqlar chiqadi.': 'Нажмите на мышцу на теле — появятся упражнения для неё.',
+  'Tanadan mushakni bosing — shu joy mashqlarini ko\'rasiz va yangisini qo\'shasiz.': 'Нажмите на мышцу — увидите её упражнения и добавите новое.',
+  'Tanlagan treneringiz rejangizni tuzadi va siz bilan yozishadi. Keyin Profil bo\'limida almashtirishingiz mumkin.': 'Выбранный тренер составит ваш план и будет с вами на связи. Позже его можно сменить в разделе «Профиль».',
   'Tanlang': 'Выберите',
   'Tanlash': 'Выбрать',
   'Tannarxi yo\'q: {0} ta buyurtma': 'Нет себестоимости: заказов {0}',
@@ -1219,53 +1104,43 @@ const ru = <String, String>{
   'Telefon raqam noto\'g\'ri': 'Неверный номер телефона',
   'Telefon raqam to\'liq emas': 'Номер телефона введён не полностью',
   'Telefon raqam yoki parol noto\'g\'ri': 'Неверный номер телефона или пароль',
-  'Telefon sozlamalarida Aura Fit uchun kamerani yoqing':
-      'Включите камеру для Aura Fit в настройках телефона',
+  'Telefon sozlamalarida Aura Fit uchun kamerani yoqing': 'Включите камеру для Aura Fit в настройках телефона',
   'Telefon: {0}': 'Телефон: {0}',
-  'Tepada 1 soniya ushlab, sekin tushiring.':
-      'Вверху задержитесь на 1 секунду, опускайте медленно.',
-  'Tepada 1 soniya ushlang, pastda to\'liq cho\'zing.':
-      'Вверху задержитесь на 1 секунду, внизу полностью растяните.',
+  'Tepada 1 soniya ushlab, sekin tushiring.': 'Вверху задержитесь на 1 секунду, опускайте медленно.',
+  'Tepada 1 soniya ushlang, pastda to\'liq cho\'zing.': 'Вверху задержитесь на 1 секунду, внизу полностью растяните.',
   'Termiz shahri': 'город Термез',
   'Tez': 'Быстрый',
   'Tez orada': 'Скоро',
   'Tez singuvchi uglevodlar': 'Быстрые углеводы',
-  'Tez — ovqat tez hazm bo\'lib, tez-tez qorin ochadi. Sekin — ovqat sekin hazm bo\'ladi, kuniga 2 mahal yeb ham yuraverasiz. Bilmasangiz — «Sekin»ni tanlang.':
-      'Быстрый — еда переваривается быстро, вы часто хотите есть. Медленный — еда переваривается медленно, вам хватает 2 приёмов пищи в день. Не знаете — выберите «Медленный».',
+  'Tez — ovqat tez hazm bo\'lib, tez-tez qorin ochadi. Sekin — ovqat sekin hazm bo\'ladi, kuniga 2 mahal yeb ham yuraverasiz. Bilmasangiz — «Sekin»ni tanlang.': 'Быстрый — еда переваривается быстро, вы часто хотите есть. Медленный — еда переваривается медленно, вам хватает 2 приёмов пищи в день. Не знаете — выберите «Медленный».',
   'Tik turib oyoq uchiga ko\'tarilish': 'Подъём на носки стоя',
   'Til': 'Язык',
-  'Tirsak biroz bukilgan, yelka balandligigacha. Silkitmang.':
-      'Локоть слегка согнут, до уровня плеч. Без рывков.',
+  'Tirsak biroz bukilgan, yelka balandligigacha. Silkitmang.': 'Локоть слегка согнут, до уровня плеч. Без рывков.',
   'Tirsaklar kaftdan baland ko\'tariladi.': 'Локти поднимаются выше кистей.',
-  'Tirsaklar tanaga yopishgan, faqat bilak harakatlanadi.':
-      'Локти прижаты к телу, двигается только предплечье.',
+  'Tirsaklar tanaga yopishgan, faqat bilak harakatlanadi.': 'Локти прижаты к телу, двигается только предплечье.',
   'Tirsaklar tanaga yopishgan, tanani tebratmang.': 'Локти прижаты к телу, корпус не раскачивайте.',
   'Tirsaklar tepaga qaraydi va ochilib ketmaydi.': 'Локти смотрят вверх и не расходятся.',
-  'Tizzani oxirigacha to\'g\'rilamang, bel suyanchiqdan uzilmasin.':
-      'Не выпрямляйте колени до конца, поясница не отрывается от спинки.',
+  'Tizim xabari': 'Системное сообщение',
+  'Tizzani oxirigacha to\'g\'rilamang, bel suyanchiqdan uzilmasin.': 'Не выпрямляйте колени до конца, поясница не отрывается от спинки.',
   'To\'g\'ri': 'В самый раз',
   'To\'g\'ri ovqatlanish —': 'Правильное питание —',
   'To\'g\'ri oyoqda egilish (rumin tortishi)': 'Румынская тяга',
+  'To\'g\'ri son kiriting': 'Введите корректное число',
   'To\'langan: {0}': 'Оплачено: {0}',
   'To\'langan: {0} · amal qiladi: {1}': 'Оплачено: {0} · действует: {1}',
   'To\'langan: {0} · keyingi to\'lov: {1}': 'Оплачено: {0} · следующая оплата: {1}',
   'To\'liq ko\'rinish': 'Полный вид',
   'To\'liq osiling, yelkalarni bo\'shashtirmang.': 'Висите полностью, плечи не расслабляйте.',
-  'To\'lov zalda qilinadi, abonementni trener belgilaydi.':
-      'Оплата в зале, абонемент оформляет тренер.',
-  'To\'lov zalda, naqd — ilovada karta so\'ralmaydi.':
-      'Оплата в зале, наличными — карта в приложении не нужна.',
-  'To\'lov zalda, naqd. Trener buyurtmani ko\'radi va tayyorlab qo\'yadi.':
-      'Оплата в зале, наличными. Тренер увидит заказ и подготовит его.',
+  'To\'lov zalda qilinadi, abonementni trener belgilaydi.': 'Оплата в зале, абонемент оформляет тренер.',
+  'To\'lov zalda, naqd — ilovada karta so\'ralmaydi.': 'Оплата в зале, наличными — карта в приложении не нужна.',
+  'To\'lov zalda, naqd. Trener buyurtmani ko\'radi va tayyorlab qo\'yadi.': 'Оплата в зале, наличными. Тренер увидит заказ и подготовит его.',
   'To\'lovlar': 'Оплаты',
-  'To\'lovlar zal bo\'yicha ko\'rinadi. Bosh admin sizni zalga biriktirishi kerak.':
-      'Оплаты показываются по залу. Главный админ должен прикрепить вас к залу.',
+  'To\'lovlar zal bo\'yicha ko\'rinadi. Bosh admin sizni zalga biriktirishi kerak.': 'Оплаты показываются по залу. Главный админ должен прикрепить вас к залу.',
   'To\'raqo\'rg\'on': 'Туракурган',
   'To\'rtko\'l': 'Турткуль',
   'To\'xtatish': 'Остановить',
   'Tomdi': 'Тамды',
-  'Topilmadi. Bazada yo\'q taomni treneringiz qo\'shib beradi — chatda yozing.':
-      'Не найдено. Блюдо, которого нет в базе, добавит ваш тренер — напишите в чат.',
+  'Topilmadi. Bazada yo\'q taomni treneringiz qo\'shib beradi — chatda yozing.': 'Не найдено. Блюдо, которого нет в базе, добавит ваш тренер — напишите в чат.',
   'Toshkent shahri': 'город Ташкент',
   'Toshkent viloyati': 'Ташкентская область',
   'Toshloq': 'Ташлак',
@@ -1278,18 +1153,15 @@ const ru = <String, String>{
   'Tovarni tahrirlash': 'Изменить товар',
   'Tovuq filesi': 'Куриное филе',
   'Tovuq ko\'kragi': 'Куриная грудка',
-  'Tovuq ko\'kragi (grill) / bifshteks / mol go\'shti / baliq':
-      'Куриная грудка (гриль) / бифштекс / говядина / рыба',
+  'Tovuq ko\'kragi (grill) / bifshteks / mol go\'shti / baliq': 'Куриная грудка (гриль) / бифштекс / говядина / рыба',
   'Toyloq': 'Тайлак',
   'Trapetsiya': 'Трапеции',
   'Trener': 'Тренер',
   'Trener almashtirilsinmi?': 'Сменить тренера?',
-  'Trener bergan ratsion · {0} — kattalashtirish uchun bosing':
-      'Рацион от тренера · {0} — нажмите, чтобы увеличить',
+  'Trener bergan ratsion · {0} — kattalashtirish uchun bosing': 'Рацион от тренера · {0} — нажмите, чтобы увеличить',
   'Trener biriktirildi': 'Тренер назначен',
   'Trener biriktirilgan': 'Тренер назначен',
-  'Trener bugun uyda mashq qilishingizni belgiladi.':
-      'Тренер назначил вам на сегодня домашнюю тренировку.',
+  'Trener bugun uyda mashq qilishingizni belgiladi.': 'Тренер назначил вам на сегодня домашнюю тренировку.',
   'Trener formulasi: {0}': 'Формула тренера: {0}',
   'Trener ma\'lumoti yo\'q': 'Нет данных по тренерам',
   'Trener maslahati': 'Совет тренера',
@@ -1299,25 +1171,19 @@ const ru = <String, String>{
   'Trener qilinsinmi?': 'Сделать тренером?',
   'Trener qilish': 'Сделать тренером',
   'Trener qo\'shgan': 'Добавил тренер',
-  'Trener qo\'shgan mashqlar yuklanmadi — hozircha faqat namunaviy ro\'yxat. Yangi mashq saqlanmasligi mumkin.':
-      'Упражнения тренера не загрузились — пока только образцы. Новое упражнение может не сохраниться.',
+  'Trener qo\'shgan mashqlar yuklanmadi — hozircha faqat namunaviy ro\'yxat. Yangi mashq saqlanmasligi mumkin.': 'Упражнения тренера не загрузились — пока только образцы. Новое упражнение может не сохраниться.',
   'Trener qo\'shildi': 'Тренер добавлен',
   'Trener qo\'shish': 'Добавить тренера',
   'Trener reja biriktirganda': 'Когда тренер назначает план',
   'Trener rejasi': 'План тренера',
-  'Trener sizga ovqatlanish rejasi tuzadi va savollaringizga javob beradi.':
-      'Тренер составит вам план питания и ответит на вопросы.',
-  'Trener sizga ovqatlanish rejasini berdi — \'Bugun\' bo\'limida ko\'ring':
-      'Тренер назначил вам план питания — смотрите в разделе «Сегодня»',
+  'Trener sizga ovqatlanish rejasi tuzadi va savollaringizga javob beradi.': 'Тренер составит вам план питания и ответит на вопросы.',
+  'Trener sizga ovqatlanish rejasini berdi — \'Bugun\' bo\'limida ko\'ring': 'Тренер назначил вам план питания — смотрите в разделе «Сегодня»',
   'Trener tanlang': 'Выберите тренера',
   'Trener tanlansinmi?': 'Выбрать тренера?',
   'Trener tayinlandi': 'Тренер назначен',
-  'Trener tez orada sizga shaxsiy ovqatlanish rejasini tuzadi. Savollaringizni \'Trener\' bo\'limida yozing.':
-      'Тренер скоро составит вам личный план питания. Вопросы пишите в разделе «Тренер».',
-  'Trener tovarlarni kiritgach, shu yerda ko\'rinadi.':
-      'Товары появятся здесь, когда тренер их добавит.',
-  'Trener tuzgan shaxsiy reja, kunlik nazorat va progress — bitta ilovada.':
-      'Личный план от тренера, ежедневный контроль и прогресс — в одном приложении.',
+  'Trener tez orada sizga shaxsiy ovqatlanish rejasini tuzadi. Savollaringizni \'Trener\' bo\'limida yozing.': 'Тренер скоро составит вам личный план питания. Вопросы пишите в разделе «Тренер».',
+  'Trener tovarlarni kiritgach, shu yerda ko\'rinadi.': 'Товары появятся здесь, когда тренер их добавит.',
+  'Trener tuzgan shaxsiy reja, kunlik nazorat va progress — bitta ilovada.': 'Личный план от тренера, ежедневный контроль и прогресс — в одном приложении.',
   'Trener va mijozlar bitta ilovadan kiradi.': 'Тренеры и клиенты входят через одно приложение.',
   'Trener xabar yozdi': 'Тренер написал сообщение',
   'Trener yozganda': 'Когда пишет тренер',
@@ -1346,8 +1212,7 @@ const ru = <String, String>{
   'Tushum': 'Выручка',
   'Tushunarli': 'Понятно',
   'Tushundim': 'Понятно',
-  'Tuxum omleti: 2 dona, 1 tasining sarig\'i olib tashlanadi':
-      'Омлет: 2 яйца, у одного убрать желток',
+  'Tuxum omleti: 2 dona, 1 tasining sarig\'i olib tashlanadi': 'Омлет: 2 яйца, у одного убрать желток',
   'Tuxum oqi': 'Яичный белок',
   'Tuxum oqi (2 dona)': 'Яичный белок (2 шт.)',
   'Tuxum oqi (4 dona)': 'Яичный белок (4 шт.)',
@@ -1378,13 +1243,10 @@ const ru = <String, String>{
   'Vazn': 'Вес',
   'Vazn 2 haftadan beri kiritilmagan': 'Вес не вносился 2 недели',
   'Vazn 30–300 kg oralig\'ida bo\'lishi kerak': 'Вес должен быть от 30 до 300 кг',
-  'Vazn bu yerda o\'zgarmaydi — Progress bo\'limida haftada 1 marta kiritiladi.':
-      'Вес здесь не меняется — его вносят раз в неделю в разделе «Прогресс».',
+  'Vazn bu yerda o\'zgarmaydi — Progress bo\'limida haftada 1 marta kiritiladi.': 'Вес здесь не меняется — его вносят раз в неделю в разделе «Прогресс».',
   'Vazn dinamikasi': 'Динамика веса',
-  'Vazn haftada 1 marta kiritiladi. Keyingi o\'lchov {0}.':
-      'Вес вносится раз в неделю. Следующее взвешивание {0}.',
-  'Vazn haftada bir marta kiritiladi. Keyingi o\'lchov uchun biroz kuting':
-      'Вес вводится раз в неделю. Подождите до следующего измерения',
+  'Vazn haftada 1 marta kiritiladi. Keyingi o\'lchov {0}.': 'Вес вносится раз в неделю. Следующее взвешивание {0}.',
+  'Vazn haftada bir marta kiritiladi. Keyingi o\'lchov uchun biroz kuting': 'Вес вводится раз в неделю. Подождите до следующего измерения',
   'Vazn kam': 'Недостаточный вес',
   'Vazn kiritish': 'Внести вес',
   'Vazn kiritish kuni': 'День взвешивания',
@@ -1394,10 +1256,8 @@ const ru = <String, String>{
   'Vazn: ertaga': 'Вес: завтра',
   'Vazn: {0} kundan keyin': 'Вес: через {0} дн.',
   'Vaznni kiritish vaqti keldi': 'Пора внести вес',
-  'Vergul bilan. Yozilsa — shogird buyurtmada o\'lchamni tanlaydi':
-      'Через запятую. Если указано — ученик выберет размер при заказе',
-  'Vergul bilan. Yozilsa — shogird buyurtmada rangni tanlaydi':
-      'Через запятую. Если указано — ученик выберет цвет при заказе',
+  'Vergul bilan. Yozilsa — shogird buyurtmada o\'lchamni tanlaydi': 'Через запятую. Если указано — ученик выберет размер при заказе',
+  'Vergul bilan. Yozilsa — shogird buyurtmada rangni tanlaydi': 'Через запятую. Если указано — ученик выберет цвет при заказе',
   'Video': 'Видео',
   'Video 100 MB dan katta': 'Видео больше 100 МБ',
   'Video 100 MB dan katta. Avval kichraytiring': 'Видео больше 100 МБ. Сначала уменьшите его',
@@ -1407,10 +1267,8 @@ const ru = <String, String>{
   'Video bor': 'Есть видео',
   'Video fayl yo\'q': 'Видеофайла нет',
   'Video fayl yuklangan': 'Видеофайл загружен',
-  'Video fayl yuklash uchun avval mashqni saqlang':
-      'Чтобы загрузить видеофайл, сначала сохраните упражнение',
-  'Video hali tayyorlanmagan. Trener tayyorlab qo\'ygach, shu yerda ko\'rinadi.':
-      'Видео ещё не готово. Когда тренер его подготовит, оно появится здесь.',
+  'Video fayl yuklash uchun avval mashqni saqlang': 'Чтобы загрузить видеофайл, сначала сохраните упражнение',
+  'Video hali tayyorlanmagan. Trener tayyorlab qo\'ygach, shu yerda ko\'rinadi.': 'Видео ещё не готово. Когда тренер его подготовит, оно появится здесь.',
   'Video havolasi (ixtiyoriy)': 'Ссылка на видео (необязательно)',
   'Video mashq saqlanganda yuklanadi': 'Видео загрузится при сохранении упражнения',
   'Video o\'chmadi: {0}': 'Видео не удалено: {0}',
@@ -1431,6 +1289,7 @@ const ru = <String, String>{
   'Videoni o\'chirish': 'Удалить видео',
   'Viloyat / shahar': 'Область / город',
   'Vobkent': 'Вабкент',
+  'Xabar eng ko\'pi {0} belgi bo\'lishi mumkin': 'Сообщение не длиннее {0} символов',
   'Xabar yozing...': 'Напишите сообщение...',
   'Xatirchi': 'Хатырчи',
   'Xatolik yuz berdi': 'Произошла ошибка',
@@ -1451,8 +1310,7 @@ const ru = <String, String>{
   'Yakkasaroy': 'Яккасарай',
   'Yakshanba': 'Воскресенье',
   'Yangi': 'Новое',
-  'Yangi a\'zolar 30/60/90 kundan keyin shu yerda hisoblanadi':
-      'Новые участники учитываются здесь через 30/60/90 дней',
+  'Yangi a\'zolar 30/60/90 kundan keyin shu yerda hisoblanadi': 'Новые участники учитываются здесь через 30/60/90 дней',
   'Yangi barmen': 'Новый бармен',
   'Yangi barmen akkaunti': 'Новый аккаунт бармена',
   'Yangi buyurtma': 'Новый заказ',
@@ -1474,14 +1332,11 @@ const ru = <String, String>{
   'Yangi tovar': 'Новый товар',
   'Yangi trener': 'Новый тренер',
   'Yangi trener akkaunti': 'Новый аккаунт тренера',
-  'Yangi treneringiz rejangiz va chatingizni ko\'radi.':
-      'Новый тренер увидит ваш план и переписку.',
+  'Yangi treneringiz rejangiz va chatingizni ko\'radi.': 'Новый тренер увидит ваш план и переписку.',
   'Yangi versiyani yuklab oling': 'Скачайте новую версию',
   'Yangi xabar': 'Новое сообщение',
-  'Yangi xabar, reja yoki buyurtma bo\'lsa shu yerda chiqadi — telefonda bildirishnoma o\'chirilgan bo\'lsa ham.':
-      'Новые сообщения, планы и заказы появятся здесь — даже если уведомления на телефоне отключены.',
-  'Yangi xabar, reja yoki buyurtma bo‘lsa shu yerda chiqadi — telefonda bildirishnoma o‘chirilgan bo‘lsa ham.':
-      'Новые сообщения, планы и заказы появятся здесь — даже если уведомления на телефоне выключены.',
+  'Yangi xabar, reja yoki buyurtma bo\'lsa shu yerda chiqadi — telefonda bildirishnoma o\'chirilgan bo\'lsa ham.': 'Новые сообщения, планы и заказы появятся здесь — даже если уведомления на телефоне отключены.',
+  'Yangi xabar, reja yoki buyurtma bo‘lsa shu yerda chiqadi — telefonda bildirishnoma o‘chirilgan bo‘lsa ham.': 'Новые сообщения, планы и заказы появятся здесь — даже если уведомления на телефоне выключены.',
   'Yangi zal': 'Новый зал',
   'Yangiariq': 'Янгиарык',
   'Yangibozor': 'Янгибазар',
@@ -1500,13 +1355,11 @@ const ru = <String, String>{
   'Yedim': 'Съел',
   'Yelka': 'Плечи',
   'Yelka + qo\'lning orqasi (triceps)': 'Плечи + трицепс',
-  'Yelkalarni quloqqa torting, tepada 1 soniya ushlang.':
-      'Тяните плечи к ушам, вверху задержитесь на 1 секунду.',
+  'Yelkalarni quloqqa torting, tepada 1 soniya ushlang.': 'Тяните плечи к ушам, вверху задержитесь на 1 секунду.',
   'Yog\'': 'Жиры',
   'Yondashuv × takror': 'Подходы × повторы',
   'Yong\'oq': 'Грецкий орех',
-  'Yong\'oq (yoki hammasi o\'rniga 1 porsiya protein)':
-      'Грецкий орех (или вместо всего — 1 порция протеина)',
+  'Yong\'oq (yoki hammasi o\'rniga 1 porsiya protein)': 'Грецкий орех (или вместо всего — 1 порция протеина)',
   'Yopish': 'Закрыть',
   'Yordamchi mushaklar': 'Вспомогательные мышцы',
   'Yordamchi mushaklar: yo\'q': 'Вспомогательные мышцы: нет',
@@ -1525,12 +1378,12 @@ const ru = <String, String>{
   'Yuklab bo\'lmadi: {0}': 'Не удалось загрузить: {0}',
   'Yuklab olish': 'Скачать',
   'Yunusobod': 'Юнусабад',
+  'Yuqori xavf': 'Высокий риск',
   'Yuqorichirchiq': 'Юкоричирчик',
   'Zafarobod': 'Зафарабад',
   'Zal': 'Зал',
   'Zal biriktirilmagan': 'Зал не назначен',
-  'Zal bo\'limida kunlarni tanlang — bugungi mashqlar shu yerda chiqadi. Hozircha hamma mushak ochiq.':
-      'Выберите дни в разделе «Зал» — здесь появятся упражнения на сегодня. Пока открыты все мышцы.',
+  'Zal bo\'limida kunlarni tanlang — bugungi mashqlar shu yerda chiqadi. Hozircha hamma mushak ochiq.': 'Выберите дни в разделе «Зал» — здесь появятся упражнения на сегодня. Пока открыты все мышцы.',
   'Zal egasi': 'Владелец зала',
   'Zal kunlari': 'Дни зала',
   'Zal kunlari saqlandi': 'Дни зала сохранены',
@@ -1540,16 +1393,14 @@ const ru = <String, String>{
   'Zal o\'chirildi': 'Зал удалён',
   'Zal o\'chirilsinmi?': 'Удалить зал?',
   'Zal qo\'shildi': 'Зал добавлен',
-  'Zal qo\'shsangiz, har trenerni o\'z zaliga biriktirasiz va zal bo\'yicha ajratib ko\'rasiz.':
-      'Добавьте зал — и сможете прикреплять тренеров к своему залу и смотреть данные по залам.',
+  'Zal qo\'shsangiz, har trenerni o\'z zaliga biriktirasiz va zal bo\'yicha ajratib ko\'rasiz.': 'Добавьте зал — и сможете прикреплять тренеров к своему залу и смотреть данные по залам.',
   'Zal reytingi': 'Рейтинг зала',
   'Zal tanlang': 'Выберите зал',
   'Zaldan chiqarildi': 'Откреплён от зала',
   'Zaldan chiqarish': 'Открепить от зала',
   'Zalga biriktirildi': 'Прикреплён к залу',
   'Zalga biriktirish': 'Прикрепить к залу',
-  'Zalga keling va mashq qiling: ball to\'planadi':
-      'Приходите в зал и тренируйтесь — баллы накапливаются',
+  'Zalga keling va mashq qiling: ball to\'planadi': 'Приходите в зал и тренируйтесь — баллы накапливаются',
   'Zalga kirish': 'Вход в зал',
   'Zallar': 'Залы',
   'Zalni o\'chirish': 'Удалить зал',
@@ -1608,18 +1459,18 @@ const ru = <String, String>{
   '{0} (nusxa)': '{0} (копия)',
   '{0} / {1} bajarildi': 'Выполнено {0} / {1}',
   '{0} ball': '{0} б.',
+  '{0} dan katta, {1} gacha kiriting': 'Введите число больше {0} и не более {1}',
+  '{0} dan {1} gacha kiriting': 'Введите от {0} до {1}',
   '{0} dan {1} qoldi': 'Осталось {1} из {0}',
   '{0} daqiqa oldin': '{0} мин назад',
   '{0} dona': '{0} шт.',
   '{0} dona · tushum {1}': '{0} шт. · выручка {1}',
-  '{0} faqat do\'kon bilan ishlaydi: tovar, buyurtma va qoldiq. Shogirdlar, rejalar va chatni ko\'rmaydi.{1}':
-      '{0} будет работать только с магазином: товары, заказы и остатки. Учеников, планы и чат не видит.{1}',
+  '{0} faqat do\'kon bilan ishlaydi: tovar, buyurtma va qoldiq. Shogirdlar, rejalar va chatni ko\'rmaydi.{1}': '{0} будет работать только с магазином: товары, заказы и остатки. Учеников, планы и чат не видит.{1}',
   '{0} g': '{0} г',
   '{0} g  ·  {1} kkal  ·  {2} g oqsil': '{0} г  ·  {1} ккал  ·  {2} г белка',
   '{0} g oqsil': '{0} г белка',
   '{0} hafta ketma-ket': '{0} нед. подряд',
-  '{0} ilovaga kira olmaydi va ro’yxatlardan yo’qoladi. Bu amalni qaytarib bo’lmaydi.':
-      '{0} не сможет войти в приложение и исчезнет из списков. Это действие нельзя отменить.',
+  '{0} ilovaga kira olmaydi va ro’yxatlardan yo’qoladi. Bu amalni qaytarib bo’lmaydi.': '{0} не сможет войти в приложение и исчезнет из списков. Это действие нельзя отменить.',
   '{0} kg': '{0} кг',
   '{0} kg\n': '{0} кг\n',
   '{0} kg dan {1} kg gacha': 'с {0} кг до {1} кг',
@@ -1635,53 +1486,40 @@ const ru = <String, String>{
   '{0} kundan keyin tugaydi': 'закончится через {0} дн.',
   '{0} mahal': 'приёмов пищи: {0}',
   '{0} menyusi': 'Меню: {0}',
-  '{0} menyusi qoladi va har kuni shu ko\'rsatiladi. Boshqa kunlarning menyusi o\'chadi.':
-      'Останется меню «{0}», оно будет показываться каждый день. Меню остальных дней удалится.',
-  '{0} menyusi qolgan 6 kunga ko\'chiriladi va ularning hozirgi menyusi o\'chadi.':
-      'Меню «{0}» скопируется на остальные 6 дней, их текущее меню удалится.',
+  '{0} menyusi qoladi va har kuni shu ko\'rsatiladi. Boshqa kunlarning menyusi o\'chadi.': 'Останется меню «{0}», оно будет показываться каждый день. Меню остальных дней удалится.',
+  '{0} menyusi qolgan 6 kunga ko\'chiriladi va ularning hozirgi menyusi o\'chadi.': 'Меню «{0}» скопируется на остальные 6 дней, их текущее меню удалится.',
   '{0} ml / 2000 ml': '{0} мл / 2000 мл',
-  '{0} oddiy foydalanuvchiga aylanadi va trener paneliga kira olmaydi.':
-      '{0} станет обычным пользователем и не сможет войти в панель тренера.',
-  '{0} oddiy foydalanuvchiga aylanadi. Unga biriktirilgan {1} ta shogird trenersiz qoladi — ularni boshqa trenerga biriktirishingiz kerak.':
-      '{0} станет обычным пользователем. Его ученики ({1}) останутся без тренера — прикрепите их к другому.',
-  '{0} oddiy trener bo’lib qoladi: rol tayinlay olmaydi va akkaunt o’chira olmaydi. Shogirdlari o’zida qoladi.':
-      '{0} останется обычным тренером: не сможет назначать роли и удалять аккаунты. Ученики остаются за ним.',
+  '{0} oddiy foydalanuvchiga aylanadi va trener paneliga kira olmaydi.': '{0} станет обычным пользователем и не сможет войти в панель тренера.',
+  '{0} oddiy foydalanuvchiga aylanadi. Unga biriktirilgan {1} ta shogird trenersiz qoladi — ularni boshqa trenerga biriktirishingiz kerak.': '{0} станет обычным пользователем. Его ученики ({1}) останутся без тренера — прикрепите их к другому.',
+  '{0} oddiy trener bo’lib qoladi: rol tayinlay olmaydi va akkaunt o’chira olmaydi. Shogirdlari o’zida qoladi.': '{0} останется обычным тренером: не сможет назначать роли и удалять аккаунты. Ученики остаются за ним.',
   '{0} oy': '{0} мес.',
   '{0} rasm': '{0} фото',
   '{0} s': '{0} с',
   '{0} shogird': 'учеников: {0}',
   '{0} shogird · {1} abonement · {2}': '{0} уч. · {1} абон. · {2}',
   '{0} shogird · {1} kunda {2} xabar yozgan': 'учеников: {0} · за {1} дн. написал сообщений: {2}',
-  '{0} sizga teng huquq oladi: trener tayinlaydi, akkaunt o’chiradi, hamma trener va shogirdni ko’radi.\n\nUni faqat boshqa bosh admin tushira oladi.':
-      '{0} получит те же права, что и вы: назначать тренеров, удалять аккаунты, видеть всех тренеров и учеников.\n\nПонизить его сможет только другой главный админ.',
+  '{0} sizga teng huquq oladi: trener tayinlaydi, akkaunt o’chiradi, hamma trener va shogirdni ko’radi.\n\nUni faqat boshqa bosh admin tushira oladi.': '{0} получит те же права, что и вы: назначать тренеров, удалять аккаунты, видеть всех тренеров и учеников.\n\nПонизить его сможет только другой главный админ.',
   '{0} sizning treneringiz bo\'ladi.': '{0} станет вашим тренером.',
-  '{0} sizning treneringiz bo\'ladi. Oldingi trener sizni endi ko\'rmaydi.':
-      '{0} станет вашим тренером. Прежний тренер больше не будет видеть ваши данные.',
+  '{0} sizning treneringiz bo\'ladi. Oldingi trener sizni endi ko\'rmaydi.': '{0} станет вашим тренером. Прежний тренер больше не будет видеть ваши данные.',
   '{0} sm': '{0} см',
   '{0} stakan': '{0} стакан',
   '{0} ta': '{0}',
   '{0} ta abonement sotildi': 'Продано абонементов: {0}',
-  '{0} ta asosiy mahsulotni (100 g uchun KBJU) bir bosishda qo\'shing.':
-      'Добавьте {0} основных продуктов (КБЖУ на 100 г) одним нажатием.',
+  '{0} ta asosiy mahsulotni (100 g uchun KBJU) bir bosishda qo\'shing.': 'Добавьте {0} основных продуктов (КБЖУ на 100 г) одним нажатием.',
   '{0} ta buyurtma': 'Заказов: {0}',
   '{0} ta buyurtma berildi': 'Выдано заказов: {0}',
-  '{0} ta buyurtmada tan narx yo\'q — foydaga qo\'shilmadi':
-      'В {0} заказах нет себестоимости — в прибыль не включены',
+  '{0} ta buyurtmada tan narx yo\'q — foydaga qo\'shilmadi': 'В {0} заказах нет себестоимости — в прибыль не включены',
   '{0} ta e\'tibor kerak': 'требуют внимания: {0}',
-  '{0} ta mahsulot • O — oqsil, Y — yog\', U — uglevod (100 g uchun)':
-      'Продуктов: {0} • Б — белки, Ж — жиры, У — углеводы (на 100 г)',
+  '{0} ta mahsulot • O — oqsil, Y — yog\', U — uglevod (100 g uchun)': 'Продуктов: {0} • Б — белки, Ж — жиры, У — углеводы (на 100 г)',
   '{0} ta mashq': 'Упражнений: {0}',
   '{0} ta reja': 'Планов: {0}',
   '{0} ta shogird  ·  {1}': 'учеников: {0}  ·  {1}',
   '{0} ta shogird biriktirilgan': 'Прикреплено учеников: {0}',
   '{0} ta shogird hali zal kunlarini tanlamagan.': 'Учеников, не выбравших дни зала: {0}.',
   '{0} ta tanlangan': 'Выбрано: {0}',
-  '{0} ta trener zalga biriktirilmagan — ustiga bosib "Zalga biriktirish" ni tanlang.':
-      'Тренеров без зала: {0} — нажмите на тренера и выберите «Прикрепить к залу».',
-  '{0} trener paneliga kira oladi: reja tuzadi, mahsulot qo’shadi, shogirdlar bilan yozishadi.':
-      '{0} сможет войти в панель тренера: составлять планы, добавлять продукты, переписываться с учениками.',
-  '{0} trener paneliga kiradi: reja tuzadi, shogird qabul qiladi.':
-      '{0} получит доступ к панели тренера: составляет планы, принимает учеников.',
+  '{0} ta trener zalga biriktirilmagan — ustiga bosib "Zalga biriktirish" ni tanlang.': 'Тренеров без зала: {0} — нажмите на тренера и выберите «Прикрепить к залу».',
+  '{0} trener paneliga kira oladi: reja tuzadi, mahsulot qo’shadi, shogirdlar bilan yozishadi.': '{0} сможет войти в панель тренера: составлять планы, добавлять продукты, переписываться с учениками.',
+  '{0} trener paneliga kiradi: reja tuzadi, shogird qabul qiladi.': '{0} получит доступ к панели тренера: составляет планы, принимает учеников.',
   '{0} vaqti o\'tdi': 'Время {0} прошло',
   '{0} vaqti o‘tdi': '{0}: время прошло',
   '{0} vaqti · {1}': '{0}: пора · {1}',
@@ -1698,6 +1536,7 @@ const ru = <String, String>{
   '{0}% bajarildi': 'выполнено {0}%',
   '{0}, {1}-{2}': '{0}, {1} {2}',
   '{0}: "{1}" × {2} bekor qilinsinmi?': '{0}: отменить «{1}» × {2}?',
+  '{0}: "{1}" × {2} berildimi? Omborxonadan ayiriladi, qaytarib bo\'lmaydi.': '{0}: «{1}» × {2} выдано? Будет списано со склада, отменить нельзя.',
   '{0}: obuna tugagan': '{0}: абонемент закончился',
   '{0}: obuna yo\'q': '{0}: нет абонемента',
   '{0}{1} (minimum {2})': '{0}{1} (минимум {2})',

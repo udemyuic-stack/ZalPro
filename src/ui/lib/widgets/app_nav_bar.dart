@@ -81,8 +81,9 @@ class AppNavBar extends StatelessWidget {
             icon: items[i].icon,
             selectedIcon: items[i].selectedIcon,
             label: items[i].label,
+            tooltip: '',
           ),
-        if (_hasMore) NavigationDestination(icon: moreIcon, label: tr("Ko'proq")),
+        if (_hasMore) NavigationDestination(icon: moreIcon, label: tr("Ko'proq"), tooltip: ''),
       ],
     );
   }

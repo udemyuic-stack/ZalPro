@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import '../../core/input_rules.dart';
 import '../../l10n/tr.dart';
 import '../../services/api/api_error.dart';
 import '../../services/db.dart';
@@ -35,14 +35,10 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  String? _passwordError(String? v) {
-    final value = v ?? '';
-    if (_isRegister) return value.length < 8 ? tr("Parol kamida 8 belgi bo'lsin") : null;
-    return value.isEmpty ? tr('Parolni kiriting') : null;
-  }
+  String? _passwordError(String? v) => InputRules.password(v, strict: _isRegister);
 
   Future<void> _submit() async {
-    if (!_form.currentState!.validate()) return;
+    if (!InputRules.validateAndFocus(_form)) return;
     FocusScope.of(context).unfocus();
     setState(() {
       _busy = true;
@@ -109,6 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
                 child: Form(
                   key: _form,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: AutofillGroup(
                     child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                       _Toggle(
@@ -127,8 +124,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                   textCapitalization: TextCapitalization.words,
                                   textInputAction: TextInputAction.next,
                                   autofillHints: const [AutofillHints.name],
-                                  validator: (v) =>
-                                      (v ?? '').trim().isEmpty ? tr('Ismingizni kiriting') : null,
+                                  maxLength: InputLimits.name,
+                                  buildCounter: InputRules.counterAtEighty,
+                                  validator: InputRules.required(
+                                    InputLimits.name,
+                                    emptyMessage: tr('Ismingizni kiriting'),
+                                  ),
                                   decoration: InputDecoration(
                                     labelText: tr('Ism'),
                                     prefixIcon: const Icon(Icons.person_outline),
@@ -142,10 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         keyboardType: TextInputType.phone,
                         textInputAction: TextInputAction.next,
                         autofillHints: const [AutofillHints.telephoneNumberNational],
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(9),
-                        ],
+                        inputFormatters: InputRules.digitsMax(InputLimits.phoneDigits),
                         validator: (v) => (v ?? '').length == 9
                             ? null
                             : tr("Raqamni to'liq kiriting: 90 123 45 67"),
@@ -160,6 +158,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextFormField(
                         controller: _pass,
                         obscureText: _hidePass,
+                        maxLength: _isRegister ? InputLimits.passwordMax : null,
+                        buildCounter: InputRules.counterAtEighty,
                         textInputAction: TextInputAction.done,
                         autofillHints: [
                           _isRegister ? AutofillHints.newPassword : AutofillHints.password

@@ -24,3 +24,4 @@ class ReminderOut(OutModel):
     sent_by: str
     sent_at: AwareDatetime
     days_left: int
+    auto: bool = False

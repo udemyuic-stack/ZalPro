@@ -49,30 +49,15 @@ class _MemberAnalyticsScreenState extends State<MemberAnalyticsScreen> {
               padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 0),
               child: SizedBox(
                 width: double.infinity,
-                child: SegmentedButton<int>(
+                child: AppSegmented<int>(
                   key: const Key('segments'),
-                  showSelectedIcon: false,
-                  style: SegmentedButton.styleFrom(
-                    minimumSize: const Size(0, kTouchTarget),
-                    selectedBackgroundColor: AppColors.accentFill,
-                    selectedForegroundColor: AppColors.onAccentFill,
-                  ),
                   segments: [
-                    ButtonSegment(
-                      value: 0,
-                      label: Text(tr('Xavf'), maxLines: 1, overflow: TextOverflow.ellipsis),
-                    ),
-                    ButtonSegment(
-                      value: 1,
-                      label: Text(tr('Qolish'), maxLines: 1, overflow: TextOverflow.ellipsis),
-                    ),
-                    ButtonSegment(
-                      value: 2,
-                      label: Text(tr('Trenerlar'), maxLines: 1, overflow: TextOverflow.ellipsis),
-                    ),
+                    AppSegment(value: 0, label: tr('Xavf')),
+                    AppSegment(value: 1, label: tr('Qolish')),
+                    AppSegment(value: 2, label: tr('Trenerlar')),
                   ],
-                  selected: {_section},
-                  onSelectionChanged: (s) => setState(() => _section = s.first),
+                  selected: _section,
+                  onChanged: (v) => setState(() => _section = v),
                 ),
               ),
             ),
@@ -257,6 +242,7 @@ class _ChurnCard extends StatelessWidget {
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(item.name, style: t.titleSmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                _RiskLabel(score: item.score),
                 Text(
                   item.hasTrainer && item.trainerName.isNotEmpty
                       ? item.trainerName
@@ -266,16 +252,6 @@ class _ChurnCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ]),
-            ),
-            SizedBox(
-              width: kTouchTarget,
-              height: kTouchTarget,
-              child: IconButton.outlined(
-                key: Key('call-${item.userId}'),
-                tooltip: tr("Qo'ng'iroq"),
-                onPressed: () => _call(context),
-                icon: const Icon(Icons.call_outlined, size: 22),
-              ),
             ),
           ]),
           const SizedBox(height: AppSpace.sm),
@@ -289,8 +265,38 @@ class _ChurnCard extends StatelessWidget {
             trf('Oxirgi 14 kun: {0} · oldingi 14 kun: {1}', [item.visitsLast14, item.visitsPrev14]),
             style: t.bodySmall?.copyWith(color: AppColors.textMuted),
           ),
+          const SizedBox(height: AppSpace.md),
+          SizedBox(
+            width: double.infinity,
+            height: kTouchTarget,
+            child: OutlinedButton.icon(
+              key: Key('call-${item.userId}'),
+              onPressed: () => _call(context),
+              icon: const Icon(Icons.call_outlined, size: 22),
+              label: Text(tr("Qo'ng'iroq")),
+            ),
+          ),
         ]),
       ),
+    );
+  }
+}
+
+class _RiskLabel extends StatelessWidget {
+  final int score;
+  const _RiskLabel({required this.score});
+
+  @override
+  Widget build(BuildContext context) {
+    final (label, color) = switch (score) {
+      >= 5 => (tr('Yuqori xavf'), AppColors.danger),
+      >= 3 => (tr("O'rta xavf"), AppColors.warning),
+      _ => (tr('Past xavf'), AppColors.textMuted),
+    };
+    return Text(
+      label,
+      key: const Key('risk-label'),
+      style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color),
     );
   }
 }
@@ -404,7 +410,7 @@ class _CohortCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSpace.sm),
           Text(
-            trf('{0} dan {1} qoldi', [cohort.eligible, cohort.retained]),
+            trf('{0} / {1} qoldi', [cohort.retained, cohort.eligible]),
             style: t.bodyMedium?.copyWith(color: AppColors.textMuted),
           ),
           const SizedBox(height: 2),
@@ -486,28 +492,14 @@ class _TrainersSectionState extends State<_TrainersSection> {
                 children: [
                   SizedBox(
                     width: double.infinity,
-                    child: SegmentedButton<bool>(
+                    child: AppSegmented<bool>(
                       key: const Key('trainer-sort'),
-                      showSelectedIcon: false,
-                      style: SegmentedButton.styleFrom(
-                        minimumSize: const Size(0, kTouchTarget),
-                        selectedBackgroundColor: AppColors.accentFill,
-                        selectedForegroundColor: AppColors.onAccentFill,
-                      ),
                       segments: [
-                        ButtonSegment(
-                          value: false,
-                          label: Text(tr('"Qiyin" bo\'yicha'),
-                              maxLines: 1, overflow: TextOverflow.ellipsis),
-                        ),
-                        ButtonSegment(
-                          value: true,
-                          label: Text(tr('Kelish bo\'yicha'),
-                              maxLines: 1, overflow: TextOverflow.ellipsis),
-                        ),
+                        AppSegment(value: false, label: tr('"Qiyin" bo\'yicha')),
+                        AppSegment(value: true, label: tr('Kelish bo\'yicha')),
                       ],
-                      selected: {_byVisits},
-                      onSelectionChanged: (s) => setState(() => _byVisits = s.first),
+                      selected: _byVisits,
+                      onChanged: (v) => setState(() => _byVisits = v),
                     ),
                   ),
                   const SizedBox(height: AppSpace.md),

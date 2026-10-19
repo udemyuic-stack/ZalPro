@@ -463,29 +463,45 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                   ),
                 ),
                 const SizedBox(height: 18),
-                Wrap(spacing: 18, runSpacing: 12, children: [
+                Wrap(spacing: 18, runSpacing: 0, children: [
                   for (final m in muscles)
                     if (!_hasPlan || _plan.contains(m.id))
-                      InkWell(
+                      Semantics(
+                        button: true,
+                        selected: m.id == (_running ? active : _muscle),
+                        child: InkWell(
                         onTap: () => _select(m.id),
-                        child: Text(
-                          fresh.contains(m.id) ? '${tr(m.name)} · ${tr('yangi')}' : tr(m.name),
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: m.id == (_running ? active : _muscle)
-                                ? FontWeight.w600
-                                : FontWeight.w300,
-                            color: m.id == (_running ? active : _muscle)
-                                ? _amber
-                                : _running
-                                    ? (active == null || _plan.indexOf(m.id) < _plan.indexOf(active)
-                                        ? _brand
-                                        : _ash)
-                                    : plan.contains(m.id)
-                                        ? _white
-                                        : _ash,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(minWidth: 48, minHeight: kTouchTarget),
+                          child: Align(
+                            widthFactor: 1,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              fresh.contains(m.id) ? '${tr(m.name)} · ${tr('yangi')}' : tr(m.name),
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: m.id == (_running ? active : _muscle)
+                                    ? FontWeight.w600
+                                    : FontWeight.w300,
+                                decoration: m.id == (_running ? active : _muscle)
+                                    ? TextDecoration.underline
+                                    : null,
+                                decorationColor: _amber,
+                                color: m.id == (_running ? active : _muscle)
+                                    ? _amber
+                                    : _running
+                                        ? (active == null ||
+                                                _plan.indexOf(m.id) < _plan.indexOf(active)
+                                            ? _brand
+                                            : _ash)
+                                        : plan.contains(m.id)
+                                            ? _white
+                                            : _ash,
+                              ),
+                            ),
                           ),
                         ),
+                      ),
                       ),
                 ]),
                 const SizedBox(height: 44),
@@ -544,7 +560,7 @@ class _Side extends StatelessWidget {
   Widget build(BuildContext context) => InkWell(
         onTap: onTap,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: kTouchTarget),
+          constraints: const BoxConstraints(minWidth: 48, minHeight: kTouchTarget),
           child: Center(
             child: Text(
               text,

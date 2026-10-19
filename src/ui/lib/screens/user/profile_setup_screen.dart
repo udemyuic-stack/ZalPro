@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
+import '../../core/input_rules.dart';
 import '../../l10n/tr.dart';
 import '../../models/models.dart';
 import '../../services/db.dart';
 import '../../theme.dart';
 import '../../widgets/ui.dart';
 import '../../services/api/api_error.dart';
+import '../../services/api/poll_stream.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
   final AppUser user;
   final bool editing;
-  const ProfileSetupScreen({super.key, required this.user, this.editing = false});
+  final Stream<List<TrainerInfo>> Function()? trainerSource;
+  const ProfileSetupScreen({
+    super.key,
+    required this.user,
+    this.editing = false,
+    this.trainerSource,
+  });
 
   @override
   State<ProfileSetupScreen> createState() => _ProfileSetupScreenState();
@@ -25,13 +33,19 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   /// Trener faqat bir marta tanlanadi; keyin almashtirish — bosh admin orqali
   bool get _canChooseTrainer => widget.user.trainerId == null;
   List<TrainerInfo> _trainers = const [];
-  late final _trainerStream = Db.trainerDirectory();
+  late final _trainerStream = SharedStream(widget.trainerSource ?? Db.trainerDirectory).stream;
+  late final _profileStream = widget.user.trainerId == null
+      ? null
+      : SharedStream(() => Db.trainerProfile(widget.user.trainerId!)).stream;
   late final _age = TextEditingController(text: widget.user.age > 0 ? '${widget.user.age}' : '');
   late final _height =
       TextEditingController(text: widget.user.height > 0 ? fmtNum(widget.user.height) : '');
   late final _weight =
       TextEditingController(text: widget.user.weight > 0 ? fmtNum(widget.user.weight) : '');
   bool _busy = false;
+  String? _trainerError;
+
+  static const _stackedBelow = 420.0;
 
   /// Vazn bir marta kiritilgach anketada o'zgarmaydi — faqat Progress'da haftada 1 marta
   bool get _weightLocked => widget.user.weight > 0;
@@ -46,17 +60,23 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
   static double? _num(TextEditingController c) => double.tryParse(c.text.replaceAll(',', '.'));
 
-  static FormFieldValidator<String> _range(num min, num max) => (v) {
-        final n = double.tryParse((v ?? '').replaceAll(',', '.'));
-        if (n == null) return tr('Kiriting');
-        if (n < min || n > max) return '$min–$max';
-        return null;
-      };
-
   /// Kiritilayotgan ma'lumotlar bo'yicha jonli hisob
   AppUser? get _preview {
     final a = _num(_age), h = _num(_height), w = _num(_weight);
-    if (a == null || h == null || w == null || a < 10 || h < 100 || w < 30) return null;
+    if (a == null ||
+        h == null ||
+        w == null ||
+        !a.isFinite ||
+        !h.isFinite ||
+        !w.isFinite ||
+        a < InputLimits.ageMin ||
+        a > InputLimits.ageMax ||
+        h < InputLimits.heightMin ||
+        h > InputLimits.heightMax ||
+        w < InputLimits.weightMin ||
+        w > InputLimits.weightMax) {
+      return null;
+    }
     return widget.user.copyWith(
         trainerId: _trainerId,
         gender: _gender,
@@ -68,20 +88,20 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   }
 
   Future<void> _save() async {
-    final formOk = _form.currentState!.validate();
+    final formOk = InputRules.validateAndFocus(_form);
+    if (!formOk) return;
     if (_goal.isEmpty) {
       showSnack(context, tr('Maqsadingizni tanlang: ozish yoki massa nabor'));
       return;
     }
     if (_canChooseTrainer && _trainers.isNotEmpty && _trainerId == null) {
-      showSnack(context, tr('Treneringizni tanlang'));
+      setState(() => _trainerError = tr('Treneringizni tanlang'));
       return;
     }
     if (_metabolism.isEmpty) {
       showSnack(context, tr('Moddalar almashinuvini tanlang: sekin yoki tez'));
       return;
     }
-    if (!formOk) return;
     final updated = _preview;
     if (updated == null) return;
     if (updated.goal == 'lose' && !updated.canLose) {
@@ -111,6 +131,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       appBar: AppBar(title: Text(widget.editing ? tr("Ma'lumotlarni tahrirlash") : tr('Anketa'))),
       body: Form(
         key: _form,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
           children: [
@@ -143,6 +164,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
             ]),
             if (loseBlocked)
               Padding(
+                key: const ValueKey('lose-blocked'),
                 padding: const EdgeInsets.only(top: AppSpace.sm, left: 4),
                 child: Text(
                   trf('BMI {0} — vazningiz kam, ozish tavsiya etilmaydi.',
@@ -154,6 +176,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
             SectionHeader(tr('Treneringiz')),
             if (_canChooseTrainer)
               StreamBuilder<List<TrainerInfo>>(
+                key: const ValueKey('trainer-directory'),
                 stream: _trainerStream,
                 builder: (context, snap) {
                   _trainers = snap.data ?? const [];
@@ -177,8 +200,17 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                         child: _TrainerOption(
                           trainer: tr,
                           selected: _trainerId == tr.id,
-                          onTap: () => setState(() => _trainerId = tr.id),
+                          onTap: () => setState(() {
+                            _trainerId = tr.id;
+                            _trainerError = null;
+                          }),
                         ),
+                      ),
+                    if (_trainerError != null)
+                      Padding(
+                        key: const ValueKey('trainer-error'),
+                        padding: const EdgeInsets.only(left: 4, bottom: AppSpace.sm),
+                        child: Text(_trainerError!, style: t.bodySmall?.copyWith(color: s.error)),
                       ),
                     Padding(
                       padding: const EdgeInsets.only(left: 4),
@@ -193,7 +225,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               )
             else
               StreamBuilder<TrainerInfo?>(
-                stream: Db.trainerProfile(widget.user.trainerId!),
+                key: const ValueKey('trainer-profile'),
+                stream: _profileStream,
                 builder: (context, snap) => Text(
                   snap.data?.name ?? tr('Trener biriktirilgan'),
                   style: t.titleMedium,
@@ -222,16 +255,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
             ]),
             const SizedBox(height: 20),
             SectionHeader(tr("Tana o'lchamlari")),
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Expanded(child: _numField(_age, tr('Yosh'), 'yosh', _range(10, 100))),
-              const SizedBox(width: AppSpace.md),
-              Expanded(child: _numField(_height, tr("Bo'y"), 'sm', _range(100, 250))),
-              const SizedBox(width: AppSpace.md),
-              Expanded(
-                child: _numField(_weight, tr('Vazn'), 'kg', _range(30, 300),
-                    decimal: true, locked: _weightLocked),
-              ),
-            ]),
+            _bodyFields(),
             if (_weightLocked)
               Padding(
                 padding: const EdgeInsets.only(top: AppSpace.sm, left: 4),
@@ -330,6 +354,33 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     );
   }
 
+  Widget _bodyFields() {
+    final fields = [
+      _numField(_age, tr('Yosh'), 'yosh', InputRules.intRange(InputLimits.ageMin, InputLimits.ageMax),
+          decimal: false),
+      _numField(_height, tr("Bo'y"), 'sm',
+          InputRules.decimalRange(InputLimits.heightMin, InputLimits.heightMax),
+          decimal: true),
+      _numField(_weight, tr('Vazn'), 'kg',
+          InputRules.decimalRange(InputLimits.weightMin, InputLimits.weightMax),
+          decimal: true, locked: _weightLocked),
+    ];
+    return LayoutBuilder(builder: (context, box) {
+      if (box.maxWidth < _stackedBelow) {
+        return Column(children: [
+          for (final f in fields)
+            Padding(padding: const EdgeInsets.only(bottom: AppSpace.md), child: f),
+        ]);
+      }
+      return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        for (var i = 0; i < fields.length; i++) ...[
+          if (i > 0) const SizedBox(width: AppSpace.md),
+          Expanded(child: fields[i]),
+        ],
+      ]);
+    });
+  }
+
   Widget _numField(
     TextEditingController c,
     String label,
@@ -343,6 +394,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         readOnly: locked,
         enabled: !locked,
         keyboardType: TextInputType.numberWithOptions(decimal: decimal),
+        inputFormatters: decimal ? InputRules.decimalOnly(maxDecimals: 1) : InputRules.digitsMax(3),
         textAlign: TextAlign.center,
         validator: validator,
         onChanged: (_) => setState(() {}),
@@ -350,6 +402,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         decoration: InputDecoration(
           labelText: label,
           suffixText: tr(suffix),
+          errorMaxLines: 3,
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
         ),
       );

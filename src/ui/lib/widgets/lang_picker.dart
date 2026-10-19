@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../l10n/tr.dart';
 import '../services/settings.dart';
+import '../theme.dart';
+import 'ui.dart';
 
 /// Til tanlash: O'zbek / Русский / English. Tanlanganda butun ilova shu tilga o'tadi.
 /// [compact] — kirish ekrani va Profil uchun kichik tugma (ochiladigan ro'yxat);
@@ -42,26 +44,28 @@ class LangPicker extends StatelessWidget {
             itemBuilder: (_) => [
               for (final e in appLangs.entries) PopupMenuItem(value: e.key, child: Text(e.value)),
             ],
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                const Icon(Icons.language, size: 18),
-                const SizedBox(width: 6),
-                Text(appLangs[lang] ?? lang),
-                const Icon(Icons.arrow_drop_down, size: 18),
-              ]),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: kTouchTarget, minWidth: kTouchTarget),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.language, size: 18),
+                  const SizedBox(width: 6),
+                  Text(appLangs[lang] ?? lang),
+                  const Icon(Icons.arrow_drop_down, size: 18),
+                ]),
+              ),
             ),
           );
         }
         return SizedBox(
           width: double.infinity,
-          child: SegmentedButton<String>(
-            showSelectedIcon: false,
+          child: AppSegmented<String>(
             segments: [
-              for (final e in appLangs.entries) ButtonSegment(value: e.key, label: Text(e.value)),
+              for (final e in appLangs.entries) AppSegment(value: e.key, label: e.value),
             ],
-            selected: {lang},
-            onSelectionChanged: (s) => _set(s.first),
+            selected: lang,
+            onChanged: _set,
           ),
         );
       },

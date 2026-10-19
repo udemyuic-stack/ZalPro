@@ -222,8 +222,8 @@ class ProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               TextButton.icon(
-                style:
-                    TextButton.styleFrom(foregroundColor: s.error, minimumSize: const Size(64, 48)),
+                style: TextButton.styleFrom(
+                    foregroundColor: s.error, minimumSize: const Size(64, kTouchTarget)),
                 onPressed: () => _signOut(context),
                 icon: const Icon(Icons.logout),
                 label: Text(tr('Chiqish')),

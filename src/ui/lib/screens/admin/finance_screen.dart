@@ -134,6 +134,8 @@ class _FinanceScreenState extends State<FinanceScreen> {
                       children: [
                         Row(children: [
                           IconButton(
+                            constraints: const BoxConstraints(
+                                minWidth: kTouchTarget, minHeight: kTouchTarget),
                             onPressed: () => _shift(-1),
                             icon: const Icon(Icons.chevron_left),
                           ),
@@ -142,6 +144,8 @@ class _FinanceScreenState extends State<FinanceScreen> {
                                 textAlign: TextAlign.center, style: t.titleLarge),
                           ),
                           IconButton(
+                            constraints: const BoxConstraints(
+                                minWidth: kTouchTarget, minHeight: kTouchTarget),
                             onPressed: isCurrent ? null : () => _shift(1),
                             icon: const Icon(Icons.chevron_right),
                           ),
@@ -261,11 +265,15 @@ class _FinanceScreenState extends State<FinanceScreen> {
                           eyebrow: tr('Abonement tushumidan ulush'),
                           trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                             IconButton(
+                              constraints: const BoxConstraints(
+                                  minWidth: kTouchTarget, minHeight: kTouchTarget),
                               onPressed: _pct > 0 ? () => _setPct(_pct - 5) : null,
                               icon: const Icon(Icons.remove_circle_outline),
                             ),
                             Text('$_pct%', style: t.titleMedium),
                             IconButton(
+                              constraints: const BoxConstraints(
+                                  minWidth: kTouchTarget, minHeight: kTouchTarget),
                               onPressed: _pct < 100 ? () => _setPct(_pct + 5) : null,
                               icon: const Icon(Icons.add_circle_outline),
                             ),

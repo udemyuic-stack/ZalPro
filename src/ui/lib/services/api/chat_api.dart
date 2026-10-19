@@ -49,7 +49,7 @@ class ChatApi extends ApiService {
   }
 
   Stream<ChatEvents> _polled(String chatUid, int limit, Duration every) =>
-      poll(() => _fetch(chatUid, limit), every, {'chat:$chatUid'});
+      poll(() => _fetch(chatUid, limit), every, {'chat:$chatUid'}, key: 'chat:$chatUid:$limit');
 
   Stream<ChatEvents> _live(String chatUid) {
     final known = <String, ChatMessage>{};
@@ -107,7 +107,7 @@ class ChatApi extends ApiService {
     return _watchers
         .putIfAbsent(
           chatUid,
-          () => SharedStream(() => _polled(chatUid, _recent, _notify)),
+          () => SharedStream(() => _polled(chatUid, _recent, _notify), grace: ApiService.shareGrace),
         )
         .stream;
   }

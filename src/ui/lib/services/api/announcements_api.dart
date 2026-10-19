@@ -11,7 +11,7 @@ class AnnouncementsApi extends ApiService {
   Stream<List<Announcement>> announcements() => poll(() async {
         final rows = await client.getList('/v1/announcements');
         return [for (final row in jsonMaps(rows)) Announcement.fromJson(row)];
-      }, _every, {_tag});
+      }, _every, {_tag}, key: 'announcements');
 
   Future<void> add({
     required String title,

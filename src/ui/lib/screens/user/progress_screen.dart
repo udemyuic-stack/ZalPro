@@ -1,40 +1,41 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../core/input_rules.dart';
 import '../../l10n/tr.dart';
 import '../../models/models.dart';
+import '../../models/weight_trend.dart';
 import '../../services/api/api_error.dart';
 import '../../services/db.dart';
 import '../../theme.dart';
 import '../../widgets/progress_photos.dart';
 import '../../widgets/ui.dart';
 
-class ProgressScreen extends StatelessWidget {
-  final AppUser user;
-  final bool readOnly;
-  const ProgressScreen({super.key, required this.user, this.readOnly = false});
-
-  /// Vazn haftada faqat 1 marta kiritiladi — erta kiritib bo'lmaydi:
-  /// kunlik tebranish (1–2 kg) grafikni chalg'itadi.
-  Future<void> _add(BuildContext context, WeightLog? lastLog) async {
-    if (!WeightLog.canAdd(lastLog)) {
-      final left = WeightLog.daysLeft(lastLog);
-      showSnack(
-        context,
-        trf(
-            "Vazn haftada 1 marta kiritiladi. Keyingi o'lchov "
-            "{0}.",
-            [
-              left == 1 ? tr('ertaga') : trf('{0} kundan keyin', [left])
-            ]),
-      );
-      return;
-    }
-    final c = TextEditingController(text: user.weight > 0 ? fmtNum(user.weight) : '');
-    // Ekran o'rtasidagi pop-up emas — pastdan chiquvchi varaq (bosh barmoq zonasi)
-    final w = await showSheet<double>(
+/// Vazn haftada faqat 1 marta kiritiladi — erta kiritib bo'lmaydi:
+/// kunlik tebranish (1–2 kg) grafikni chalg'itadi.
+Future<void> addWeightSheet(BuildContext context, AppUser user, WeightLog? lastLog) async {
+  if (!WeightLog.canAdd(lastLog)) {
+    final left = WeightLog.daysLeft(lastLog);
+    showSnack(
       context,
-      Column(
+      trf(
+          "Vazn haftada 1 marta kiritiladi. Keyingi o'lchov "
+          "{0}.",
+          [
+            left == 1 ? tr('ertaga') : trf('{0} kundan keyin', [left])
+          ]),
+    );
+    return;
+  }
+  final c = TextEditingController(text: user.weight > 0 ? fmtNum(user.weight) : '');
+  final form = GlobalKey<FormState>();
+  // Ekran o'rtasidagi pop-up emas — pastdan chiquvchi varaq (bosh barmoq zonasi)
+  final w = await showSheet<double>(
+    context,
+    Form(
+      key: form,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -45,10 +46,12 @@ class ProgressScreen extends StatelessWidget {
               style: TextStyle(color: AppColors.textMuted, fontSize: 13),
             ),
             const SizedBox(height: AppSpace.lg),
-            TextField(
+            TextFormField(
               controller: c,
               autofocus: true,
               textAlign: TextAlign.center,
+              inputFormatters: InputRules.decimalOnly(maxDecimals: 1),
+              validator: InputRules.decimalRange(InputLimits.weightMin, InputLimits.weightMax),
               style:
                   const TextStyle(fontSize: 32, fontWeight: FontWeight.w700, fontFeatures: tabular),
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -56,23 +59,29 @@ class ProgressScreen extends StatelessWidget {
             ),
             const SizedBox(height: AppSpace.lg),
             FilledButton(
-              onPressed: () => Navigator.pop(context, double.tryParse(c.text.replaceAll(',', '.'))),
+              onPressed: () {
+                if (InputRules.validateAndFocus(form)) {
+                  Navigator.pop(context, InputRules.parseDecimal(c.text));
+                }
+              },
               child: Text(tr('Saqlash')),
             ),
           ]),
-    );
-    if (w == null) return;
-    if (w < 30 || w > 300) {
-      if (context.mounted) showSnack(context, tr("Vazn 30–300 kg oralig'ida bo'lishi kerak"));
-      return;
-    }
-    try {
-      await Db.addWeight(user.id, w);
-      if (context.mounted) showSnack(context, trf('Saqlandi: {0} kg', [fmtNum(w)]));
-    } catch (e) {
-      if (context.mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
-    }
+    ),
+  );
+  if (w == null) return;
+  try {
+    await Db.addWeight(user.id, w);
+    if (context.mounted) showSnack(context, trf('Saqlandi: {0} kg', [fmtNum(w)]));
+  } catch (e) {
+    if (context.mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
   }
+}
+
+class ProgressScreen extends StatelessWidget {
+  final AppUser user;
+  final bool readOnly;
+  const ProgressScreen({super.key, required this.user, this.readOnly = false});
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +102,7 @@ class ProgressScreen extends StatelessWidget {
               : FloatingActionButton.extended(
                   // ma'lumot yuklanmaguncha o'chirilgan — aks holda haftalik
                   // tekshiruv lastLog'siz o'tkazib yuborilardi
-                  onPressed: snap.hasData ? () => _add(context, lastLog) : null,
+                  onPressed: snap.hasData ? () => addWeightSheet(context, user, lastLog) : null,
                   backgroundColor: due ? AppColors.accent : AppColors.card,
                   foregroundColor: due ? AppColors.onAccent : AppColors.textMuted,
                   icon: Icon(due ? Icons.add : Icons.lock_clock_outlined),
@@ -351,8 +360,7 @@ class _ChangePanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
-    final good = diff == 0 || (gain ? diff > 0 : diff < 0);
-    final accent = good ? AppColors.accent : AppColors.warning;
+    final accent = weightTrendColor(weightTrendOf(diff, gainGoal: gain));
     final sign = diff > 0 ? '+' : (diff < 0 ? '−' : '');
     return BentoTile(
       feature: true,

@@ -15,7 +15,7 @@ class CatalogApi extends ApiService {
   Stream<List<Food>> foods() => poll(() async {
         final rows = await client.getList('/v1/foods');
         return jsonMaps(rows).map(Food.fromJson).toList();
-      }, _rare, {'foods'});
+      }, _rare, {'foods'}, key: 'foods');
 
   Future<void> saveFood(Food f) {
     if (f.id.isEmpty) return write('POST', '/v1/foods', f.toMap(), ['foods']);
@@ -52,7 +52,7 @@ class CatalogApi extends ApiService {
           for (final row in jsonMaps(rows))
             if (Exercise.fromJson(row) case final e?) e,
         ];
-      }, _rare, {'exercises'});
+      }, _rare, {'exercises'}, key: 'customExercises');
 
   Future<String> saveExercise(Exercise e) async {
     final body = {
@@ -160,7 +160,7 @@ class CatalogApi extends ApiService {
   Stream<List<Plan>> plans() => poll(() async {
         final rows = await client.getList('/v1/plans');
         return jsonMaps(rows).map(Plan.fromJson).toList();
-      }, _rare, {'plans'});
+      }, _rare, {'plans'}, key: 'plans');
 
   Stream<Plan?> plan(String id) => poll(() async {
         try {
@@ -169,7 +169,7 @@ class CatalogApi extends ApiService {
           if (e.status == 404) return null;
           rethrow;
         }
-      }, _plan, {'plans', 'plan:$id'});
+      }, _plan, {'plans', 'plan:$id'}, key: 'plan:$id');
 
   Future<String> savePlan(Plan p) async {
     if (p.id.isEmpty) {

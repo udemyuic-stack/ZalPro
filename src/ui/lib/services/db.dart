@@ -16,7 +16,6 @@ import '../models/stats.dart';
 import '../models/photo.dart';
 import '../models/scan_result.dart';
 import '../models/subscription.dart';
-import 'api/api_error.dart';
 import 'api/analytics_api.dart';
 import 'api/announcements_api.dart';
 import 'api/leaderboard_api.dart';
@@ -87,6 +86,8 @@ class Db {
   static final _plans = <String, SharedStream<Plan?>>{};
 
   // ---------- users ----------
+  static Stream<AppUser?> me(String uid) => _users.me(uid);
+
   static Stream<AppUser?> user(String uid) {
     return _users.user(uid);
   }
@@ -632,23 +633,5 @@ final trainerDirectoryProvider = StreamProvider<List<TrainerInfo>>((ref) {
 final meProvider = StreamProvider<AppUser?>((ref) {
   final uid = ref.watch(authProvider).value;
   if (uid == null) return Stream.value(null);
-  return _apiMe(uid);
+  return Db.me(uid);
 });
-
-Stream<AppUser?> _apiMe(String uid) async* {
-  var first = true;
-  while (apiClient.userId == uid) {
-    try {
-      yield AppUser.fromJson(await apiClient.getJson('/v1/users/me'));
-    } on ApiException catch (e) {
-      if (e.status == 401 || e.status == 404) {
-        if (apiClient.userId == uid) await apiClient.clearSession();
-        yield null;
-        return;
-      }
-      if (first) rethrow;
-    }
-    first = false;
-    await Future<void>.delayed(const Duration(seconds: 30));
-  }
-}

@@ -117,7 +117,7 @@ class WorkoutFeedbackStrip extends StatelessWidget {
           Text(tr("Mashg'ulot fikri · oxirgi 7 kun"), style: t.titleMedium),
           const SizedBox(height: AppSpace.sm),
           Row(children: [
-            for (final d in days) Expanded(child: _Cell(day: d, value: byDay[feedbackKey(d)])),
+            for (final d in days) Expanded(child: _Cell(day: d, value: byDay[feedbackKey(d)], isToday: d == days.last)),
           ]),
           const SizedBox(height: AppSpace.sm),
           Wrap(spacing: AppSpace.md, children: [
@@ -140,7 +140,8 @@ class WorkoutFeedbackStrip extends StatelessWidget {
 class _Cell extends StatelessWidget {
   final DateTime day;
   final int? value;
-  const _Cell({required this.day, required this.value});
+  final bool isToday;
+  const _Cell({required this.day, required this.value, required this.isToday});
 
   @override
   Widget build(BuildContext context) {
@@ -149,19 +150,27 @@ class _Cell extends StatelessWidget {
         value == null ? AppColors.textMuted.withValues(alpha: 0.25) : feedbackColor(value!);
     return Semantics(
       label: '${day.day}: ${value == null ? '—' : feedbackLabel(value!)}',
-      child: Column(children: [
-        Text('${day.day}', style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
-        const SizedBox(height: 4),
-        Container(
-          key: Key('feedback-cell-${feedbackKey(day)}'),
-          width: 28,
-          height: 28,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          child: value == null
-              ? null
-              : Icon(feedbackIcon(value!), size: 18, color: AppColors.onAccent),
-        ),
-      ]),
+      child: ConstrainedBox(
+        key: Key('feedback-hit-${feedbackKey(day)}'),
+        constraints: const BoxConstraints(minHeight: kTouchTarget),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Text('${day.day}', style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
+          const SizedBox(height: 4),
+          Container(
+            key: Key('feedback-cell-${feedbackKey(day)}'),
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              border: isToday ? Border.all(color: AppColors.text, width: 2) : null,
+            ),
+            child: value == null
+                ? null
+                : Icon(feedbackIcon(value!), size: 18, color: AppColors.onAccent),
+          ),
+        ]),
+      ),
     );
   }
 }

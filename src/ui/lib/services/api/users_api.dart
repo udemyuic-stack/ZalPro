@@ -39,7 +39,22 @@ class UsersApi extends ApiService {
     }
   }
 
-  Stream<AppUser?> user(String uid) => poll(() => _fetchUser(uid), _profile, {'user:$uid'});
+  Future<AppUser?> _fetchMe(String uid) async {
+    if (client.userId != uid) return null;
+    try {
+      return AppUser.fromJson(await client.getJson('/v1/users/me'));
+    } on ApiException catch (e) {
+      if (e.status != 401 && e.status != 404) rethrow;
+      if (client.userId == uid) await client.clearSession();
+      return null;
+    }
+  }
+
+  Stream<AppUser?> me(String uid) =>
+      poll(() => _fetchMe(uid), _profile, {'user:$uid'}, key: 'me:$uid');
+
+  Stream<AppUser?> user(String uid) =>
+      poll(() => _fetchUser(uid), _profile, {'user:$uid'}, key: 'user:$uid');
 
   Stream<List<AppUser>> _sharedClients(String key, Map<String, dynamic> query) => _clientStreams
       .putIfAbsent(key, () => SharedStream(() => poll(() => _list(query), _lists, {'users'})))
@@ -56,14 +71,16 @@ class UsersApi extends ApiService {
         }),
         _lists,
         {'users'},
+        key: 'staff',
       );
 
-  Stream<List<AppUser>> trainers() => poll(() => _list({'role': 'admin'}), _lists, {'users'});
+  Stream<List<AppUser>> trainers() =>
+      poll(() => _list({'role': 'admin'}), _lists, {'users'}, key: 'trainers');
 
   Stream<List<Gym>> gyms() => poll(() async {
         final rows = await client.getList('/v1/gyms');
         return jsonMaps(rows).map(Gym.fromJson).toList()..sort((a, b) => a.name.compareTo(b.name));
-      }, _rare, {'gyms'});
+      }, _rare, {'gyms'}, key: 'gyms');
 
   Future<String> saveGym(Gym g) async {
     if (g.id.isEmpty) {
@@ -165,12 +182,12 @@ class UsersApi extends ApiService {
   Stream<List<TrainerInfo>> trainerDirectory() => poll(() async {
         final all = await _fetchTrainers();
         return all.where((t) => t.accepting).toList()..sort((a, b) => a.name.compareTo(b.name));
-      }, _rare, {'trainers'});
+      }, _rare, {'trainers'}, key: 'trainerDirectory');
 
   Stream<TrainerInfo?> trainerProfile(String uid) => poll(() async {
         final all = await _fetchTrainers();
         return all.where((t) => t.id == uid).firstOrNull;
-      }, _rare, {'trainers'});
+      }, _rare, {'trainers'}, key: 'trainerProfile:$uid');
 
   Future<void> saveTrainerProfile(TrainerInfo t) async {
     final body = {
@@ -192,7 +209,7 @@ class UsersApi extends ApiService {
         return {
           for (final r in jsonMaps(rows)) jsonString(r['trainer_id']): TrainerRating.fromJson(r),
         };
-      }, _rare, {'ratings'});
+      }, _rare, {'ratings'}, key: 'ratings');
 
   Future<void> saveRating(String trainerId, int stars, String comment) => write(
         'PUT',

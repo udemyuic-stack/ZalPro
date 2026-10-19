@@ -64,10 +64,16 @@ class _BarmenHomeState extends ConsumerState<BarmenHome> {
           ),
           IconButton(
             tooltip: tr('Sozlamalar'),
+            constraints: const BoxConstraints(minWidth: kTouchTarget, minHeight: kTouchTarget),
             onPressed: () => showSettings(context, student: false),
             icon: const Icon(Icons.settings_outlined),
           ),
-          IconButton(tooltip: tr('Chiqish'), onPressed: _signOut, icon: const Icon(Icons.logout)),
+          IconButton(
+            tooltip: tr('Chiqish'),
+            constraints: const BoxConstraints(minWidth: kTouchTarget, minHeight: kTouchTarget),
+            onPressed: _signOut,
+            icon: const Icon(Icons.logout),
+          ),
           const SizedBox(width: 4),
         ],
       ),

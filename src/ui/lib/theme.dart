@@ -10,13 +10,15 @@ class AppColors {
   static Color get cardHigh => _c(0xFF222228, 0xFFF0F0F4);
   static Color get text => _c(0xFFF5F5F7, 0xFF141418);
   static Color get textMuted => _c(0xFF9A9AA5, 0xFF5C5C68);
-  static Color get textFaint => _c(0xFF8F8F9A, 0xFF6C6C78);
+  static Color get textFaint => _c(0xFF8F8F9A, 0xFF666672);
   static Color get accent => _c(0xFFFF3B5C, 0xFFC8102E);
   static Color get accentFill => _c(0xFFE11D48, 0xFFC8102E);
   static Color get accentSoft => _c(0xFFFF7A92, 0xFF9F0D25);
   static Color get accentText => _c(0xFFFF3B5C, 0xFFC8102E);
   static Color get onAccent => _c(0xFF14050A, 0xFFFFFFFF);
   static Color get onAccentFill => const Color(0xFFFFFFFF);
+  static Color get bubbleOwn => accentFill;
+  static Color get onBubbleOwn => onAccentFill;
   static Color get success => _c(0xFF4ADE80, 0xFF15803D);
   static Color get warning => _c(0xFFFBBF24, 0xFFB45309);
   static Color get danger => _c(0xFFFB7185, 0xFFD3173D);
@@ -227,6 +229,7 @@ class AppTheme {
         checkmarkColor: AppColors.accentText,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.sm)),
         side: BorderSide.none,
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 19),
         labelStyle: TextStyle(
           fontFamily: appFontFamily,
           fontSize: 14,
@@ -265,6 +268,18 @@ class AppTheme {
             fontSize: 14.5,
             fontWeight: FontWeight.w500),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+      ),
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: ButtonStyle(
+          minimumSize: const WidgetStatePropertyAll(Size(0, kTouchTarget)),
+          backgroundColor: WidgetStateProperty.resolveWith(
+            (st) => st.contains(WidgetState.selected) ? AppColors.accentFill : null,
+          ),
+          foregroundColor: WidgetStateProperty.resolveWith(
+            (st) =>
+                st.contains(WidgetState.selected) ? AppColors.onAccentFill : AppColors.textMuted,
+          ),
+        ),
       ),
       listTileTheme: ListTileThemeData(
         shape: RoundedRectangleBorder(borderRadius: r),

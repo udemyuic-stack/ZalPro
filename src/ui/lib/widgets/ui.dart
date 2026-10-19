@@ -641,3 +641,82 @@ class AuraLogo extends StatelessWidget {
     );
   }
 }
+
+class AppSegment<T> {
+  final T value;
+  final String label;
+  final IconData? icon;
+  const AppSegment({required this.value, required this.label, this.icon});
+}
+
+class AppSegmented<T> extends StatelessWidget {
+  final List<AppSegment<T>> segments;
+  final T selected;
+  final ValueChanged<T> onChanged;
+  const AppSegmented({
+    super.key,
+    required this.segments,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context).textTheme;
+    return Container(
+      constraints: const BoxConstraints(minHeight: kTouchTarget),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: AppColors.hairlineStrong),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Row(children: [
+        for (final seg in segments)
+          Expanded(
+            child: Semantics(
+              button: true,
+              selected: seg.value == selected,
+              label: seg.label,
+              excludeSemantics: true,
+              child: Material(
+                color: seg.value == selected ? AppColors.accentFill : Colors.transparent,
+                child: InkWell(
+                  onTap: () => onChanged(seg.value),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: kTouchTarget),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
+                      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                        if (seg.icon != null) ...[
+                          Icon(
+                            seg.icon,
+                            size: 18,
+                            color: seg.value == selected
+                                ? AppColors.onAccentFill
+                                : AppColors.textMuted,
+                          ),
+                          const SizedBox(width: AppSpace.xs),
+                        ],
+                        Flexible(
+                          child: Text(
+                            seg.label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: t.labelLarge?.copyWith(
+                              color: seg.value == selected
+                                  ? AppColors.onAccentFill
+                                  : AppColors.textMuted,
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ]),
+    );
+  }
+}

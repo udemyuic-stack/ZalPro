@@ -616,13 +616,13 @@ class _ExerciseFormState extends State<ExerciseForm> {
               style: t.bodySmall?.copyWith(color: AppColors.textMuted),
             ),
             const SizedBox(height: AppSpace.sm),
-            SegmentedButton<bool>(
+            AppSegmented<bool>(
               segments: [
-                ButtonSegment(value: false, label: Text(tr('Asosiy mushak'))),
-                ButtonSegment(value: true, label: Text(tr('Yordamchi mushaklar'))),
+                AppSegment(value: false, label: tr('Asosiy mushak')),
+                AppSegment(value: true, label: tr('Yordamchi mushaklar')),
               ],
-              selected: {_helpers},
-              onSelectionChanged: (s) => setState(() => _helpers = s.first),
+              selected: _helpers,
+              onChanged: (v) => setState(() => _helpers = v),
             ),
             const SizedBox(height: 4),
             Text(

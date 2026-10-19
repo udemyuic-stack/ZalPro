@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/input_rules.dart';
 import '../../l10n/tr.dart';
 import '../../models/hudud.dart';
 import '../../models/models.dart';
@@ -449,6 +450,7 @@ class _StaffScreenState extends State<StaffScreen> {
     final address = TextEditingController(text: gym?.address);
     // ro'yxatda yo'q tuman qo'lda yozilgan bo'lsa — shu maydonda turadi
     final otherDistrict = TextEditingController();
+    final gymForm = GlobalKey<FormState>();
 
     var country = gym?.country.isNotEmpty == true ? gym!.country : countries.first;
     var region = regionNames.contains(gym?.region) ? gym!.region : null;
@@ -466,122 +468,136 @@ class _StaffScreenState extends State<StaffScreen> {
       context,
       StatefulBuilder(
         builder: (ctx, setS) => SingleChildScrollView(
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: AppSpace.md),
-                Text(gym == null ? tr('Yangi zal') : tr('Zalni tahrirlash'),
-                    style: Theme.of(ctx).textTheme.titleLarge),
-                const SizedBox(height: AppSpace.xs),
-                Text(tr('Avval joyini tanlang, keyin nom bering'),
-                    style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
-                const SizedBox(height: AppSpace.lg),
-
-                // 1 — mamlakat
-                DropdownButtonFormField<String>(
-                  initialValue: country,
-                  isExpanded: true,
-                  decoration: InputDecoration(labelText: tr('Mamlakat')),
-                  items: [
-                    for (final c in countries) DropdownMenuItem(value: c, child: Text(tr(c))),
-                  ],
-                  onChanged: (v) => setS(() => country = v ?? countries.first),
-                ),
-                const SizedBox(height: AppSpace.md),
-
-                // 2 — viloyat
-                DropdownButtonFormField<String>(
-                  initialValue: region,
-                  isExpanded: true,
-                  decoration: InputDecoration(
-                    labelText: tr('Viloyat / shahar'),
-                    hintText: tr('Tanlang'),
-                  ),
-                  items: [
-                    for (final r in regionNames) DropdownMenuItem(value: r, child: Text(tr(r))),
-                  ],
-                  onChanged: (v) => setS(() {
-                    region = v;
-                    district = null;
-                    otherDistrict.clear();
-                  }),
-                ),
-                const SizedBox(height: AppSpace.md),
-
-                // 3 — tuman
-                DropdownButtonFormField<String>(
-                  initialValue: district,
-                  isExpanded: true,
-                  decoration: InputDecoration(
-                    labelText: tr('Tuman'),
-                    hintText: region == null ? tr('Avval viloyatni tanlang') : tr('Tanlang'),
-                  ),
-                  items: region == null
-                      ? const []
-                      : [
-                          for (final d in districtsOf(region!))
-                            DropdownMenuItem(value: d, child: Text(tr(d))),
-                        ],
-                  onChanged: region == null ? null : (v) => setS(() => district = v),
-                ),
-                if (district == otherOption) ...[
+          child: Form(
+            key: gymForm,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
                   const SizedBox(height: AppSpace.md),
-                  TextField(
-                    controller: otherDistrict,
-                    textCapitalization: TextCapitalization.words,
+                  Text(gym == null ? tr('Yangi zal') : tr('Zalni tahrirlash'),
+                      style: Theme.of(ctx).textTheme.titleLarge),
+                  const SizedBox(height: AppSpace.xs),
+                  Text(tr('Avval joyini tanlang, keyin nom bering'),
+                      style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
+                  const SizedBox(height: AppSpace.lg),
+
+                  // 1 — mamlakat
+                  DropdownButtonFormField<String>(
+                    initialValue: country,
+                    isExpanded: true,
+                    decoration: InputDecoration(labelText: tr('Mamlakat')),
+                    items: [
+                      for (final c in countries) DropdownMenuItem(value: c, child: Text(tr(c))),
+                    ],
+                    onChanged: (v) => setS(() => country = v ?? countries.first),
+                  ),
+                  const SizedBox(height: AppSpace.md),
+
+                  // 2 — viloyat
+                  DropdownButtonFormField<String>(
+                    initialValue: region,
+                    isExpanded: true,
                     decoration: InputDecoration(
-                      labelText: tr('Tuman nomi'),
-                      hintText: tr("Ro'yxatda yo'q bo'lsa — o'zingiz yozing"),
+                      labelText: tr('Viloyat / shahar'),
+                      hintText: tr('Tanlang'),
+                    ),
+                    items: [
+                      for (final r in regionNames) DropdownMenuItem(value: r, child: Text(tr(r))),
+                    ],
+                    onChanged: (v) => setS(() {
+                      region = v;
+                      district = null;
+                      otherDistrict.clear();
+                    }),
+                  ),
+                  const SizedBox(height: AppSpace.md),
+
+                  // 3 — tuman
+                  DropdownButtonFormField<String>(
+                    initialValue: district,
+                    isExpanded: true,
+                    decoration: InputDecoration(
+                      labelText: tr('Tuman'),
+                      hintText: region == null ? tr('Avval viloyatni tanlang') : tr('Tanlang'),
+                    ),
+                    items: region == null
+                        ? const []
+                        : [
+                            for (final d in districtsOf(region!))
+                              DropdownMenuItem(value: d, child: Text(tr(d))),
+                          ],
+                    onChanged: region == null ? null : (v) => setS(() => district = v),
+                  ),
+                  if (district == otherOption) ...[
+                    const SizedBox(height: AppSpace.md),
+                    TextFormField(
+                      controller: otherDistrict,
+                      maxLength: InputLimits.region,
+                      buildCounter: InputRules.counterAtEighty,
+                      validator: InputRules.required(InputLimits.region),
+                      textCapitalization: TextCapitalization.words,
+                      decoration: InputDecoration(
+                        labelText: tr('Tuman nomi'),
+                        hintText: tr("Ro'yxatda yo'q bo'lsa — o'zingiz yozing"),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: AppSpace.md),
+
+                  // 4 — nomi va ko'chasi
+                  TextFormField(
+                    controller: name,
+                    maxLength: InputLimits.gymName,
+                    buildCounter: InputRules.counterAtEighty,
+                    validator: InputRules.required(
+                      InputLimits.gymName,
+                      emptyMessage: tr('Zal nomini kiriting'),
+                    ),
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: InputDecoration(
+                      labelText: tr('Zal nomi'),
+                      hintText: tr('Aura Fit zali'),
                     ),
                   ),
-                ],
-                const SizedBox(height: AppSpace.md),
-
-                // 4 — nomi va ko'chasi
-                TextField(
-                  controller: name,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(
-                    labelText: tr('Zal nomi'),
-                    hintText: tr('Aura Fit zali'),
+                  const SizedBox(height: AppSpace.md),
+                  TextFormField(
+                    controller: address,
+                    maxLength: InputLimits.address,
+                    buildCounter: InputRules.counterAtEighty,
+                    validator: InputRules.optional(InputLimits.address),
+                    textCapitalization: TextCapitalization.sentences,
+                    decoration: InputDecoration(
+                      labelText: tr("Ko'cha, uy (ixtiyoriy)"),
+                      hintText: tr('Bunyodkor 12'),
+                    ),
                   ),
-                ),
-                const SizedBox(height: AppSpace.md),
-                TextField(
-                  controller: address,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(
-                    labelText: tr("Ko'cha, uy (ixtiyoriy)"),
-                    hintText: tr('Bunyodkor 12'),
+                  const SizedBox(height: AppSpace.lg),
+                  FilledButton(
+                    onPressed: () {
+                      if (InputRules.validateAndFocus(gymForm)) Navigator.pop(ctx, true);
+                    },
+                    child: Text(tr('Saqlash')),
                   ),
-                ),
-                const SizedBox(height: AppSpace.lg),
-                FilledButton(
-                  onPressed: () => Navigator.pop(ctx, true),
-                  child: Text(tr('Saqlash')),
-                ),
-                if (gym != null) ...[
+                  if (gym != null) ...[
+                    const SizedBox(height: AppSpace.sm),
+                    OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(foregroundColor: AppColors.danger),
+                      onPressed: () => Navigator.pop(ctx, false),
+                      icon: const Icon(Icons.delete_outline, size: 18),
+                      label: Text(tr("Zalni o'chirish")),
+                    ),
+                  ],
                   const SizedBox(height: AppSpace.sm),
-                  OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(foregroundColor: AppColors.danger),
-                    onPressed: () => Navigator.pop(ctx, false),
-                    icon: const Icon(Icons.delete_outline, size: 18),
-                    label: Text(tr("Zalni o'chirish")),
-                  ),
-                ],
-                const SizedBox(height: AppSpace.sm),
-              ]),
+                ]),
+          ),
         ),
       ),
     );
     if (!mounted) return;
 
     if (saved == true) {
-      if (name.text.trim().isEmpty) {
-        showSnack(context, tr('Zal nomini kiriting'));
-        return;
-      }
       final d = district == otherOption ? otherDistrict.text.trim() : (district ?? '');
       final id = await Db.saveGym(Gym(
         id: gym?.id ?? '',
@@ -671,110 +687,115 @@ class _StaffScreenState extends State<StaffScreen> {
     var targetGym = gymId ?? (gyms.isNotEmpty ? gyms.first.id : null);
     var busy = false;
     String? error;
+    final staffForm = GlobalKey<FormState>();
 
     final ok = await showSheet<bool>(
       context,
       StatefulBuilder(
-        builder: (ctx, setS) => Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: AppSpace.md),
-              Text(isBarmen ? tr('Yangi barmen') : tr('Yangi trener'),
-                  style: Theme.of(ctx).textTheme.titleLarge),
-              const SizedBox(height: AppSpace.lg),
-              TextField(
-                controller: name,
-                autofocus: true,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(
-                  labelText: tr('Ism'),
-                  hintText: isBarmen ? tr('Anvar aka') : tr('Bekzod aka'),
-                ),
-              ),
-              const SizedBox(height: AppSpace.md),
-              TextField(
-                controller: phone,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  labelText: tr('Telefon raqam'),
-                  hintText: '90 123 45 67',
-                  prefixText: '+998 ',
-                ),
-              ),
-              const SizedBox(height: AppSpace.md),
-              TextField(
-                controller: pass,
-                decoration: InputDecoration(
-                  labelText: tr('Parol'),
-                  helperText: tr('Kamida 8 belgi — xodimga shu parolni aytasiz'),
-                ),
-              ),
-              if (gyms.isNotEmpty) ...[
+        builder: (ctx, setS) => Form(
+          key: staffForm,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
                 const SizedBox(height: AppSpace.md),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
-                    for (final g in gyms)
-                      ChoiceChip(
-                        selected: targetGym == g.id,
-                        onSelected: (_) => setS(() => targetGym = g.id),
-                        label: Text(g.name),
-                      ),
-                  ]),
+                Text(isBarmen ? tr('Yangi barmen') : tr('Yangi trener'),
+                    style: Theme.of(ctx).textTheme.titleLarge),
+                const SizedBox(height: AppSpace.lg),
+                TextFormField(
+                  controller: name,
+                  autofocus: true,
+                  maxLength: InputLimits.name,
+                  buildCounter: InputRules.counterAtEighty,
+                  validator:
+                      InputRules.required(InputLimits.name, emptyMessage: tr('Ismni kiriting')),
+                  textCapitalization: TextCapitalization.words,
+                  decoration: InputDecoration(
+                    labelText: tr('Ism'),
+                    hintText: isBarmen ? tr('Anvar aka') : tr('Bekzod aka'),
+                  ),
                 ),
-              ],
-              if (error != null) ...[
                 const SizedBox(height: AppSpace.md),
-                Text(error!, style: TextStyle(color: AppColors.danger, fontSize: 13)),
-              ],
-              const SizedBox(height: AppSpace.lg),
-              FilledButton(
-                onPressed: busy
-                    ? null
-                    : () async {
-                        final n = name.text.trim();
-                        final ph = normalizePhone(phone.text);
-                        if (n.isEmpty) {
-                          setS(() => error = tr('Ismni kiriting'));
-                          return;
-                        }
-                        if (ph.length < 12) {
-                          setS(() => error = tr('Telefon raqam to\'liq emas'));
-                          return;
-                        }
-                        if (pass.text.trim().length < 8) {
-                          setS(() => error = tr("Parol kamida 8 belgi bo'lsin"));
-                          return;
-                        }
-                        setS(() {
-                          busy = true;
-                          error = null;
-                        });
-                        try {
-                          await Db.createStaff(
-                            name: n,
-                            phone: ph,
-                            password: pass.text.trim(),
-                            role: role,
-                            gymId: targetGym,
-                          );
-                          if (ctx.mounted) Navigator.pop(ctx, true);
-                        } catch (e) {
-                          final msg = (e is ApiException && e.code == 'phone_taken')
-                              ? tr('Bu raqam allaqachon ro\'yxatdan o\'tgan')
-                              : trf('Bo\'lmadi: {0}', [apiErrorText(e)]);
+                TextFormField(
+                  controller: phone,
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: InputRules.digitsMax(InputLimits.phoneDigits),
+                  validator: (v) => (v ?? '').length == InputLimits.phoneDigits
+                      ? null
+                      : tr("Raqamni to'liq kiriting: 90 123 45 67"),
+                  decoration: InputDecoration(
+                    labelText: tr('Telefon raqam'),
+                    hintText: '90 123 45 67',
+                    prefixText: '+998 ',
+                  ),
+                ),
+                const SizedBox(height: AppSpace.md),
+                TextFormField(
+                  controller: pass,
+                  maxLength: InputLimits.passwordMax,
+                  buildCounter: InputRules.counterAtEighty,
+                  validator: (v) => InputRules.password(v?.trim(), strict: true),
+                  decoration: InputDecoration(
+                    labelText: tr('Parol'),
+                    helperText: tr('Kamida 8 belgi — xodimga shu parolni aytasiz'),
+                  ),
+                ),
+                if (gyms.isNotEmpty) ...[
+                  const SizedBox(height: AppSpace.md),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
+                      for (final g in gyms)
+                        ChoiceChip(
+                          selected: targetGym == g.id,
+                          onSelected: (_) => setS(() => targetGym = g.id),
+                          label: Text(g.name),
+                        ),
+                    ]),
+                  ),
+                ],
+                if (error != null) ...[
+                  const SizedBox(height: AppSpace.md),
+                  Text(error!, style: TextStyle(color: AppColors.danger, fontSize: 13)),
+                ],
+                const SizedBox(height: AppSpace.lg),
+                FilledButton(
+                  onPressed: busy
+                      ? null
+                      : () async {
+                          if (!InputRules.validateAndFocus(staffForm)) return;
+                          final n = name.text.trim();
+                          final ph = normalizePhone(phone.text);
                           setS(() {
-                            busy = false;
-                            error = msg;
+                            busy = true;
+                            error = null;
                           });
-                        }
-                      },
-                child: Text(busy
-                    ? tr('Yaratilmoqda…')
-                    : (isBarmen ? tr('Barmen qo\'shish') : tr('Trener qo\'shish'))),
-              ),
-            ]),
+                          try {
+                            await Db.createStaff(
+                              name: n,
+                              phone: ph,
+                              password: pass.text.trim(),
+                              role: role,
+                              gymId: targetGym,
+                            );
+                            if (ctx.mounted) Navigator.pop(ctx, true);
+                          } catch (e) {
+                            final msg = (e is ApiException && e.code == 'phone_taken')
+                                ? tr('Bu raqam allaqachon ro\'yxatdan o\'tgan')
+                                : trf('Bo\'lmadi: {0}', [apiErrorText(e)]);
+                            setS(() {
+                              busy = false;
+                              error = msg;
+                            });
+                          }
+                        },
+                  child: Text(busy
+                      ? tr('Yaratilmoqda…')
+                      : (isBarmen ? tr('Barmen qo\'shish') : tr('Trener qo\'shish'))),
+                ),
+              ]),
+        ),
       ),
     );
 

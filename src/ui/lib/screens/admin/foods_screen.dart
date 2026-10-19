@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/input_rules.dart';
 import '../../l10n/tr.dart';
 import '../../models/models.dart';
 import '../../services/db.dart';
@@ -18,21 +19,34 @@ class FoodsScreen extends StatefulWidget {
     final c = TextEditingController(text: f == null ? '' : fmtNum(f.carbs));
     double n(TextEditingController t) => double.tryParse(t.text.replaceAll(',', '.')) ?? 0;
 
-    Widget field(TextEditingController ctl, String label, String suffix) => TextField(
+    final form = GlobalKey<FormState>();
+
+    Widget field(TextEditingController ctl, String label, String suffix, int max) => TextFormField(
           controller: ctl,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: InputRules.decimalOnly(),
+          validator: InputRules.decimalRange(0, max, required: false),
           decoration: InputDecoration(labelText: label, suffixText: tr(suffix)),
         );
 
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(f == null ? tr("Mahsulot qo'shish") : tr('Mahsulotni tahrirlash')),
-        content: SingleChildScrollView(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            TextField(
+    final ok = await showSheet<bool>(
+      context,
+      Builder(
+        builder: (ctx) => Form(
+          key: form,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: ListView(shrinkWrap: true, children: [
+            Text(
+              f == null ? tr("Mahsulot qo'shish") : tr('Mahsulotni tahrirlash'),
+              style: Theme.of(ctx).textTheme.titleLarge,
+            ),
+            const SizedBox(height: AppSpace.lg),
+            TextFormField(
               controller: name,
               autofocus: f == null,
+              maxLength: InputLimits.foodName,
+              buildCounter: InputRules.counterAtEighty,
+              validator: InputRules.required(InputLimits.foodName),
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(labelText: tr('Nomi')),
             ),
@@ -45,25 +59,29 @@ class FoodsScreen extends StatefulWidget {
                   Text(tr('100 gramm uchun:'), style: const TextStyle(fontWeight: FontWeight.w600)),
             ),
             const SizedBox(height: AppSpace.md),
-            field(kcal, tr('Kaloriya'), 'kkal'),
+            field(kcal, tr('Kaloriya'), 'kkal', InputLimits.kcalMax),
             const SizedBox(height: AppSpace.md),
             Row(children: [
-              Expanded(child: field(p, tr('Oqsil'), 'g')),
+              Expanded(child: field(p, tr('Oqsil'), 'g', InputLimits.macroMax)),
               const SizedBox(width: 8),
-              Expanded(child: field(fat, tr("Yog'"), 'g')),
+              Expanded(child: field(fat, tr("Yog'"), 'g', InputLimits.macroMax)),
               const SizedBox(width: 8),
-              Expanded(child: field(c, tr('Uglevod'), 'g')),
+              Expanded(child: field(c, tr('Uglevod'), 'g', InputLimits.macroMax)),
             ]),
+            const SizedBox(height: AppSpace.xl),
+            FilledButton(
+              onPressed: () {
+                if (InputRules.validateAndFocus(form)) Navigator.pop(ctx, true);
+              },
+              child: Text(tr('Saqlash')),
+            ),
+            const SizedBox(height: AppSpace.sm),
+            OutlinedButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(tr('Bekor')),
+            ),
           ]),
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(tr('Bekor'))),
-          FilledButton(
-            style: FilledButton.styleFrom(minimumSize: const Size(0, 44)),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(tr('Saqlash')),
-          ),
-        ],
       ),
     );
     if (ok == true && name.text.trim().isNotEmpty) {

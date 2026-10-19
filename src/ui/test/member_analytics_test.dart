@@ -182,9 +182,45 @@ void main() {
     expect(find.byKey(const Key('call-u2')), findsOneWidget);
     final size = tester.getSize(find.byKey(const Key('call-u1')));
     expect(size.width, greaterThanOrEqualTo(48));
-    expect(size.height, greaterThanOrEqualTo(48));
+    expect(size.height, greaterThanOrEqualTo(52));
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('call button has icon and label, spans the card at 360 px', (tester) async {
+    await pump(tester);
+    final button = find.byKey(const Key('call-u1'));
+    expect(find.descendant(of: button, matching: find.text("Qo'ng'iroq")), findsOneWidget);
+    expect(find.descendant(of: button, matching: find.byIcon(Icons.call_outlined)), findsOneWidget);
+    final card = tester.getSize(find.byKey(const Key('churn-u1')));
+    expect(tester.getSize(button).width, closeTo(card.width - 2 * AppSpace.md, 2));
+    expect(tester.getSize(button).height, 52);
+  });
+
+  for (final (score, label, color) in [
+    (6, 'Yuqori xavf', () => AppColors.danger),
+    (5, 'Yuqori xavf', () => AppColors.danger),
+    (4, "O'rta xavf", () => AppColors.warning),
+    (3, "O'rta xavf", () => AppColors.warning),
+    (2, 'Past xavf', () => AppColors.textMuted),
+    (0, 'Past xavf', () => AppColors.textMuted),
+  ]) {
+    testWidgets('risk label for score $score is $label', (tester) async {
+      await pump(
+        tester,
+        churn: () async => ChurnReport(items: [
+          ChurnItem(
+            userId: 'r',
+            name: 'Risk',
+            phone: '998901234567',
+            reasons: const ['silent'],
+            score: score,
+          ),
+        ]),
+      );
+      expect(find.text(label), findsOneWidget);
+      expect(tester.widget<Text>(find.text(label)).style?.color, color());
+    });
+  }
 
   testWidgets('churn shows total and reason filters whose counts match the list', (tester) async {
     await pump(tester);
@@ -216,8 +252,11 @@ void main() {
 
   testWidgets('selected segment uses the accent color', (tester) async {
     await pump(tester);
-    final button = tester.widget<SegmentedButton<int>>(find.byKey(const Key('segments')));
-    expect(button.style?.backgroundColor?.resolve({WidgetState.selected}), AppColors.accentFill);
+    final selected = find.descendant(
+      of: find.byKey(const Key('segments')),
+      matching: find.ancestor(of: find.text('Xavf'), matching: find.byType(Material)),
+    );
+    expect(tester.widget<Material>(selected.first).color, AppColors.accentFill);
   });
 
   testWidgets('admin sees only the churn section without segments', (tester) async {
@@ -235,7 +274,7 @@ void main() {
     expect(find.byKey(const Key('cohort-90')), findsOneWidget);
     expect(tester.widget<Text>(find.byKey(const Key('rate-30'))).data, '—');
     expect(find.text('20%'), findsOneWidget);
-    expect(find.text('20 dan 10 qoldi'), findsOneWidget);
+    expect(find.text('10 / 20 qoldi'), findsOneWidget);
     expect(find.text('Trenerli: 80% · Trenersiz: 20%'), findsOneWidget);
     expect(find.text('Trenerli: — · Trenersiz: —'), findsNWidgets(2));
     for (final day in [30, 60, 90]) {

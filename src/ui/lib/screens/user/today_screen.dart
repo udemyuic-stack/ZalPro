@@ -4,6 +4,7 @@ import '../../models/gym.dart' show weekdayNames;
 import '../../models/kcal_target.dart';
 import '../../models/models.dart';
 import '../../models/streak.dart';
+import '../../services/api/api_error.dart';
 import '../../services/db.dart';
 import '../../theme.dart';
 import '../../widgets/announcement_banner.dart';
@@ -434,6 +435,7 @@ class _MetricsGrid extends StatelessWidget {
 }
 
 const _maxGlasses = 30;
+const _minTap = 48.0;
 
 class _WaterStep extends StatelessWidget {
   final IconData icon;
@@ -456,24 +458,93 @@ class _WaterStep extends StatelessWidget {
   }
 }
 
-class WaterCard extends StatelessWidget {
+class WaterCard extends StatefulWidget {
   final String uid, day;
   final Stream<int>? source;
   final Future<void> Function(int glasses)? setGlasses;
   const WaterCard({super.key, required this.uid, required this.day, this.source, this.setGlasses});
 
-  Future<void> _set(int glasses) =>
-      setGlasses != null ? setGlasses!(glasses) : Db.setWater(uid, day, glasses);
+  @override
+  State<WaterCard> createState() => _WaterCardState();
+}
+
+class _WaterCardState extends State<WaterCard> {
+  late final Stream<int> _stream = widget.source ?? Db.water(widget.uid, widget.day);
+  int? _optimistic;
+  var _inflight = 0;
+  var _seq = 0;
+
+  Future<void> _set(int glasses) async {
+    final mine = ++_seq;
+    setState(() {
+      _optimistic = glasses;
+      _inflight++;
+    });
+    try {
+      await (widget.setGlasses != null
+          ? widget.setGlasses!(glasses)
+          : Db.setWater(widget.uid, widget.day, glasses));
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        if (mine == _seq) _optimistic = null;
+      });
+      showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+    } finally {
+      if (mounted) setState(() => _inflight--);
+    }
+  }
+
+  Widget _glassTile(int i, int g, ColorScheme s) {
+    final full = i < g;
+    return Semantics(
+      button: true,
+      label: trf('{0} stakan', [i + 1]),
+      child: InkResponse(
+        radius: 26,
+        onTap: () => _set(i + 1 == g ? i : i + 1),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: kTouchTarget, minWidth: _minTap),
+          margin: const EdgeInsets.symmetric(horizontal: 2, vertical: AppSpace.xs),
+          decoration: BoxDecoration(
+            color: full
+                ? AppColors.water.withValues(alpha: 0.14)
+                : AppColors.cardHigh.withValues(alpha: 0.6),
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+            border: Border.all(
+              color: full ? AppColors.water.withValues(alpha: 0.5) : AppColors.hairlineStrong,
+            ),
+          ),
+          alignment: Alignment.center,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 220),
+            transitionBuilder: (c, a) => ScaleTransition(scale: a, child: c),
+            child: Icon(
+              full ? Icons.water_drop : Icons.water_drop_outlined,
+              key: ValueKey(full),
+              size: 24,
+              color: full ? AppColors.water : s.onSurfaceVariant,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final s = Theme.of(context).colorScheme;
     final t = Theme.of(context).textTheme;
     return StreamBuilder<int>(
-      stream: source ?? Db.water(uid, day),
+      stream: _stream,
       builder: (context, snap) {
         if (snap.hasError) return ErrorState(error: snap.error, compact: true);
-        final g = snap.data ?? 0;
+        if (_optimistic != null && _inflight == 0 && snap.data == _optimistic) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted && _inflight == 0) setState(() => _optimistic = null);
+          });
+        }
+        final g = _optimistic ?? snap.data ?? 0;
         return BentoTile(
           padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.sm),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -531,47 +602,18 @@ class WaterCard extends StatelessWidget {
               ),
             ]),
             const SizedBox(height: AppSpace.xs),
-            Row(
-              children: List.generate(8, (i) {
-                final full = i < g;
-                return Expanded(
-                  child: Semantics(
-                    button: true,
-                    label: trf('{0} stakan', [i + 1]),
-                    child: InkResponse(
-                      radius: 26,
-                      onTap: () => _set(i + 1 == g ? i : i + 1),
-                      child: Container(
-                        height: 48,
-                        margin: const EdgeInsets.symmetric(horizontal: 2, vertical: AppSpace.xs),
-                        decoration: BoxDecoration(
-                          color: full
-                              ? AppColors.water.withValues(alpha: 0.14)
-                              : AppColors.cardHigh.withValues(alpha: 0.6),
-                          borderRadius: BorderRadius.circular(AppRadius.sm),
-                          border: Border.all(
-                            color: full
-                                ? AppColors.water.withValues(alpha: 0.5)
-                                : AppColors.hairlineStrong,
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 220),
-                          transitionBuilder: (c, a) => ScaleTransition(scale: a, child: c),
-                          child: Icon(
-                            full ? Icons.water_drop : Icons.water_drop_outlined,
-                            key: ValueKey(full),
-                            size: 24,
-                            color: full ? AppColors.water : s.onSurfaceVariant,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
-            ),
+            LayoutBuilder(builder: (context, c) {
+              final perRow = c.maxWidth / 8 >= _minTap ? 8 : 4;
+              return Column(
+                children: [
+                  for (var r = 0; r < 8 ~/ perRow; r++)
+                    Row(children: [
+                      for (var i = r * perRow; i < (r + 1) * perRow; i++)
+                        Expanded(child: _glassTile(i, g, s)),
+                    ]),
+                ],
+              );
+            }),
             if (g == 0)
               Padding(
                 padding: const EdgeInsets.only(top: AppSpace.xs, bottom: AppSpace.sm),
@@ -720,7 +762,7 @@ class _CheckCircle extends StatelessWidget {
         onTap: onTap,
         radius: 24,
         child: SizedBox.square(
-          dimension: 44,
+          dimension: kTouchTarget,
           child: Center(
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 220),
@@ -920,7 +962,7 @@ class _WeekCard extends StatelessWidget {
               Text(
                 streak > 0 ? trf('{0} hafta ketma-ket', [streak]) : tr('Bu haftani boshlang'),
                 style: t.bodyMedium?.copyWith(
-                  color: streak > 0 ? AppColors.accentText : AppColors.textMuted,
+                  color: streak > 0 ? AppColors.success : AppColors.textMuted,
                 ),
               ),
             ],

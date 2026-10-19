@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     access_token_minutes: int = Field(default=15, ge=1)
     refresh_token_days: int = Field(default=30, ge=1)
     gym_timezone: str = "Asia/Tashkent"
+    auto_reminders_enabled: bool = True
     r2_endpoint_url: str = ""
     r2_access_key_id: str = ""
     r2_secret_access_key: str = ""

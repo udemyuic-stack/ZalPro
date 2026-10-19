@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kotta_qani_diet/models/models.dart';
 import 'package:kotta_qani_diet/models/subscription.dart';
 import 'package:kotta_qani_diet/services/api/api_client.dart';
+import 'package:kotta_qani_diet/services/api/api_service.dart';
 import 'package:kotta_qani_diet/services/api/billing_api.dart';
 import 'package:kotta_qani_diet/services/api/poll_stream.dart';
 import 'package:kotta_qani_diet/services/api/session_store.dart';
@@ -137,6 +138,7 @@ void main() {
     final owner = await api.memberships(person('o', role: 'owner')).first;
     expect(last().path, '/v1/memberships');
     expect(owner.single.uid, 'u1');
+    await Future<void>.delayed(ApiService.shareGrace + const Duration(milliseconds: 50));
     final before = adapter.calls.length;
     final none = await api.memberships(person('t', role: 'admin')).first;
     expect(none, isEmpty);

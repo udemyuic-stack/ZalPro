@@ -50,24 +50,19 @@ class _SettingsSheetState extends State<_SettingsSheet> {
         const SizedBox(height: AppSpace.sm),
         ValueListenableBuilder<ThemeMode>(
           valueListenable: AppSettings.themeMode,
-          builder: (context, mode, _) => SegmentedButton<ThemeMode>(
-            showSelectedIcon: false,
+          builder: (context, mode, _) => AppSegmented<ThemeMode>(
             segments: [
-              ButtonSegment(
-                  value: ThemeMode.dark,
-                  icon: const Icon(Icons.dark_mode_outlined),
-                  label: Text(tr("Qorong'i"))),
-              ButtonSegment(
-                  value: ThemeMode.light,
-                  icon: const Icon(Icons.light_mode_outlined),
-                  label: Text(tr("Yorug'"))),
-              ButtonSegment(
+              AppSegment(
+                  value: ThemeMode.dark, icon: Icons.dark_mode_outlined, label: tr("Qorong'i")),
+              AppSegment(
+                  value: ThemeMode.light, icon: Icons.light_mode_outlined, label: tr("Yorug'")),
+              AppSegment(
                   value: ThemeMode.system,
-                  icon: const Icon(Icons.phone_android_outlined),
-                  label: Text(tr('Telefon'))),
+                  icon: Icons.phone_android_outlined,
+                  label: tr('Telefon')),
             ],
-            selected: {mode},
-            onSelectionChanged: (s) => AppSettings.setThemeMode(s.first),
+            selected: mode,
+            onChanged: AppSettings.setThemeMode,
           ),
         ),
         const SizedBox(height: AppSpace.xl),

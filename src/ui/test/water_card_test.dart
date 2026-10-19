@@ -55,4 +55,35 @@ void main() {
     await tester.tap(find.bySemanticsLabel(RegExp(r'^5 ')).first);
     expect(calls, [5]);
   });
+
+  testWidgets('tap shows new value at once before the source emits', (tester) async {
+    await pump(tester, 3);
+    await tester.tap(find.byKey(const Key('water-plus')));
+    await tester.pump();
+    expect(find.text('4'), findsOneWidget);
+    expect(find.text('3'), findsNothing);
+  });
+
+  testWidgets('failed write rolls the optimistic value back', (tester) async {
+    tester.view.physicalSize = const Size(360, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(MaterialApp(
+      theme: AppTheme.current(),
+      home: Scaffold(
+        body: WaterCard(
+          uid: 'u',
+          day: '2026-10-17',
+          source: Stream.value(3),
+          setGlasses: (v) async => throw Exception('x'),
+        ),
+      ),
+    ));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('water-plus')));
+    await tester.pump();
+    await tester.pump();
+    expect(find.text('3'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 5));
+  });
 }

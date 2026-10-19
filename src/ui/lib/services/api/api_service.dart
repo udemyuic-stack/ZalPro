@@ -15,8 +15,27 @@ abstract class ApiService {
   final ChangeBus bus;
   final PollActivity activity;
 
-  Stream<T> poll<T>(Future<T> Function() fetch, Duration every, Set<String> tags) =>
-      pollStream<T>(fetch, every: every, tags: tags, bus: bus, activity: activity);
+  static const shareGrace = Duration(milliseconds: 250);
+
+  final _loops = <String, SharedStream<Object?>>{};
+
+  Stream<T> poll<T>(
+    Future<T> Function() fetch,
+    Duration every,
+    Set<String> tags, {
+    String? key,
+  }) {
+    Stream<T> open() => Stream<T>.multi((out) {
+          final sub = pollStream<T>(fetch, every: every, tags: tags, bus: bus, activity: activity)
+              .listen(out.add, onError: out.addError, onDone: out.close);
+          out.onCancel = sub.cancel;
+        });
+    if (key == null) return open();
+    return _loops
+        .putIfAbsent(key, () => SharedStream<Object?>(open, grace: shareGrace))
+        .stream
+        .cast<T>();
+  }
 
   Future<void> write(String method, String path, Object? body, Iterable<String> tags) =>
       bus.after(client.request<void>(method, path, data: body), tags);

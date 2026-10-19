@@ -187,12 +187,20 @@ List<FeedItem> trainerFeed({
   }
 
   // 3. E'tibor: rejasiz shogirdlar
-  for (final c in clients) {
-    if (c.planId != null) continue;
+  final noPlan = clients.where((c) => c.planId == null).toList();
+  if (noPlan.length == 1) {
     items.add(FeedItem(
       kind: FeedKind.attention,
       title: tr('Reja berilmagan'),
-      body: trf("{0} — hali ovqatlanish rejasi yo'q", [nameOf[c.id]]),
+      body: trf("{0} — hali ovqatlanish rejasi yo'q", [nameOf[noPlan.first.id]]),
+      at: n,
+      action: true,
+    ));
+  } else if (noPlan.length > 1) {
+    items.add(FeedItem(
+      kind: FeedKind.attention,
+      title: tr('Reja berilmagan'),
+      body: trf("{0} ta shogirdda hali ovqatlanish rejasi yo'q", [noPlan.length]),
       at: n,
       action: true,
     ));

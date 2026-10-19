@@ -41,7 +41,7 @@ async def settings() -> Settings:
     for key, value in dotenv_values(Path(__file__).parent.parent / ".env.test").items():
         if value is not None:
             os.environ.setdefault(key, value)
-    return Settings()
+    return Settings().model_copy(update={"auto_reminders_enabled": False})
 
 
 @pytest_asyncio.fixture(scope="session")

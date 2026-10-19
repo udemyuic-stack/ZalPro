@@ -148,18 +148,24 @@ class PendingMediaBubble extends StatelessWidget {
         Expanded(
           child: Text(
             failed ? tr('Yuborilmadi') : trf('Yuborilmoqda: {0}%', [(progress * 100).round()]),
-            style: t.labelSmall?.copyWith(color: failed ? AppColors.danger : AppColors.textMuted),
+            style: t.labelSmall?.copyWith(color: AppColors.onBubbleOwn),
           ),
         ),
         if (failed)
           TextButton(
-            style: TextButton.styleFrom(minimumSize: const Size(0, 40)),
+            style: TextButton.styleFrom(
+              minimumSize: const Size(0, 40),
+              foregroundColor: AppColors.onBubbleOwn,
+            ),
             onPressed: onRetry,
             child: Text(tr('Qayta urinish')),
           ),
         IconButton(
           tooltip: tr('Bekor'),
-          style: IconButton.styleFrom(minimumSize: const Size(40, 40)),
+          style: IconButton.styleFrom(
+            minimumSize: const Size(40, 40),
+            foregroundColor: AppColors.onBubbleOwn,
+          ),
           onPressed: onCancel,
           icon: const Icon(Icons.close, size: 20),
         ),

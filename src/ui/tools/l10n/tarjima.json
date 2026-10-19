@@ -23,6 +23,14 @@
   "ru": "«Прогулка фермера»",
   "en": "Farmer's walk"
  },
+ "\"Qiyin\" bo'yicha": {
+  "ru": "По «Тяжело»",
+  "en": "By \"Hard\""
+ },
+ "\"Qiyin\" ulushi": {
+  "ru": "Доля «Тяжело»",
+  "en": "\"Hard\" share"
+ },
  "\"Xayrli tong\" egilishi": {
   "ru": "Наклоны «гуд морнинг»",
   "en": "Good morning"
@@ -107,6 +115,10 @@
   "ru": "7 дней",
   "en": "7 days"
  },
+ "A'zolar tahlili": {
+  "ru": "Анализ участников",
+  "en": "Member analytics"
+ },
  "Abonement": {
   "ru": "Абонемент",
   "en": "Membership"
@@ -127,9 +139,17 @@
   "ru": "Абонемент закончился",
   "en": "Membership expired"
  },
+ "Abonement tugagan": {
+  "ru": "Абонемент закончился",
+  "en": "Membership expired"
+ },
  "Abonement tugashi yaqinlashdi": {
   "ru": "Абонемент скоро закончится",
   "en": "Membership is about to expire"
+ },
+ "Abonement tugayapti": {
+  "ru": "Абонемент заканчивается",
+  "en": "Membership expiring"
  },
  "Abonement tushumidan ulush": {
   "ru": "Доля от выручки за абонементы",
@@ -322,6 +342,10 @@
  "Avgust": {
   "ru": "Август",
   "en": "August"
+ },
+ "Avto: {0}": {
+  "ru": "Авто: {0}",
+  "en": "Auto: {0}"
  },
  "Avval 'Mahsulotlar' bo'limida mahsulot qo'shing": {
   "ru": "Сначала добавьте продукты в разделе «Продукты»",
@@ -555,6 +579,10 @@
   "ru": "Отмечено как выданное",
   "en": "Marked as handed over"
  },
+ "Berildi deb belgilash": {
+  "ru": "Отметить как выдано",
+  "en": "Mark as given"
+ },
  "Berilgan buyurtmalar shu yerda ko'rinadi": {
   "ru": "Выданные заказы появятся здесь",
   "en": "Given orders will appear here"
@@ -590,6 +618,10 @@
  "Bildirishnomalar telefondagi (Android) ilovada ishlaydi.": {
   "ru": "Уведомления работают в приложении на телефоне (Android).",
   "en": "Notifications work in the phone app (Android)."
+ },
+ "Bir mahalda eng ko'pi {0} ta mahsulot bo'lishi mumkin": {
+  "ru": "В одном приёме пищи не более {0} продуктов",
+  "en": "A meal can have at most {0} items"
  },
  "Bir nechta bo'lsa — har birini yangi qatorga yozing": {
   "ru": "Если несколько — каждую с новой строки",
@@ -807,6 +839,10 @@
   "ru": "Нет продаж за этот период",
   "en": "No sales in this period"
  },
+ "Bu davrda yangi a'zo yo'q": {
+  "ru": "В этом периоде нет новых участников",
+  "en": "No new members in this period"
+ },
  "Bu foydalanuvchi mijoz emas": {
   "ru": "Этот пользователь не клиент",
   "en": "This user is not a client"
@@ -927,6 +963,10 @@
   "ru": "Тренировка на сегодня окончена",
   "en": "Today's workout is finished"
  },
+ "Bugungi mashq": {
+  "ru": "Тренировка на сегодня",
+  "en": "Today's workout"
+ },
  "Bugungi mashqlar": {
   "ru": "Упражнения на сегодня",
   "en": "Today's exercises"
@@ -966,6 +1006,10 @@
  "Bunyodkor 12": {
   "ru": "Бунёдкор, 12",
   "en": "Bunyodkor 12"
+ },
+ "Butun son kiriting": {
+  "ru": "Введите целое число",
+  "en": "Enter a whole number"
  },
  "Butun tanangiz ko'rinsin": {
   "ru": "Встаньте так, чтобы было видно всё тело",
@@ -1215,6 +1259,14 @@
   "ru": "Самые продаваемые товары и продажи по дням недели",
   "en": "Top sellers and sales by weekday"
  },
+ "Eng ko'pi {0} belgi": {
+  "ru": "Не более {0} символов",
+  "en": "At most {0} characters"
+ },
+ "Eng ko'pi {0} ta bo'lishi mumkin": {
+  "ru": "Не более {0} шт.",
+  "en": "At most {0} allowed"
+ },
  "Erkak": {
   "ru": "Мужчина",
   "en": "Male"
@@ -1254,6 +1306,10 @@
  "Faol e'lon yo'q": {
   "ru": "Нет активных объявлений",
   "en": "No active announcements"
+ },
+ "Faol shogirdlar": {
+  "ru": "Активные ученики",
+  "en": "Active students"
  },
  "Faqat maslahatlar — mahallarni Rejalar bo'limida qo'shing": {
   "ru": "Только советы — добавьте приёмы пищи в разделе «Планы»",
@@ -1475,6 +1531,10 @@
   "ru": "3 дня в неделю. Тренировки по порядку дней: 1) {0}, 2) {1}, 3) {2}.",
   "en": "3 days a week. Workouts follow the day order: 1) {0}, 2) {1}, 3) {2}."
  },
+ "Haftasiga kelish (shogirdga)": {
+  "ru": "Визитов в неделю (на ученика)",
+  "en": "Visits per week (per student)"
+ },
  "Hali ballingiz yo'q": {
   "ru": "У вас пока нет баллов",
   "en": "You have no points yet"
@@ -1482,6 +1542,10 @@
  "Hali kelgani belgilanmagan": {
   "ru": "Посещение ещё не отмечено",
   "en": "Attendance not marked yet"
+ },
+ "Hali kelmagan": {
+  "ru": "Ещё не приходил",
+  "en": "Has not visited yet"
  },
  "Hali mahal yo'q. Pastdagi \"Mahal qo'shish\" tugmasini bosing.": {
   "ru": "Приёмов пищи пока нет. Нажмите «Добавить приём пищи» внизу.",
@@ -1555,9 +1619,17 @@
   "ru": "Всё в порядке",
   "en": "All good"
  },
+ "Hammasi odatdagidek kelyapti": {
+  "ru": "Все ходят как обычно",
+  "en": "Everyone is coming as usual"
+ },
  "Har bir sotuv": {
   "ru": "Каждая продажа",
   "en": "Every sale"
+ },
+ "Har biri eng ko'pi {0} belgi: \"{1}\"": {
+  "ru": "Не более {0} символов в каждом: «{1}»",
+  "en": "At most {0} characters each: \"{1}\""
  },
  "Har kunga alohida menyu": {
   "ru": "Отдельное меню на каждый день",
@@ -1638,6 +1710,10 @@
  "Hozircha shogird qabul qilayotgan boshqa trener yo'q": {
   "ru": "Сейчас нет других тренеров, принимающих учеников",
   "en": "No other trainer is accepting clients right now"
+ },
+ "Hozircha shogird qabul qilayotgan trener yo'q": {
+  "ru": "Пока нет тренеров, принимающих учеников",
+  "en": "No trainers are accepting clients yet"
  },
  "Hozircha shogird qabul qilayotgan trener yo'q — trener keyin biriktiriladi.": {
   "ru": "Сейчас нет тренеров, принимающих учеников — тренера назначат позже.",
@@ -1947,6 +2023,26 @@
   "ru": "Давайте знакомиться 👋",
   "en": "Let's get to know you 👋"
  },
+ "Kelish bo'yicha": {
+  "ru": "По посещениям",
+  "en": "By visits"
+ },
+ "Kelishi kamaydi": {
+  "ru": "Стал ходить реже",
+  "en": "Visits dropped"
+ },
+ "Kelmay qo'ydi": {
+  "ru": "Перестал ходить",
+  "en": "Stopped coming"
+ },
+ "Ketish xavfi ostida shogird yo'q": {
+  "ru": "Нет учеников в зоне риска",
+  "en": "No students at risk"
+ },
+ "Ketish xavfi, qolish ulushi va trenerlar natijasi": {
+  "ru": "Риск ухода, удержание и результаты тренеров",
+  "en": "Churn risk, retention and trainer results"
+ },
  "Keyin": {
   "ru": "После",
   "en": "After"
@@ -2075,6 +2171,10 @@
   "ru": "Креатин",
   "en": "Creatine"
  },
+ "Kuniga eng ko'pi {0} ta mahal bo'lishi mumkin": {
+  "ru": "В день не более {0} приёмов пищи",
+  "en": "At most {0} meals per day"
+ },
  "Kunlar tanlanmagan": {
   "ru": "Дни не выбраны",
   "en": "Days not chosen"
@@ -2086,6 +2186,10 @@
  "Kunlik": {
   "ru": "Разовый",
   "en": "Day pass"
+ },
+ "Kunlik maqsad": {
+  "ru": "Цель на день",
+  "en": "Daily goal"
  },
  "Kunlik norma": {
   "ru": "Дневная норма",
@@ -2691,6 +2795,10 @@
   "ru": "Средний",
   "en": "Intermediate"
  },
+ "O'rta xavf": {
+  "ru": "Средний риск",
+  "en": "Medium risk"
+ },
  "O'rtachirchiq": {
   "ru": "Уртачирчик",
   "en": "Urta Chirchik"
@@ -2911,6 +3019,10 @@
   "ru": "Овсяная или геркулесовая каша (сухой вес)",
   "en": "Oatmeal or rolled-oat porridge (dry weight)"
  },
+ "Oxirgi 14 kun: {0} · oldingi 14 kun: {1}": {
+  "ru": "Последние 14 дней: {0} · предыдущие 14 дней: {1}",
+  "en": "Last 14 days: {0} · previous 14 days: {1}"
+ },
  "Oxirgi 7 kun": {
   "ru": "Последние 7 дней",
   "en": "Last 7 days"
@@ -2918,6 +3030,14 @@
  "Oxirgi baho: {0}": {
   "ru": "Последняя оценка: {0}",
   "en": "Last rated: {0}"
+ },
+ "Oxirgi kelgan: bugun": {
+  "ru": "Последний визит: сегодня",
+  "en": "Last visit: today"
+ },
+ "Oxirgi kelgan: {0} kun oldin": {
+  "ru": "Последний визит: {0} дн. назад",
+  "en": "Last visit: {0} days ago"
  },
  "Oxirgi o'lchovdan 7 kun o'tdi": {
   "ru": "С последнего взвешивания прошло 7 дней",
@@ -3046,6 +3166,10 @@
  "Parolni yashirish": {
   "ru": "Скрыть пароль",
   "en": "Hide password"
+ },
+ "Past xavf": {
+  "ru": "Низкий риск",
+  "en": "Low risk"
  },
  "Pastdarg'om": {
   "ru": "Пастдаргом",
@@ -3303,6 +3427,10 @@
   "ru": "Трицепс",
   "en": "Triceps"
  },
+ "Qo'ng'iroq": {
+  "ru": "Позвонить",
+  "en": "Call"
+ },
  "Qo'ng'irot": {
   "ru": "Кунград",
   "en": "Kungrad"
@@ -3335,6 +3463,10 @@
   "ru": "Куштепа",
   "en": "Kushtepa"
  },
+ "Qoldi = a'zo bo'lgandan {0} kun keyin keyingi 14 kun ichida kamida 1 marta kelgan": {
+  "ru": "Остался = пришёл хотя бы 1 раз в течение 14 дней после {0}-го дня с момента вступления",
+  "en": "Retained = visited at least once within the 14 days after day {0} of membership"
+ },
  "Qoldi: {0}": {
   "ru": "Осталось: {0}",
   "en": "Left: {0}"
@@ -3354,6 +3486,10 @@
  "Qoldiq: {0}": {
   "ru": "Остаток: {0}",
   "en": "Stock: {0}"
+ },
+ "Qolish": {
+  "ru": "Удержание",
+  "en": "Retention"
  },
  "Qorako'l": {
   "ru": "Каракуль",
@@ -3406,6 +3542,10 @@
  "Rangni tanlang": {
   "ru": "Выберите цвет",
   "en": "Choose a color"
+ },
+ "Raqam nusxalandi": {
+  "ru": "Номер скопирован",
+  "en": "Number copied"
  },
  "Raqamni to'liq kiriting: 90 123 45 67": {
   "ru": "Введите номер полностью: 90 123 45 67",
@@ -3799,6 +3939,10 @@
   "ru": "Шароф Рашидов",
   "en": "Sharof Rashidov"
  },
+ "Shaxsiy ovqatlanish rejasi uchun 'Trener' bo'limidan trener tanlang.": {
+  "ru": "Для личного плана питания выберите тренера в разделе «Тренер».",
+  "en": "Choose a trainer in the Trainer tab to get a personal meal plan."
+ },
  "Shayxontohur": {
   "ru": "Шайхантахур",
   "en": "Shaykhantakhur"
@@ -3870,6 +4014,10 @@
  "Shogirdlar": {
   "ru": "Ученики",
   "en": "Clients"
+ },
+ "Shogirdlar biriktirilgach, natijalar shu yerda ko'rinadi": {
+  "ru": "Результаты появятся здесь после закрепления учеников",
+  "en": "Results appear here once students are assigned"
  },
  "Shogirdlar ko'radi": {
   "ru": "Ученики видят",
@@ -4135,6 +4283,10 @@
   "ru": "Счётчик повторений (тест)",
   "en": "Rep counter (trial)"
  },
+ "Takrorlangan: \"{0}\"": {
+  "ru": "Повтор: «{0}»",
+  "en": "Duplicate: \"{0}\""
+ },
  "Tamaddi (sport zal kuni)": {
   "ru": "Перекус (в день зала)",
   "en": "Snack (gym day)"
@@ -4191,6 +4343,10 @@
   "ru": "Выберите",
   "en": "Select"
  },
+ "Tanlash": {
+  "ru": "Выбрать",
+  "en": "Choose"
+ },
  "Tannarxi yo'q: {0} ta buyurtma": {
   "ru": "Нет себестоимости: заказов {0}",
   "en": "No cost price: {0} orders"
@@ -4206,6 +4362,14 @@
  "Tartib: {0}": {
   "ru": "Порядок: {0}",
   "en": "Order: {0}"
+ },
+ "Tavsiya etilgan me'yor: {0}": {
+  "ru": "Рекомендуемая норма: {0}",
+  "en": "Recommended target: {0}"
+ },
+ "Tavsiya: {0} kkal": {
+  "ru": "Рекомендация: {0} ккал",
+  "en": "Suggested: {0} kcal"
  },
  "Taxtako'pir": {
   "ru": "Тахтакупыр",
@@ -4307,6 +4471,10 @@
   "ru": "Локти смотрят вверх и не расходятся.",
   "en": "Elbows point up and don't flare out."
  },
+ "Tizim xabari": {
+  "ru": "Системное сообщение",
+  "en": "System message"
+ },
  "Tizzani oxirigacha to'g'rilamang, bel suyanchiqdan uzilmasin.": {
   "ru": "Не выпрямляйте колени до конца, поясница не отрывается от спинки.",
   "en": "Don't lock the knees, keep the lower back on the pad."
@@ -4322,6 +4490,10 @@
  "To'g'ri oyoqda egilish (rumin tortishi)": {
   "ru": "Румынская тяга",
   "en": "Romanian deadlift"
+ },
+ "To'g'ri son kiriting": {
+  "ru": "Введите корректное число",
+  "en": "Enter a valid number"
  },
  "To'langan: {0}": {
   "ru": "Оплачено: {0}",
@@ -4471,6 +4643,10 @@
   "ru": "Формула тренера: {0}",
   "en": "Trainer's formula: {0}"
  },
+ "Trener ma'lumoti yo'q": {
+  "ru": "Нет данных по тренерам",
+  "en": "No trainer data"
+ },
  "Trener maslahati": {
   "ru": "Совет тренера",
   "en": "Trainer's tip"
@@ -4515,9 +4691,25 @@
   "ru": "Когда тренер назначает план",
   "en": "When your trainer assigns a plan"
  },
+ "Trener rejasi": {
+  "ru": "План тренера",
+  "en": "Trainer's plan"
+ },
+ "Trener sizga ovqatlanish rejasi tuzadi va savollaringizga javob beradi.": {
+  "ru": "Тренер составит вам план питания и ответит на вопросы.",
+  "en": "A trainer will build your meal plan and answer your questions."
+ },
  "Trener sizga ovqatlanish rejasini berdi — 'Bugun' bo'limida ko'ring": {
   "ru": "Тренер назначил вам план питания — смотрите в разделе «Сегодня»",
   "en": "Your trainer assigned you a meal plan — see it in the Today tab"
+ },
+ "Trener tanlang": {
+  "ru": "Выберите тренера",
+  "en": "Choose a trainer"
+ },
+ "Trener tanlansinmi?": {
+  "ru": "Выбрать тренера?",
+  "en": "Choose this trainer?"
  },
  "Trener tayinlandi": {
   "ru": "Тренер назначен",
@@ -4574,6 +4766,10 @@
  "Trenerlar reytingi": {
   "ru": "Рейтинг тренеров",
   "en": "Trainer ranking"
+ },
+ "Trenerli: {0} · Trenersiz: {1}": {
+  "ru": "С тренером: {0} · Без тренера: {1}",
+  "en": "With trainer: {0} · No trainer: {1}"
  },
  "Trenerlikdan olindi": {
   "ru": "Снят с роли тренера",
@@ -4951,6 +5147,10 @@
   "ru": "Вабкент",
   "en": "Vabkent"
  },
+ "Xabar eng ko'pi {0} belgi bo'lishi mumkin": {
+  "ru": "Сообщение не длиннее {0} символов",
+  "en": "A message can be at most {0} characters"
+ },
  "Xabar yozing...": {
   "ru": "Напишите сообщение...",
   "en": "Type a message..."
@@ -4962,6 +5162,10 @@
  "Xatolik yuz berdi": {
   "ru": "Произошла ошибка",
   "en": "Something went wrong"
+ },
+ "Xavf": {
+  "ru": "Риск",
+  "en": "Risk"
  },
  "Xiva": {
   "ru": "Хива",
@@ -5026,6 +5230,10 @@
  "Yangi": {
   "ru": "Новое",
   "en": "New"
+ },
+ "Yangi a'zolar 30/60/90 kundan keyin shu yerda hisoblanadi": {
+  "ru": "Новые участники учитываются здесь через 30/60/90 дней",
+  "en": "New members are counted here after 30/60/90 days"
  },
  "Yangi barmen": {
   "ru": "Новый бармен",
@@ -5295,6 +5503,10 @@
   "ru": "Юнусабад",
   "en": "Yunusabad"
  },
+ "Yuqori xavf": {
+  "ru": "Высокий риск",
+  "en": "High risk"
+ },
  "Yuqorichirchiq": {
   "ru": "Юкоричирчик",
   "en": "Yukori Chirchik"
@@ -5463,6 +5675,10 @@
   "ru": "июня",
   "en": "June"
  },
+ "kam ma'lumot": {
+  "ru": "мало данных",
+  "en": "low data"
+ },
  "kg": {
   "ru": "кг",
   "en": "kg"
@@ -5610,6 +5826,18 @@
  "{0} ball": {
   "ru": "{0} б.",
   "en": "{0} pts"
+ },
+ "{0} dan katta, {1} gacha kiriting": {
+  "ru": "Введите число больше {0} и не более {1}",
+  "en": "Enter a value above {0} and up to {1}"
+ },
+ "{0} dan {1} gacha kiriting": {
+  "ru": "Введите от {0} до {1}",
+  "en": "Enter a value from {0} to {1}"
+ },
+ "{0} dan {1} qoldi": {
+  "ru": "Осталось {1} из {0}",
+  "en": "{1} of {0} stayed"
  },
  "{0} daqiqa oldin": {
   "ru": "{0} мин назад",
@@ -5759,6 +5987,10 @@
   "ru": "{0} получит те же права, что и вы: назначать тренеров, удалять аккаунты, видеть всех тренеров и учеников.\n\nПонизить его сможет только другой главный админ.",
   "en": "{0} gets the same rights as you: assigning trainers, deleting accounts, seeing all trainers and clients.\n\nOnly another head admin can demote them."
  },
+ "{0} sizning treneringiz bo'ladi.": {
+  "ru": "{0} станет вашим тренером.",
+  "en": "{0} will be your trainer."
+ },
  "{0} sizning treneringiz bo'ladi. Oldingi trener sizni endi ko'rmaydi.": {
   "ru": "{0} станет вашим тренером. Прежний тренер больше не будет видеть ваши данные.",
   "en": "{0} will be your trainer. Your previous trainer will no longer see your data."
@@ -5903,6 +6135,10 @@
   "ru": "{0}: отменить «{1}» × {2}?",
   "en": "{0}: cancel “{1}” × {2}?"
  },
+ "{0}: \"{1}\" × {2} berildimi? Omborxonadan ayiriladi, qaytarib bo'lmaydi.": {
+  "ru": "{0}: «{1}» × {2} выдано? Будет списано со склада, отменить нельзя.",
+  "en": "{0}: \"{1}\" × {2} given? It will be deducted from stock and cannot be undone."
+ },
  "{0}: obuna tugagan": {
   "ru": "{0}: абонемент закончился",
   "en": "{0}: membership has expired"
@@ -5962,169 +6198,5 @@
  "🛒 Buyurtma: {0} × {1} — {2}": {
   "ru": "🛒 Заказ: {0} × {1} — {2}",
   "en": "🛒 Order: {0} × {1} — {2}"
- },
- "A'zolar tahlili": {
-  "ru": "Анализ участников",
-  "en": "Member analytics"
- },
- "Ketish xavfi, qolish ulushi va trenerlar natijasi": {
-  "ru": "Риск ухода, удержание и результаты тренеров",
-  "en": "Churn risk, retention and trainer results"
- },
- "Xavf": {
-  "ru": "Риск",
-  "en": "Risk"
- },
- "Qolish": {
-  "ru": "Удержание",
-  "en": "Retention"
- },
- "Kelmay qo'ydi": {
-  "ru": "Перестал ходить",
-  "en": "Stopped coming"
- },
- "Kelishi kamaydi": {
-  "ru": "Стал ходить реже",
-  "en": "Visits dropped"
- },
- "Abonement tugayapti": {
-  "ru": "Абонемент заканчивается",
-  "en": "Membership expiring"
- },
- "Abonement tugagan": {
-  "ru": "Абонемент закончился",
-  "en": "Membership expired"
- },
- "Hali kelmagan": {
-  "ru": "Ещё не приходил",
-  "en": "Has not visited yet"
- },
- "Oxirgi kelgan: bugun": {
-  "ru": "Последний визит: сегодня",
-  "en": "Last visit: today"
- },
- "Oxirgi kelgan: {0} kun oldin": {
-  "ru": "Последний визит: {0} дн. назад",
-  "en": "Last visit: {0} days ago"
- },
- "Oxirgi 14 kun: {0} · oldingi 14 kun: {1}": {
-  "ru": "Последние 14 дней: {0} · предыдущие 14 дней: {1}",
-  "en": "Last 14 days: {0} · previous 14 days: {1}"
- },
- "Qo'ng'iroq": {
-  "ru": "Позвонить",
-  "en": "Call"
- },
- "Raqam nusxalandi": {
-  "ru": "Номер скопирован",
-  "en": "Number copied"
- },
- "Ketish xavfi ostida shogird yo'q": {
-  "ru": "Нет учеников в зоне риска",
-  "en": "No students at risk"
- },
- "Hammasi odatdagidek kelyapti": {
-  "ru": "Все ходят как обычно",
-  "en": "Everyone is coming as usual"
- },
- "Bu davrda yangi a'zo yo'q": {
-  "ru": "В этом периоде нет новых участников",
-  "en": "No new members in this period"
- },
- "Yangi a'zolar 30/60/90 kundan keyin shu yerda hisoblanadi": {
-  "ru": "Новые участники учитываются здесь через 30/60/90 дней",
-  "en": "New members are counted here after 30/60/90 days"
- },
- "{0} dan {1} qoldi": {
-  "ru": "Осталось {1} из {0}",
-  "en": "{1} of {0} stayed"
- },
- "Trenerli: {0} · Trenersiz: {1}": {
-  "ru": "С тренером: {0} · Без тренера: {1}",
-  "en": "With trainer: {0} · No trainer: {1}"
- },
- "Trener ma'lumoti yo'q": {
-  "ru": "Нет данных по тренерам",
-  "en": "No trainer data"
- },
- "Shogirdlar biriktirilgach, natijalar shu yerda ko'rinadi": {
-  "ru": "Результаты появятся здесь после закрепления учеников",
-  "en": "Results appear here once students are assigned"
- },
- "Faol shogirdlar": {
-  "ru": "Активные ученики",
-  "en": "Active students"
- },
- "Haftasiga kelish (shogirdga)": {
-  "ru": "Визитов в неделю (на ученика)",
-  "en": "Visits per week (per student)"
- },
- "\"Qiyin\" ulushi": {
-  "ru": "Доля «Тяжело»",
-  "en": "\"Hard\" share"
- },
- "\"Qiyin\" bo'yicha": {
-  "ru": "По «Тяжело»",
-  "en": "By \"Hard\""
- },
- "Kelish bo'yicha": {
-  "ru": "По посещениям",
-  "en": "By visits"
- },
- "kam ma'lumot": {
-  "ru": "мало данных",
-  "en": "low data"
- },
- "Qoldi = a'zo bo'lgandan {0} kun keyin keyingi 14 kun ichida kamida 1 marta kelgan": {
-  "ru": "Остался = пришёл хотя бы 1 раз в течение 14 дней после {0}-го дня с момента вступления",
-  "en": "Retained = visited at least once within the 14 days after day {0} of membership"
- },
- "Bugungi mashq": {
-  "ru": "Тренировка на сегодня",
-  "en": "Today's workout"
- },
- "Hozircha shogird qabul qilayotgan trener yo'q": {
-  "ru": "Пока нет тренеров, принимающих учеников",
-  "en": "No trainers are accepting clients yet"
- },
- "Shaxsiy ovqatlanish rejasi uchun 'Trener' bo'limidan trener tanlang.": {
-  "ru": "Для личного плана питания выберите тренера в разделе «Тренер».",
-  "en": "Choose a trainer in the Trainer tab to get a personal meal plan."
- },
- "Tanlash": {
-  "ru": "Выбрать",
-  "en": "Choose"
- },
- "Tavsiya etilgan me'yor: {0}": {
-  "ru": "Рекомендуемая норма: {0}",
-  "en": "Recommended target: {0}"
- },
- "Tavsiya: {0} kkal": {
-  "ru": "Рекомендация: {0} ккал",
-  "en": "Suggested: {0} kcal"
- },
- "Trener rejasi": {
-  "ru": "План тренера",
-  "en": "Trainer's plan"
- },
- "Trener sizga ovqatlanish rejasi tuzadi va savollaringizga javob beradi.": {
-  "ru": "Тренер составит вам план питания и ответит на вопросы.",
-  "en": "A trainer will build your meal plan and answer your questions."
- },
- "Trener tanlang": {
-  "ru": "Выберите тренера",
-  "en": "Choose a trainer"
- },
- "Trener tanlansinmi?": {
-  "ru": "Выбрать тренера?",
-  "en": "Choose this trainer?"
- },
- "{0} sizning treneringiz bo'ladi.": {
-  "ru": "{0} станет вашим тренером.",
-  "en": "{0} will be your trainer."
- },
- "Kunlik maqsad": {
-  "ru": "Цель на день",
-  "en": "Daily goal"
  }
 }

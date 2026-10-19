@@ -1103,6 +1103,17 @@ void main() {
       expect(byDay['2026-10-03'], 0);
     });
 
+    test('avtomatik eslatmalar alohida sanaladi', () {
+      final now = DateTime(2026, 10, 4, 18);
+      final list = [
+        Reminder(clientId: 'a', sentBy: 't', daysLeft: 2, sentAt: DateTime(2026, 10, 4, 9), auto: true),
+        Reminder(clientId: 'b', sentBy: 't', daysLeft: 1, sentAt: DateTime(2026, 10, 4, 10)),
+      ];
+      final autoByDay = ReminderReport.byDay(list, days: 7, now: now, autoOnly: true);
+      expect(autoByDay['2026-10-04'], 1);
+      expect(ReminderReport.byDay(list, days: 7, now: now)['2026-10-04'], 2);
+    });
+
     test('bo-sh ro-yxatda hamma kun 0', () {
       final byDay = ReminderReport.byDay(const [], days: 3, now: DateTime(2026, 10, 4));
       expect(byDay.values.every((v) => v == 0), isTrue);

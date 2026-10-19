@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/input_rules.dart';
 import '../../l10n/tr.dart';
 import '../../models/models.dart';
 import '../../models/subscription.dart';
@@ -30,15 +31,14 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
     return Column(children: [
       Padding(
         padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.sm),
-        child: SegmentedButton<int>(
-          showSelectedIcon: false,
+        child: AppSegmented<int>(
           segments: [
-            ButtonSegment(value: 0, label: Text(tr('Mijozlar'))),
-            ButtonSegment(value: 1, label: Text(tr("To'lovlar"))),
-            ButtonSegment(value: 2, label: Text(tr('Eslatmalar'))),
+            AppSegment(value: 0, label: tr('Mijozlar')),
+            AppSegment(value: 1, label: tr("To'lovlar")),
+            AppSegment(value: 2, label: tr('Eslatmalar')),
           ],
-          selected: {_tab},
-          onSelectionChanged: (s) => setState(() => _tab = s.first),
+          selected: _tab,
+          onChanged: (v) => setState(() => _tab = v),
         ),
       ),
       Expanded(
@@ -65,7 +65,7 @@ class _ClientsTab extends StatelessWidget {
       builder: (context, snap) {
         if (snap.hasError) return ErrorState(error: snap.error);
         if (!snap.hasData) return const Center(child: CircularProgressIndicator());
-        final list = [...snap.data!]..sort((a, b) => a.name.compareTo(b.name));
+        final list = Subscription.sortByExpiry(snap.data!, (u) => u.subscriptionExpiresAt);
         if (list.isEmpty) {
           return EmptyState(icon: Icons.event_repeat_outlined, title: tr("Hali mijoz yo'q"));
         }
@@ -107,13 +107,14 @@ class _SubscriptionTile extends StatelessWidget {
     final daysLeft = Subscription.daysLeft(exp);
     final expiringSoon = Subscription.isExpiringSoon(exp);
     final expired = Subscription.isExpired(exp);
-    final status = exp == null
-        ? Pill(text: tr("Abonement yo'q"), color: AppColors.textMuted)
-        : expired
-            ? Pill(text: tr("Muddati o'tdi"), color: AppColors.danger)
-            : expiringSoon
-                ? Pill(text: trf('{0} kun qoldi', [daysLeft]), color: AppColors.warning)
-                : Pill(text: trf('{0} kun qoldi', [daysLeft]), color: AppColors.success);
+    final status = switch (Subscription.urgencyOf(exp)) {
+      SubscriptionUrgency.none => Pill(text: tr("Abonement yo'q"), color: AppColors.textMuted),
+      SubscriptionUrgency.expired => Pill(text: tr("Muddati o'tdi"), color: AppColors.danger),
+      SubscriptionUrgency.soon =>
+        Pill(text: trf('{0} kun qoldi', [daysLeft]), color: AppColors.warning),
+      SubscriptionUrgency.ok =>
+        Pill(text: trf('{0} kun qoldi', [daysLeft]), color: AppColors.success),
+    };
 
     return BentoTile(
       onTap: () => addSubscriptionSheet(context, u),
@@ -133,7 +134,7 @@ class _SubscriptionTile extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(minimumSize: const Size(0, 40)),
+              style: OutlinedButton.styleFrom(minimumSize: const Size(0, kTouchTarget)),
               onPressed: () => _sendReminder(context, daysLeft),
               icon: const Icon(Icons.notifications_active_outlined, size: 18),
               label: Text(tr('Eslatma yubor')),
@@ -152,45 +153,54 @@ Future<void> addSubscriptionSheet(BuildContext context, AppUser client) async {
   int stdPrice() =>
       months == 0 ? Subscription.priceOf(days: 1) : Subscription.priceOf(months: months);
   final price = TextEditingController(text: '${stdPrice()}');
+  final form = GlobalKey<FormState>();
 
   final saved = await showSheet<bool>(
     context,
     StatefulBuilder(
-      builder: (ctx, setS) => Column(mainAxisSize: MainAxisSize.min, children: [
-        Text(trf('Abonement — {0}', [client.name.isEmpty ? fmtPhone(client.phone) : client.name]),
-            style: Theme.of(ctx).textTheme.titleLarge),
-        const SizedBox(height: AppSpace.lg),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
-            for (final m in [0, ...subscriptionMonths])
-              ChoiceChip(
-                selected: months == m,
-                // tur almashganda narx belgilangan qiymatga qaytadi
-                onSelected: (_) => setS(() {
-                  months = m;
-                  price.text = '${stdPrice()}';
-                }),
-                label: Text(m == 0 ? tr('Kunlik') : trf('{0} oy', [m])),
-              ),
-          ]),
-        ),
-        const SizedBox(height: AppSpace.md),
-        TextField(
-          controller: price,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(labelText: tr('Narxi'), suffixText: tr("so'm")),
-        ),
-        const SizedBox(height: AppSpace.lg),
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(tr('Saqlash')),
+      builder: (ctx, setS) => Form(
+        key: form,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text(trf('Abonement — {0}', [client.name.isEmpty ? fmtPhone(client.phone) : client.name]),
+              style: Theme.of(ctx).textTheme.titleLarge),
+          const SizedBox(height: AppSpace.lg),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
+              for (final m in [0, ...subscriptionMonths])
+                ChoiceChip(
+                  selected: months == m,
+                  // tur almashganda narx belgilangan qiymatga qaytadi
+                  onSelected: (_) => setS(() {
+                    months = m;
+                    price.text = '${stdPrice()}';
+                  }),
+                  label: Text(m == 0 ? tr('Kunlik') : trf('{0} oy', [m])),
+                ),
+            ]),
           ),
-        ),
-        const SizedBox(height: AppSpace.sm),
-      ]),
+          const SizedBox(height: AppSpace.md),
+          TextFormField(
+            controller: price,
+            keyboardType: TextInputType.number,
+            inputFormatters: InputRules.digitsMax(10),
+            validator: InputRules.intRange(0, InputLimits.maxInt),
+            decoration: InputDecoration(labelText: tr('Narxi'), suffixText: tr("so'm")),
+          ),
+          const SizedBox(height: AppSpace.lg),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              onPressed: () {
+                if (InputRules.validateAndFocus(form)) Navigator.pop(ctx, true);
+              },
+              child: Text(tr('Saqlash')),
+            ),
+          ),
+          const SizedBox(height: AppSpace.sm),
+        ]),
+      ),
     ),
   );
 
@@ -202,7 +212,7 @@ Future<void> addSubscriptionSheet(BuildContext context, AppUser client) async {
           startDate: DateTime.now(),
           months: months,
           days: months == 0 ? 1 : 0,
-          price: int.tryParse(price.text.replaceAll(RegExp(r'\D'), '')) ?? 0,
+          price: InputRules.parseInt(price.text) ?? 0,
           paidDate: DateTime.now(),
         ),
       );
@@ -226,6 +236,7 @@ class _ReminderReportTab extends StatelessWidget {
         if (snap.hasError) return ErrorState(error: snap.error);
         if (!snap.hasData) return const Center(child: CircularProgressIndicator());
         final byDay = ReminderReport.byDay(snap.data!, days: 7);
+        final autoByDay = ReminderReport.byDay(snap.data!, days: 7, autoOnly: true);
         final total = byDay.values.fold<int>(0, (s, v) => s + v);
         return ListView(
           padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.xl),
@@ -241,6 +252,13 @@ class _ReminderReportTab extends StatelessWidget {
                     Expanded(
                       child: Text(uzDate(DateTime.parse(e.key)), style: t.bodyMedium),
                     ),
+                    if ((autoByDay[e.key] ?? 0) > 0) ...[
+                      Pill(
+                        text: trf('Avto: {0}', [autoByDay[e.key]]),
+                        color: AppColors.textMuted,
+                      ),
+                      const SizedBox(width: AppSpace.sm),
+                    ],
                     Pill(
                       text: '${e.value}',
                       color: e.value > 0 ? AppColors.accent : AppColors.textMuted,

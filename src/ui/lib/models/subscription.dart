@@ -1,6 +1,8 @@
 import '../l10n/tr.dart';
 import '../services/api/json_helpers.dart';
 
+enum SubscriptionUrgency { none, expired, soon, ok }
+
 /// Abonement muddatlari (oy) — tanlov ro'yxati uchun
 const subscriptionMonths = [1, 3, 6, 12];
 
@@ -78,6 +80,33 @@ class Subscription {
   /// Muddati o'tganmi
   static bool isExpired(DateTime? exp, [DateTime? now]) => exp != null && daysLeft(exp, now) < 0;
 
+  static const warnDays = 7;
+
+  static SubscriptionUrgency urgencyOf(DateTime? exp, [DateTime? now]) {
+    if (exp == null) return SubscriptionUrgency.none;
+    final d = daysLeft(exp, now);
+    if (d < 0) return SubscriptionUrgency.expired;
+    if (d <= warnDays) return SubscriptionUrgency.soon;
+    return SubscriptionUrgency.ok;
+  }
+
+  static List<T> sortByExpiry<T>(
+    Iterable<T> items,
+    DateTime? Function(T item) expiry, [
+    DateTime? now,
+  ]) {
+    final list = [...items];
+    list.sort((a, b) {
+      final ea = expiry(a), eb = expiry(b);
+      if (ea == null || eb == null) {
+        if (ea == null && eb == null) return 0;
+        return ea == null ? 1 : -1;
+      }
+      return daysLeft(ea, now).compareTo(daysLeft(eb, now));
+    });
+    return list;
+  }
+
   factory Subscription.fromJson(Map<String, dynamic> j) {
     return Subscription(
       id: jsonString(j['id']),
@@ -111,6 +140,7 @@ class Reminder {
   final String sentBy;
   final DateTime? sentAt;
   final int daysLeft;
+  final bool auto;
 
   const Reminder({
     this.id = '',
@@ -120,6 +150,7 @@ class Reminder {
     required this.sentBy,
     this.sentAt,
     required this.daysLeft,
+    this.auto = false,
   });
 
   factory Reminder.fromJson(Map<String, dynamic> j) {
@@ -131,6 +162,7 @@ class Reminder {
       sentBy: jsonString(j['sent_by']),
       sentAt: jsonDate(j['sent_at']),
       daysLeft: jsonInt(j['days_left']),
+      auto: jsonBool(j['auto']),
     );
   }
 }
@@ -139,7 +171,8 @@ class Reminder {
 class ReminderReport {
   /// Kun yorlig'i ("2026-10-04") -> shu kun jo'natilgan eslatmalar soni.
   /// So'nggi [days] kun, eng eskisi birinchi.
-  static Map<String, int> byDay(List<Reminder> list, {int days = 7, DateTime? now}) {
+  static Map<String, int> byDay(List<Reminder> list,
+      {int days = 7, DateTime? now, bool autoOnly = false}) {
     final n = now ?? DateTime.now();
     final today = DateTime(n.year, n.month, n.day);
     final counts = <String, int>{};
@@ -149,7 +182,7 @@ class ReminderReport {
     }
     for (final r in list) {
       final at = r.sentAt;
-      if (at == null) continue;
+      if (at == null || (autoOnly && !r.auto)) continue;
       final key = _key(DateTime(at.year, at.month, at.day));
       if (counts.containsKey(key)) counts[key] = counts[key]! + 1;
     }

@@ -423,7 +423,7 @@ class _ProductTile extends StatelessWidget {
         ),
         const SizedBox(width: AppSpace.sm),
         FilledButton(
-          style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
+          style: FilledButton.styleFrom(minimumSize: const Size(0, kTouchTarget)),
           onPressed: p.totalStock > 0 ? onOrder : null,
           child: Text(tr('Olaman')),
         ),

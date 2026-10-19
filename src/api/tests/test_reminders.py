@@ -94,6 +94,7 @@ async def test_staff_who_manage_the_client_can_create_a_reminder(
         "sent_by",
         "sent_at",
         "days_left",
+        "auto",
     }
     assert body["client_id"] == student.id
     assert body["client_name"] == "Aziz"

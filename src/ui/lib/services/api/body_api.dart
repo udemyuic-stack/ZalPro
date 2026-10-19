@@ -47,7 +47,7 @@ class BodyApi extends ApiService {
         for (final row in jsonMaps(rows)) ProgressPhoto.fromJson(row, urlExpiresAt: expires),
       ];
       return list..sort((a, b) => _at(a).compareTo(_at(b)));
-    }, _photos, {'photos:$uid'});
+    }, _photos, {'photos:$uid'}, key: 'photos:$uid');
   }
 
   DateTime _at(ProgressPhoto p) => p.takenAt ?? DateTime.fromMillisecondsSinceEpoch(0, isUtc: true);

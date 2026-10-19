@@ -37,6 +37,7 @@ Stream<T> pollStream<T>(
   Set<String> tags = const {},
   ChangeBus? bus,
   PollActivity? activity,
+  Duration coalesce = const Duration(milliseconds: 300),
 }) {
   final changes = bus ?? changeBus;
   final active = activity ?? pollActivity;
@@ -50,6 +51,9 @@ Stream<T> pollStream<T>(
   var failed = false;
   var stopped = false;
   var closed = false;
+  var queued = false;
+  DateTime? lastForced;
+  Timer? trailing;
 
   void schedule() {
     timer?.cancel();
@@ -91,18 +95,54 @@ Stream<T> pollStream<T>(
 
   runner = run;
 
+  void forced() {
+    lastForced = DateTime.now();
+    unawaited(run());
+  }
+
+  void fire() {
+    if (closed || stopped || !active.value) return;
+    if (running) {
+      again = true;
+      return;
+    }
+    final last = lastForced;
+    final wait = last == null ? Duration.zero : coalesce - DateTime.now().difference(last);
+    if (wait <= Duration.zero) {
+      trailing?.cancel();
+      trailing = null;
+      forced();
+      return;
+    }
+    trailing ??= Timer(wait, () {
+      trailing = null;
+      if (!closed) forced();
+    });
+  }
+
+  void trigger() {
+    if (queued) return;
+    queued = true;
+    scheduleMicrotask(() {
+      queued = false;
+      fire();
+    });
+  }
+
   void onActivity() {
     if (active.value) {
-      unawaited(run());
+      trigger();
     } else {
       timer?.cancel();
+      trailing?.cancel();
+      trailing = null;
     }
   }
 
   controller = StreamController<T>(
     onListen: () {
       tagSub = changes.changes.listen((tag) {
-        if (tags.contains(tag)) unawaited(run());
+        if (tags.contains(tag)) trigger();
       });
       active.addListener(onActivity);
       unawaited(run());
@@ -110,6 +150,7 @@ Stream<T> pollStream<T>(
     onCancel: () async {
       closed = true;
       timer?.cancel();
+      trailing?.cancel();
       active.removeListener(onActivity);
       await tagSub?.cancel();
     },
@@ -118,9 +159,12 @@ Stream<T> pollStream<T>(
 }
 
 class SharedStream<T> {
-  SharedStream(this._open);
+  SharedStream(this._open, {this.grace = Duration.zero});
 
   final Stream<T> Function() _open;
+  final Duration grace;
+  Timer? _closing;
+  ({Object error, StackTrace stack})? _failure;
   final _hub = StreamController<T>.broadcast(sync: true);
   StreamSubscription<T>? _source;
   var _count = 0;
@@ -129,26 +173,50 @@ class SharedStream<T> {
   int get listeners => _count;
 
   void push(T value) {
-    if (_count == 0) return;
+    if (_count == 0 && _closing == null) return;
     _last = (value: value);
+    _failure = null;
     _hub.add(value);
+  }
+
+  void _fail(Object error, StackTrace stack) {
+    if (_last == null) _failure = (error: error, stack: stack);
+    _hub.addError(error, stack);
+  }
+
+  Future<void> _close() async {
+    _closing = null;
+    if (_count > 0) return;
+    final source = _source;
+    _source = null;
+    _last = null;
+    _failure = null;
+    await source?.cancel();
   }
 
   Stream<T> get stream => Stream<T>.multi((out) {
         _count++;
-        if (_count == 1) {
-          _source = _open().listen(push, onError: _hub.addError);
+        _closing?.cancel();
+        _closing = null;
+        if (_source == null) {
+          _source = _open().listen(push, onError: _fail);
         }
         final last = _last;
-        if (last != null) out.add(last.value);
+        final failure = _failure;
+        if (last != null) {
+          out.add(last.value);
+        } else if (failure != null) {
+          out.addError(failure.error, failure.stack);
+        }
         final sub = _hub.stream.listen(out.add, onError: out.addError);
         out.onCancel = () async {
           await sub.cancel();
           if (--_count == 0) {
-            final source = _source;
-            _source = null;
-            _last = null;
-            await source?.cancel();
+            if (grace == Duration.zero) {
+              await _close();
+            } else {
+              _closing = Timer(grace, () => unawaited(_close()));
+            }
           }
         };
       });

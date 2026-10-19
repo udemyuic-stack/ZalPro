@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../core/input_rules.dart';
 import '../../l10n/tr.dart';
 import '../../models/models.dart';
 import '../../services/api/api_error.dart';
@@ -129,6 +130,10 @@ class _ChatScreenState extends State<ChatScreen> {
   Future<void> _send() async {
     final t = _c.text.trim();
     if (t.isEmpty) return;
+    if (InputRules.length(t) > InputLimits.message) {
+      showSnack(context, trf("Xabar eng ko'pi {0} belgi bo'lishi mumkin", [InputLimits.message]));
+      return;
+    }
     _c.clear();
     try {
       await Db.send(widget.chatUid, widget.myId, t);
@@ -207,14 +212,14 @@ class _ChatScreenState extends State<ChatScreen> {
                   final grouped = i > 0 && msgs[i - 1].senderId == m.senderId;
                   return Column(children: [
                     if (showDay) _DayChip(_dayLabel(m.createdAt)),
-                    _Bubble(message: m, mine: m.senderId == widget.myId, tight: grouped),
+                    ChatBubble(message: m, mine: m.senderId == widget.myId, tight: grouped),
                   ]);
                 },
               );
             },
           ),
         ),
-        _Composer(controller: _c, onSend: _send, onAttach: _attach, onRecord: _record),
+        ChatComposer(controller: _c, onSend: _send, onAttach: _attach, onRecord: _record),
       ]),
     );
   }
@@ -243,15 +248,16 @@ class _DayChip extends StatelessWidget {
   }
 }
 
-class _Bubble extends StatelessWidget {
+class ChatBubble extends StatelessWidget {
   final ChatMessage message;
   final bool mine, tight;
-  const _Bubble({required this.message, required this.mine, required this.tight});
+  const ChatBubble({super.key, required this.message, required this.mine, required this.tight});
 
   @override
   Widget build(BuildContext context) {
+    if (message.isSystem) return _SystemNote(message: message);
     final t = Theme.of(context).textTheme;
-    final fg = AppColors.text;
+    final fg = mine ? AppColors.onBubbleOwn : AppColors.text;
     return _BubbleShell(
       mine: mine,
       tight: tight,
@@ -264,8 +270,54 @@ class _Bubble extends StatelessWidget {
           Text(trChat(message.text), style: t.bodyLarge?.copyWith(color: fg)),
         const SizedBox(height: 2),
         Text(DateFormat('HH:mm').format(message.createdAt),
-            style: t.labelSmall?.copyWith(color: fg.withValues(alpha: 0.7))),
+            style: t.labelSmall?.copyWith(color: mine ? fg : fg.withValues(alpha: 0.7))),
       ]),
+    );
+  }
+}
+
+class _SystemNote extends StatelessWidget {
+  final ChatMessage message;
+  const _SystemNote({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context).textTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpace.sm),
+      child: LayoutBuilder(
+        builder: (context, box) => Center(
+          child: Container(
+            key: const Key('system-note'),
+            constraints: BoxConstraints(maxWidth: box.maxWidth * 0.9),
+            padding: const EdgeInsets.all(AppSpace.md),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardTheme.color ?? Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              border: Border.all(color: AppColors.warning),
+            ),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Icon(Icons.notifications_none_outlined, size: 22, color: AppColors.warning),
+              const SizedBox(width: AppSpace.sm),
+              Flexible(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(
+                    tr('Tizim xabari'),
+                    style: t.labelMedium?.copyWith(color: AppColors.textMuted),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(trChat(message.text), style: t.bodyLarge),
+                  const SizedBox(height: 2),
+                  Text(
+                    DateFormat('HH:mm').format(message.createdAt),
+                    style: t.labelSmall?.copyWith(color: AppColors.textMuted),
+                  ),
+                ]),
+              ),
+            ]),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -299,9 +351,7 @@ class _BubbleShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = Theme.of(context).colorScheme;
-    final bg = mine
-        ? Color.alphaBlend(AppColors.accent.withValues(alpha: 0.16), AppColors.card)
-        : (Theme.of(context).cardTheme.color ?? s.surface);
+    final bg = mine ? AppColors.bubbleOwn : (Theme.of(context).cardTheme.color ?? s.surface);
     const r = Radius.circular(18);
     const tail = Radius.circular(6);
     return Align(
@@ -326,12 +376,13 @@ class _BubbleShell extends StatelessWidget {
   }
 }
 
-class _Composer extends StatelessWidget {
+class ChatComposer extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback onSend;
   final VoidCallback onAttach;
   final VoidCallback onRecord;
-  const _Composer({
+  const ChatComposer({
+    super.key,
     required this.controller,
     required this.onSend,
     required this.onAttach,
@@ -365,6 +416,8 @@ class _Composer extends StatelessWidget {
                 controller: controller,
                 minLines: 1,
                 maxLines: 4,
+                maxLength: InputLimits.message,
+                buildCounter: InputRules.counterAtEighty,
                 textCapitalization: TextCapitalization.sentences,
                 textInputAction: TextInputAction.send,
                 onSubmitted: (_) => onSend(),

@@ -80,7 +80,7 @@ class DayApi extends ApiService {
           for (final row in jsonMaps(rows))
             if (parseFeedback(row['feedback']) case final f?) jsonString(row['day']): f,
         };
-      }, _every, {'feedback:$uid'});
+      }, _every, {'feedback:$uid'}, key: 'feedbackWeek:$uid');
 
   Stream<int> water(String uid, String day) => _day(uid, day).map((d) => jsonInt(d['water']));
 

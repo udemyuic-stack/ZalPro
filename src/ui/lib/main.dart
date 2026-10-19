@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart' show SemanticsBinding;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -13,6 +15,7 @@ import 'l10n/tr.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) SemanticsBinding.instance.ensureSemantics();
   final info = await PackageInfo.fromPlatform();
   apiClient.setAppVersion('${info.version}+${info.buildNumber}');
   await apiClient.restore();

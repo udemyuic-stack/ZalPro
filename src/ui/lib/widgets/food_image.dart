@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../l10n/tr.dart';
+import '../theme.dart';
 import 'ui.dart';
 
 /// Mahsulot nomidagi kalit so'z -> assets/foods/<kalit>.jpg
@@ -155,17 +156,19 @@ class _Placeholder extends StatelessWidget {
 Future<void> showImageCredits(BuildContext context) async {
   final text = await rootBundle.loadString('assets/credits.txt').catchError((_) => '');
   if (!context.mounted) return;
-  await showDialog<void>(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      title: Text(tr('Rasm manbalari')),
-      content: SingleChildScrollView(
-        child: SelectableText(
+  await showSheet<void>(
+    context,
+    Builder(
+      builder: (ctx) => ListView(shrinkWrap: true, children: [
+        Text(tr('Rasm manbalari'), style: Theme.of(ctx).textTheme.titleLarge),
+        const SizedBox(height: AppSpace.md),
+        SelectableText(
           text.isEmpty ? tr("Ma'lumot yo'q") : text,
           style: const TextStyle(fontSize: 13, height: 1.4),
         ),
-      ),
-      actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: Text(tr('Yopish')))],
+        const SizedBox(height: AppSpace.xl),
+        OutlinedButton(onPressed: () => Navigator.pop(ctx), child: Text(tr('Yopish'))),
+      ]),
     ),
   );
 }

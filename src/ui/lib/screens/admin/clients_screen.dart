@@ -162,7 +162,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
             for (final u in list)
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSpace.sm),
-                child: _ClientTile(
+                child: ClientTile(
                   client: u,
                   planMismatch: mismatched(u),
                   onTap: () => Navigator.push(
@@ -178,11 +178,16 @@ class _ClientsScreenState extends State<ClientsScreen> {
   }
 }
 
-class _ClientTile extends StatelessWidget {
+class ClientTile extends StatelessWidget {
   final AppUser client;
   final bool planMismatch;
   final VoidCallback onTap;
-  const _ClientTile({required this.client, required this.onTap, this.planMismatch = false});
+  const ClientTile({
+    super.key,
+    required this.client,
+    required this.onTap,
+    this.planMismatch = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -204,20 +209,19 @@ class _ClientTile extends StatelessWidget {
         const SizedBox(width: AppSpace.md),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              Flexible(
-                child: Text(
-                  u.name.isEmpty ? userContact(u.phone, u.email) : u.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: t.titleMedium,
-                ),
-              ),
-              const SizedBox(width: AppSpace.sm),
+            Text(
+              u.name.isEmpty ? userContact(u.phone, u.email) : u.name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: t.titleMedium,
+            ),
+            const SizedBox(height: 4),
+            Wrap(spacing: AppSpace.xs, runSpacing: AppSpace.xs, children: [
               if (u.goal.isNotEmpty)
                 GoalPill(user: u)
               else
                 Pill(text: tr('Maqsad?'), color: AppColors.warning),
+              status,
             ]),
             const SizedBox(height: 2),
             Text(
@@ -234,8 +238,6 @@ class _ClientTile extends StatelessWidget {
             ),
           ]),
         ),
-        const SizedBox(width: AppSpace.sm),
-        status,
       ]),
     );
   }
@@ -269,7 +271,7 @@ class ClientDetail extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 12),
                   child: FilledButton.tonalIcon(
-                    style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
+                    style: FilledButton.styleFrom(minimumSize: const Size(0, kTouchTarget)),
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -328,7 +330,7 @@ class ClientDetail extends StatelessWidget {
                   // Trenerni faqat bosh admin biriktiradi
                   if (admin.isOwner) ...[
                     const SizedBox(height: AppSpace.md),
-                    _TrainerPicker(user: u),
+                    TrainerPicker(user: u),
                   ],
                 ]),
               ),
@@ -639,9 +641,43 @@ class GoalPill extends StatelessWidget {
 }
 
 /// Shogirdni trenerga biriktirish — faqat bosh admin ko'radi
-class _TrainerPicker extends StatelessWidget {
+class TrainerPicker extends StatelessWidget {
   final AppUser user;
-  const _TrainerPicker({required this.user});
+  final Stream<List<AppUser>> Function()? trainersSource;
+  final Future<void> Function(String uid, String? trainerId)? assign;
+  const TrainerPicker({super.key, required this.user, this.trainersSource, this.assign});
+
+  String _label(AppUser t) => t.name.isEmpty ? fmtPhone(t.phone) : t.name;
+
+  Future<void> _open(BuildContext context, List<AppUser> staff, String? currentId) async {
+    final picked = await showSheet<_TrainerChoice>(
+      context,
+      ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.75),
+        child: ListView(shrinkWrap: true, children: [
+          Text(tr('Biriktirilgan trener'), style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: AppSpace.md),
+          _TrainerOption(
+            label: tr("— Trener yo'q —"),
+            selected: currentId == null,
+            onTap: () => Navigator.pop(context, const _TrainerChoice(null)),
+          ),
+          for (final t in staff)
+            _TrainerOption(
+              label: _label(t),
+              selected: t.id == currentId,
+              onTap: () => Navigator.pop(context, _TrainerChoice(t.id)),
+            ),
+        ]),
+      ),
+    );
+    if (picked == null || picked.id == currentId) return;
+    await (assign ?? Db.assignTrainer)(user.id, picked.id);
+    if (context.mounted) {
+      showSnack(
+          context, picked.id == null ? tr('Trener olib tashlandi') : tr('Trener biriktirildi'));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -649,43 +685,66 @@ class _TrainerPicker extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpace.md),
       child: StreamBuilder<List<AppUser>>(
         // faqat trenerlar — bosh admin trener sifatida ko'rsatilmaydi
-        stream: Db.trainers(),
+        stream: (trainersSource ?? Db.trainers)(),
         builder: (context, snap) {
           if (snap.hasError) return ErrorState(error: snap.error, compact: true);
           final staff = [...(snap.data ?? <AppUser>[])]..sort((a, b) => a.name.compareTo(b.name));
           // biriktirilgan trener ro'yxatdan chiqib ketgan bo'lsa, dropdown buzilmasin
           final currentId = staff.any((t) => t.id == user.trainerId) ? user.trainerId : null;
-          return DropdownButtonFormField<String?>(
-            key: ValueKey(currentId),
-            initialValue: currentId,
-            isExpanded: true,
-            decoration: InputDecoration(
-              labelText: tr('Biriktirilgan trener'),
-              prefixIcon: const Icon(Icons.badge_outlined),
-            ),
-            items: [
-              DropdownMenuItem(value: null, child: Text(tr("— Trener yo'q —"))),
-              for (final t in staff)
-                DropdownMenuItem(
-                  value: t.id,
-                  child: Text(
-                    t.name.isEmpty ? fmtPhone(t.phone) : t.name,
-                    overflow: TextOverflow.ellipsis,
+          final current = staff.where((t) => t.id == currentId).firstOrNull;
+          return InkWell(
+            key: const Key('trainer-picker'),
+            borderRadius: BorderRadius.circular(AppRadius.md),
+            onTap: () => _open(context, staff, currentId),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: kTouchTarget),
+              child: Row(children: [
+                Icon(Icons.badge_outlined, color: AppColors.textMuted),
+                const SizedBox(width: AppSpace.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(tr('Biriktirilgan trener'),
+                          style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
+                      Text(
+                        current == null ? tr("— Trener yo'q —") : _label(current),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
-            ],
-            onChanged: (v) async {
-              await Db.assignTrainer(user.id, v);
-              if (context.mounted) {
-                showSnack(
-                    context, v == null ? tr('Trener olib tashlandi') : tr('Trener biriktirildi'));
-              }
-            },
+                Icon(Icons.expand_more, color: AppColors.textMuted),
+              ]),
+            ),
           );
         },
       ),
     );
   }
+}
+
+class _TrainerChoice {
+  final String? id;
+  const _TrainerChoice(this.id);
+}
+
+class _TrainerOption extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  const _TrainerOption({required this.label, required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => ListTile(
+        minTileHeight: kTouchTarget,
+        title: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+        trailing: selected ? Icon(Icons.check, color: AppColors.accent) : null,
+        selected: selected,
+        onTap: onTap,
+      );
 }
 
 /// Trenerning katalogdagi o'z yozuvi — shogirdlar anketada shuni ko'rib trener tanlaydi.
@@ -764,7 +823,7 @@ class _MyCatalogCard extends StatelessWidget {
                     ),
                   ),
                   FilledButton(
-                    style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
+                    style: FilledButton.styleFrom(minimumSize: const Size(0, kTouchTarget)),
                     onPressed: () => Db.saveTrainerProfile(TrainerInfo(trainer.id, _defaultName)),
                     child: Text(tr("Qo'shilish")),
                   ),

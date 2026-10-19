@@ -579,6 +579,8 @@ class ChatMessage {
   static const maxAudioBytes = 5 * 1024 * 1024;
   static const maxAudioMs = 300000;
   static const audioContentType = 'audio/mp4';
+  static const kindUser = 'user';
+  static const kindSystem = 'system';
 
   final String senderId;
   final String text;
@@ -587,10 +589,12 @@ class ChatMessage {
   final String mediaStatus;
   final String mediaUrl;
   final int mediaDurationMs;
+  final String kind;
   ChatMessage(
     this.senderId,
     this.text,
     this.createdAt, {
+    this.kind = kindUser,
     this.mediaKind = '',
     this.mediaStatus = '',
     this.mediaUrl = '',
@@ -601,12 +605,14 @@ class ChatMessage {
         jsonString(j['sender_id']),
         jsonString(j['text']),
         jsonDate(j['created_at']) ?? DateTime.now(),
+        kind: jsonString(j['kind']) == kindSystem ? kindSystem : kindUser,
         mediaKind: jsonString(j['media_kind']),
         mediaStatus: jsonString(j['media_status']),
         mediaUrl: jsonString(j['media_url']),
         mediaDurationMs: jsonInt(j['media_duration_ms']),
       );
 
+  bool get isSystem => kind == kindSystem;
   bool get hasMedia =>
       mediaKind == mediaImage || mediaKind == mediaVideo || mediaKind == mediaAudio;
   bool get isVideo => mediaKind == mediaVideo;

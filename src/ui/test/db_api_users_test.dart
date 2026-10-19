@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kotta_qani_diet/models/models.dart';
 import 'package:kotta_qani_diet/services/api/api_client.dart';
+import 'package:kotta_qani_diet/services/api/api_service.dart';
 import 'package:kotta_qani_diet/services/api/api_error.dart';
 import 'package:kotta_qani_diet/services/api/poll_stream.dart';
 import 'package:kotta_qani_diet/services/api/session_store.dart';
@@ -38,6 +39,15 @@ void main() {
   });
 
   RequestOptions last() => adapter.calls.last;
+
+  test('polled streams can be listened to again after cancel', () async {
+    respond = (o) async => jsonBody([], 200);
+    final stream = api.trainerDirectory();
+    expect(await stream.first, isEmpty);
+    await Future<void>.delayed(ApiService.shareGrace + const Duration(milliseconds: 50));
+    expect(await stream.first, isEmpty);
+    expect(adapter.count('/v1/trainers'), 2);
+  });
 
   test('user: 200 maps to AppUser, uses GET /v1/users/{id}', () async {
     respond = (o) async => jsonBody(userJson('u1'), 200);

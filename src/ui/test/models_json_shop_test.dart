@@ -187,6 +187,7 @@ void main() {
       'sent_by': 't1',
       'sent_at': '2026-02-03T04:05:06Z',
       'days_left': 2,
+      'auto': true,
     });
     expect(r.id, 'r1');
     expect(r.clientId, 'c1');
@@ -195,6 +196,7 @@ void main() {
     expect(r.sentBy, 't1');
     expect(r.sentAt!.toUtc(), DateTime.utc(2026, 2, 3, 4, 5, 6));
     expect(r.daysLeft, 2);
+    expect(r.auto, isTrue);
   });
 
   test('Reminder empty payload', () {
@@ -206,6 +208,7 @@ void main() {
     expect(r.sentBy, '');
     expect(r.sentAt, isNull);
     expect(r.daysLeft, 0);
+    expect(r.auto, isFalse);
   });
 
   test('Membership full payload', () {

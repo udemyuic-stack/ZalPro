@@ -17,7 +17,7 @@ class ShopApi extends ApiService {
   Stream<List<Product>> products() => poll(() async {
         final rows = await client.getList('/v1/products');
         return jsonMaps(rows).map(Product.fromJson).toList();
-      }, _catalog, {'products'});
+      }, _catalog, {'products'}, key: 'products');
 
   Future<void> saveProduct(Product p) {
     if (p.id.isEmpty) return write('POST', '/v1/products', p.toJson(), ['products']);
@@ -51,7 +51,7 @@ class ShopApi extends ApiService {
       '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-'
       '${d.day.toString().padLeft(2, '0')}';
 
-  Stream<List<ShopOrder>> _list(bool windowed, bool Function(ShopOrder) keep) {
+  Stream<List<ShopOrder>> _rows(bool windowed) {
     return poll(() async {
       final query = <String, dynamic>{};
       if (windowed) {
@@ -62,9 +62,12 @@ class ShopApi extends ApiService {
         query['to'] = _day(to);
       }
       final rows = await client.getList('/v1/orders', query: query);
-      return jsonMaps(rows).map(ShopOrder.fromJson).where(keep).toList();
-    }, _orders, {'orders'});
+      return jsonMaps(rows).map(ShopOrder.fromJson).toList();
+    }, _orders, {'orders'}, key: windowed ? 'orders:window' : 'orders:all');
   }
+
+  Stream<List<ShopOrder>> _list(bool windowed, bool Function(ShopOrder) keep) =>
+      _rows(windowed).map((rows) => rows.where(keep).toList());
 
   Stream<List<ShopOrder>> myOrders(String uid) => _list(true, (o) => o.clientId == uid);
 

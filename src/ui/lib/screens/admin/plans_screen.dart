@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/input_rules.dart';
 import '../../l10n/tr.dart';
 import '../../models/gym.dart' show weekdayNames, weekdayShort;
 import '../../models/models.dart';
@@ -175,17 +176,17 @@ class _PlanCard extends StatelessWidget {
                     ),
                   Pill(
                     text: trf('{0} mahal', [plan.mealsPerDay]),
-                    color: s.primary,
+                    color: AppColors.textMuted,
                     icon: Icons.schedule,
                   ),
                   Pill(
                     text: trf('{0} kkal', [plan.kcal.round()]),
-                    color: AppColors.warning,
+                    color: AppColors.textMuted,
                     icon: Icons.local_fire_department_outlined,
                   ),
                   Pill(
                     text: trf('{0} g oqsil', [plan.protein.round()]),
-                    color: AppColors.protein,
+                    color: AppColors.textMuted,
                     icon: Icons.restaurant_outlined,
                   ),
                 ]),
@@ -239,6 +240,21 @@ class _PlanEditorState extends State<PlanEditor> {
   );
   late final _note = TextEditingController(text: widget.initial?.note);
   late final _forbidden = TextEditingController(text: widget.initial?.forbidden.join(', '));
+  final _form = GlobalKey<FormState>();
+
+  int get _titleMax {
+    final catLen = _category.isEmpty
+        ? planCategories.fold<int>(0, (m, c) => c.length > m ? c.length : m)
+        : _category.length;
+    return InputLimits.planTitle - catLen - 3;
+  }
+
+  String? _forbiddenError(String? v) => InputRules.listError(
+        InputRules.splitVariants(v ?? ''),
+        maxCount: InputLimits.forbiddenCount,
+        maxItem: InputLimits.forbiddenItem,
+        unique: false,
+      );
   late final List<Meal> _meals = List.of(widget.initial?.meals ?? []);
 
   /// Hafta kunlari menyusi (1 — dushanba ... 7 — yakshanba). Bo'sh — reja har kuni bir xil.
@@ -328,21 +344,35 @@ class _PlanEditorState extends State<PlanEditor> {
       '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
 
   Future<void> _editMealHeader([int? index]) async {
+    if (index == null && _current.length >= InputLimits.mealsPerDay) {
+      showSnack(
+          context, trf("Kuniga eng ko'pi {0} ta mahal bo'lishi mumkin", [InputLimits.mealsPerDay]));
+      return;
+    }
     final m = index != null ? _current[index] : null;
     var time = m?.time ?? '07:00';
     final title = TextEditingController(text: m?.title ?? '');
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setD) => AlertDialog(
-          title: Text(m == null ? tr("Mahal qo'shish") : tr('Mahalni tahrirlash')),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+    final mealForm = GlobalKey<FormState>();
+    final ok = await showSheet<bool>(
+      context,
+      StatefulBuilder(
+        builder: (ctx, setD) => Form(
+          key: mealForm,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: ListView(
+            shrinkWrap: true,
             children: [
-              TextField(
+              Text(
+                m == null ? tr("Mahal qo'shish") : tr('Mahalni tahrirlash'),
+                style: Theme.of(ctx).textTheme.titleLarge,
+              ),
+              const SizedBox(height: AppSpace.lg),
+              TextFormField(
                 controller: title,
                 autofocus: true,
+                maxLength: InputLimits.mealTitle,
+                buildCounter: InputRules.counterAtEighty,
+                validator: InputRules.optional(InputLimits.mealTitle),
                 textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(labelText: tr('Nomi'), hintText: tr('Nonushta')),
               ),
@@ -366,16 +396,20 @@ class _PlanEditorState extends State<PlanEditor> {
                 icon: const Icon(Icons.schedule),
                 label: Text(trf('Vaqt: {0}', [time])),
               ),
+              const SizedBox(height: AppSpace.xl),
+              FilledButton(
+                onPressed: () {
+                  if (InputRules.validateAndFocus(mealForm)) Navigator.pop(ctx, true);
+                },
+                child: Text(tr('OK')),
+              ),
+              const SizedBox(height: AppSpace.sm),
+              OutlinedButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(tr('Bekor')),
+              ),
             ],
           ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(tr('Bekor'))),
-            FilledButton(
-              style: FilledButton.styleFrom(minimumSize: const Size(0, 44)),
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(tr('OK')),
-            ),
-          ],
         ),
       ),
     );
@@ -410,49 +444,67 @@ class _PlanEditorState extends State<PlanEditor> {
       showSnack(context, tr("Avval 'Mahsulotlar' bo'limida mahsulot qo'shing"));
       return;
     }
+    if (_current[mealIndex].items.length >= InputLimits.itemsPerMeal) {
+      showSnack(context,
+          trf("Bir mahalda eng ko'pi {0} ta mahsulot bo'lishi mumkin", [InputLimits.itemsPerMeal]));
+      return;
+    }
     Food? selected = foods.first;
     final grams = TextEditingController(text: '100');
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setD) => AlertDialog(
-          title: Text(tr("Mahsulot qo'shish")),
-          content: Column(mainAxisSize: MainAxisSize.min, children: [
-            DropdownButtonFormField<Food>(
-              initialValue: selected,
-              isExpanded: true,
-              decoration: InputDecoration(labelText: tr('Mahsulot')),
-              items: foods
-                  .map((f) => DropdownMenuItem(
-                        value: f,
-                        child: Row(children: [
-                          FoodImage(name: f.name, url: f.imageUrl, size: 32),
-                          const SizedBox(width: AppSpace.md),
-                          Expanded(child: Text(tr(f.name), overflow: TextOverflow.ellipsis)),
-                        ]),
-                      ))
-                  .toList(),
-              onChanged: (v) => setD(() => selected = v),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: grams,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: tr('Miqdori'), suffixText: 'g'),
-            ),
-          ]),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(tr('Bekor'))),
-            FilledButton(
-              style: FilledButton.styleFrom(minimumSize: const Size(0, 44)),
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(tr("Qo'shish")),
-            ),
-          ],
+    final gramsForm = GlobalKey<FormState>();
+    final ok = await showSheet<bool>(
+      context,
+      StatefulBuilder(
+        builder: (ctx, setD) => Form(
+          key: gramsForm,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              Text(tr("Mahsulot qo'shish"), style: Theme.of(ctx).textTheme.titleLarge),
+              const SizedBox(height: AppSpace.lg),
+              DropdownButtonFormField<Food>(
+                initialValue: selected,
+                isExpanded: true,
+                decoration: InputDecoration(labelText: tr('Mahsulot')),
+                items: foods
+                    .map((f) => DropdownMenuItem(
+                          value: f,
+                          child: Row(children: [
+                            FoodImage(name: f.name, url: f.imageUrl, size: 32),
+                            const SizedBox(width: AppSpace.md),
+                            Expanded(child: Text(tr(f.name), overflow: TextOverflow.ellipsis)),
+                          ]),
+                        ))
+                    .toList(),
+                onChanged: (v) => setD(() => selected = v),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: grams,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: InputRules.decimalOnly(maxDecimals: 1),
+                validator: InputRules.decimalRange(0, InputLimits.gramsMax, minExclusive: true),
+                decoration: InputDecoration(labelText: tr('Miqdori'), suffixText: 'g'),
+              ),
+              const SizedBox(height: AppSpace.xl),
+              FilledButton(
+                onPressed: () {
+                  if (InputRules.validateAndFocus(gramsForm)) Navigator.pop(ctx, true);
+                },
+                child: Text(tr("Qo'shish")),
+              ),
+              const SizedBox(height: AppSpace.sm),
+              OutlinedButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(tr('Bekor')),
+              ),
+            ],
+          ),
         ),
       ),
     );
-    final g = double.tryParse(grams.text.replaceAll(',', '.'));
+    final g = InputRules.parseDecimal(grams.text);
     if (ok != true || selected == null || g == null || g <= 0) return;
     setState(() {
       final list = _current;
@@ -475,12 +527,9 @@ class _PlanEditorState extends State<PlanEditor> {
   }
 
   Future<void> _save() async {
+    if (!InputRules.validateAndFocus(_form)) return;
     if (_category.isEmpty) {
       showSnack(context, tr('Kategoriyani tanlang: Ozish yoki Massa nabor'));
-      return;
-    }
-    if (_title.text.trim().isEmpty) {
-      showSnack(context, tr('Reja nomini kiriting'));
       return;
     }
     final messenger = ScaffoldMessenger.of(context);
@@ -494,8 +543,7 @@ class _PlanEditorState extends State<PlanEditor> {
         meals: _weekly ? List.of(_week[1] ?? _current) : _meals,
         week: _week,
         photos: _photos,
-        forbidden:
-            _forbidden.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList(),
+        forbidden: InputRules.splitVariants(_forbidden.text),
       ));
       if (!mounted) return;
       Navigator.pop(context);
@@ -516,7 +564,7 @@ class _PlanEditorState extends State<PlanEditor> {
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: FilledButton.icon(
-              style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
+              style: FilledButton.styleFrom(minimumSize: const Size(0, kTouchTarget)),
               onPressed: _saving ? null : _save,
               icon: const Icon(Icons.check, size: 18),
               label: Text(tr('Saqlash')),
@@ -529,156 +577,175 @@ class _PlanEditorState extends State<PlanEditor> {
         icon: const Icon(Icons.add),
         label: Text(tr("Mahal qo'shish")),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
-        children: [
-          Row(children: [
-            Expanded(
-              child: StatTile(
-                icon: Icons.local_fire_department_outlined,
-                label: _weekly
-                    ? trf('{0} · kaloriya', [tr(weekdayShort[_day] ?? '')])
-                    : tr('Jami kaloriya'),
-                value: trf('{0} kkal', [_kcal.round()]),
-                color: AppColors.warning,
-              ),
-            ),
-            const SizedBox(width: AppSpace.md),
-            Expanded(
-              child: StatTile(
-                icon: Icons.restaurant_outlined,
-                label: tr('Oqsil'),
-                value: trf('{0} g', [_protein.round()]),
-                color: AppColors.protein,
-              ),
-            ),
-          ]),
-          if (_kcal > 0 && _kcal < 1200) ...[
-            const SizedBox(height: AppSpace.md),
-            Card(
-              color: s.errorContainer,
-              child: Padding(
-                padding: const EdgeInsets.all(14),
-                child: Row(children: [
-                  Icon(Icons.warning_amber_rounded, color: s.onErrorContainer),
-                  const SizedBox(width: AppSpace.md),
-                  Expanded(
-                    child: Text(
-                      tr("Reja 1200 kkal dan kam. Ko'pchilik uchun bu xavfli darajada past."),
-                      style: TextStyle(color: s.onErrorContainer),
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-          ],
-          const SizedBox(height: 16),
-          Eyebrow(tr('Kategoriya')),
-          const SizedBox(height: AppSpace.sm),
-          Wrap(spacing: AppSpace.sm, children: [
-            for (final c in planCategories)
-              ChoiceChip(
-                label: Text(tr(c)),
-                selected: _category == c,
-                onSelected: (_) => setState(() => _category = c),
-              ),
-          ]),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _title,
-            decoration: InputDecoration(
-              labelText: tr('Reja nomi'),
-              prefixIcon: const Icon(Icons.title),
-            ),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _forbidden,
-            decoration: InputDecoration(
-              labelText: tr('Mumkin emas (vergul bilan)'),
-              hintText: tr('Non, shirinlik, ...'),
-              prefixIcon: const Icon(Icons.block),
-            ),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _note,
-            minLines: 2,
-            maxLines: 5,
-            decoration: InputDecoration(
-              labelText: tr('Izoh / maslahat'),
-              alignLabelWithHint: true,
-            ),
-          ),
-          const SizedBox(height: 20),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            value: _weekly,
-            onChanged: _setWeekly,
-            title: Text(tr('Har kunga alohida menyu')),
-            subtitle: Text(
-              _weekly
-                  ? tr("Hafta kunlari bo'yicha 7 xil menyu — shogirdda o'sha kunniki chiqadi")
-                  : tr('Hozir reja har kuni bir xil'),
-              style: TextStyle(color: AppColors.textMuted),
-            ),
-          ),
-          if (_weekly) ...[
-            const SizedBox(height: AppSpace.sm),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(children: [
-                for (var d = 1; d <= 7; d++)
-                  Padding(
-                    padding: const EdgeInsets.only(right: AppSpace.sm),
-                    child: ChoiceChip(
-                      selected: _day == d,
-                      onSelected: (_) => setState(() => _day = d),
-                      label: Text(tr(weekdayShort[d]!)),
-                    ),
-                  ),
-              ]),
-            ),
-            const SizedBox(height: AppSpace.sm),
+      body: Form(
+        key: _form,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 96),
+          children: [
             Row(children: [
               Expanded(
-                child: Text(
-                  trf('{0} menyusi', [tr(weekdayNames[_day] ?? '')]),
-                  style: t.titleMedium,
+                child: StatTile(
+                  icon: Icons.local_fire_department_outlined,
+                  label: _weekly
+                      ? trf('{0} · kaloriya', [tr(weekdayShort[_day] ?? '')])
+                      : tr('Jami kaloriya'),
+                  value: trf('{0} kkal', [_kcal.round()]),
+                  color: AppColors.warning,
                 ),
               ),
-              TextButton.icon(
-                onPressed: _copyDayToAll,
-                icon: const Icon(Icons.copy_all_outlined, size: 18),
-                label: Text(tr('Hamma kunga')),
+              const SizedBox(width: AppSpace.md),
+              Expanded(
+                child: StatTile(
+                  icon: Icons.restaurant_outlined,
+                  label: tr('Oqsil'),
+                  value: trf('{0} g', [_protein.round()]),
+                  color: AppColors.protein,
+                ),
               ),
             ]),
-            // Shu kunning rasmi — shogirdga ham shu ko'rinadi
-            if (_photos[_day] case final photo? when photo.isNotEmpty) ...[
-              const SizedBox(height: AppSpace.sm),
-              PlanPhoto(
-                path: photo,
-                height: 170,
-                caption: tr("Shogird shu rasmni ko'radi"),
-              ),
-              const SizedBox(height: AppSpace.sm),
-            ],
-          ],
-          SectionHeader(trf('Ovqatlanish mahallari ({0})', [_current.length])),
-          if (_current.isEmpty)
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(
-                  tr("Hali mahal yo'q. Pastdagi \"Mahal qo'shish\" tugmasini bosing."),
-                  textAlign: TextAlign.center,
-                  style: t.bodyMedium?.copyWith(color: s.onSurfaceVariant),
+            if (_kcal > 0 && _kcal < 1200) ...[
+              const SizedBox(height: AppSpace.md),
+              Card(
+                color: s.errorContainer,
+                child: Padding(
+                  padding: const EdgeInsets.all(14),
+                  child: Row(children: [
+                    Icon(Icons.warning_amber_rounded, color: s.onErrorContainer),
+                    const SizedBox(width: AppSpace.md),
+                    Expanded(
+                      child: Text(
+                        tr("Reja 1200 kkal dan kam. Ko'pchilik uchun bu xavfli darajada past."),
+                        style: TextStyle(color: s.onErrorContainer),
+                      ),
+                    ),
+                  ]),
                 ),
               ),
+            ],
+            const SizedBox(height: 16),
+            Eyebrow(tr('Kategoriya')),
+            const SizedBox(height: AppSpace.sm),
+            Wrap(spacing: AppSpace.sm, children: [
+              for (final c in planCategories)
+                ChoiceChip(
+                  label: Text(tr(c)),
+                  selected: _category == c,
+                  onSelected: (_) => setState(() => _category = c),
+                ),
+            ]),
+            if (_category.isEmpty) ...[
+              const SizedBox(height: AppSpace.xs),
+              Text(
+                tr('Kategoriya tanlanmagan'),
+                key: const Key('category-unset'),
+                style: TextStyle(color: AppColors.warning, fontSize: 12),
+              ),
+            ],
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _title,
+              maxLength: _titleMax,
+              buildCounter: InputRules.counterAtEighty,
+              validator: InputRules.required(_titleMax, emptyMessage: tr('Reja nomini kiriting')),
+              decoration: InputDecoration(
+                labelText: tr('Reja nomi'),
+                prefixIcon: const Icon(Icons.title),
+              ),
             ),
-          for (var i = 0; i < _current.length; i++)
-            Padding(padding: const EdgeInsets.only(bottom: 10), child: _mealCard(i, _current[i])),
-        ],
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _forbidden,
+              validator: _forbiddenError,
+              decoration: InputDecoration(
+                labelText: tr('Mumkin emas (vergul bilan)'),
+                hintText: tr('Non, shirinlik, ...'),
+                prefixIcon: const Icon(Icons.block),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _note,
+              minLines: 2,
+              maxLines: 5,
+              maxLength: InputLimits.planNote,
+              buildCounter: InputRules.counterAtEighty,
+              validator: InputRules.optional(InputLimits.planNote),
+              decoration: InputDecoration(
+                labelText: tr('Izoh / maslahat'),
+                alignLabelWithHint: true,
+              ),
+            ),
+            const SizedBox(height: 20),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              value: _weekly,
+              onChanged: _setWeekly,
+              title: Text(tr('Har kunga alohida menyu')),
+              subtitle: Text(
+                _weekly
+                    ? tr("Hafta kunlari bo'yicha 7 xil menyu — shogirdda o'sha kunniki chiqadi")
+                    : tr('Hozir reja har kuni bir xil'),
+                style: TextStyle(color: AppColors.textMuted),
+              ),
+            ),
+            if (_weekly) ...[
+              const SizedBox(height: AppSpace.sm),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(children: [
+                  for (var d = 1; d <= 7; d++)
+                    Padding(
+                      padding: const EdgeInsets.only(right: AppSpace.sm),
+                      child: ChoiceChip(
+                        selected: _day == d,
+                        onSelected: (_) => setState(() => _day = d),
+                        label: Text(tr(weekdayShort[d]!)),
+                      ),
+                    ),
+                ]),
+              ),
+              const SizedBox(height: AppSpace.sm),
+              Row(children: [
+                Expanded(
+                  child: Text(
+                    trf('{0} menyusi', [tr(weekdayNames[_day] ?? '')]),
+                    style: t.titleMedium,
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: _copyDayToAll,
+                  icon: const Icon(Icons.copy_all_outlined, size: 18),
+                  label: Text(tr('Hamma kunga')),
+                ),
+              ]),
+              // Shu kunning rasmi — shogirdga ham shu ko'rinadi
+              if (_photos[_day] case final photo? when photo.isNotEmpty) ...[
+                const SizedBox(height: AppSpace.sm),
+                PlanPhoto(
+                  path: photo,
+                  height: 170,
+                  caption: tr("Shogird shu rasmni ko'radi"),
+                ),
+                const SizedBox(height: AppSpace.sm),
+              ],
+            ],
+            SectionHeader(trf('Ovqatlanish mahallari ({0})', [_current.length])),
+            if (_current.isEmpty)
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    tr("Hali mahal yo'q. Pastdagi \"Mahal qo'shish\" tugmasini bosing."),
+                    textAlign: TextAlign.center,
+                    style: t.bodyMedium?.copyWith(color: s.onSurfaceVariant),
+                  ),
+                ),
+              ),
+            for (var i = 0; i < _current.length; i++)
+              Padding(padding: const EdgeInsets.only(bottom: 10), child: _mealCard(i, _current[i])),
+          ],
+        ),
       ),
     );
   }

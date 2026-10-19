@@ -39,6 +39,7 @@ from zalpro_api.core.app_version import AppVersionGate
 from zalpro_api.core.config import Settings
 from zalpro_api.core.errors import register_error_handlers
 from zalpro_api.db.session import create_engine, create_sessionmaker
+from zalpro_api.services.auto_reminders import AutoReminderWorker
 from zalpro_api.services.chat_hub import ChatHub
 from zalpro_api.services.login_throttle import LoginThrottle
 from zalpro_api.services.storage import build_storage
@@ -51,9 +52,12 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.engine = engine
     app.state.sessionmaker = create_sessionmaker(engine)
     await app.state.video_worker.start()
+    if app.state.settings.auto_reminders_enabled:
+        await app.state.auto_reminder_worker.start()
     try:
         yield
     finally:
+        await app.state.auto_reminder_worker.stop()
         await app.state.video_worker.stop()
         await engine.dispose()
 
@@ -102,6 +106,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     app.state.storage = build_storage(app.state.settings)
     app.state.video_worker = VideoWorker(app.state)
+    app.state.auto_reminder_worker = AutoReminderWorker(app.state)
     register_error_handlers(app)
     if app.state.settings.min_app_build > 0:
         app.add_middleware(

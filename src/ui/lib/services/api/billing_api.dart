@@ -29,7 +29,7 @@ class BillingApi extends ApiService {
         final rows = await client.getList('/v1/users/$uid/subscriptions');
         return jsonMaps(rows).map(Subscription.fromJson).toList()
           ..sort((a, b) => b.startDate.compareTo(a.startDate));
-      }, _subs, {'subscriptions', 'subscriptions:$uid'});
+      }, _subs, {'subscriptions', 'subscriptions:$uid'}, key: 'subscriptions:$uid');
 
   Stream<List<(String, Subscription)>> allSubscriptions() => poll(() async {
         final rows = await client.getList('/v1/subscriptions');
@@ -37,7 +37,7 @@ class BillingApi extends ApiService {
           for (final row in jsonMaps(rows))
             (jsonString(row['user_id']), Subscription.fromJson(row)),
         ];
-      }, _subs, {'subscriptions'});
+      }, _subs, {'subscriptions'}, key: 'allSubscriptions');
 
   Future<void> addSubscription(AppUser client, Subscription s) async {
     await write(
@@ -53,7 +53,7 @@ class BillingApi extends ApiService {
     return poll(() async {
       final rows = await client.getList('/v1/memberships');
       return jsonMaps(rows).map(Membership.fromJson).toList();
-    }, _memberships, {'memberships'});
+    }, _memberships, {'memberships'}, key: 'memberships');
   }
 
   SharedStream<bool> _mark(String uid, String day) {
@@ -120,8 +120,9 @@ class BillingApi extends ApiService {
         query['to'] = _day(to);
       }
       final rows = await client.getList('/v1/reminders', query: query);
-      return jsonMaps(rows).map(Reminder.fromJson).where(keep).toList();
-    }, _reminders, {'reminders'});
+      return jsonMaps(rows).map(Reminder.fromJson).toList();
+    }, _reminders, {'reminders'}, key: owner ? 'reminders:all' : 'reminders:window')
+        .map((rows) => rows.where(keep).toList());
   }
 
   Stream<List<Reminder>> remindersOf(String trainerId) =>
