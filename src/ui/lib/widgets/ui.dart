@@ -468,11 +468,19 @@ class Pill extends StatelessWidget {
   final Color color;
   final IconData? icon;
   final bool solid;
-  const Pill({super.key, required this.text, required this.color, this.icon, this.solid = false});
+  final Color? textColor;
+  const Pill({
+    super.key,
+    required this.text,
+    required this.color,
+    this.icon,
+    this.solid = false,
+    this.textColor,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final fg = solid ? AppColors.onAccent : color;
+    final fg = solid ? AppColors.onAccent : (textColor ?? color);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm + 2, vertical: 5),
       decoration: BoxDecoration(
@@ -496,6 +504,33 @@ class Pill extends StatelessWidget {
   }
 }
 
+class StepButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onPressed;
+  final bool tonal;
+  const StepButton({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    this.tonal = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const size = BoxConstraints(minWidth: kTouchTarget, minHeight: kTouchTarget);
+    return Semantics(
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      child: tonal
+          ? IconButton.filledTonal(onPressed: onPressed, icon: Icon(icon), constraints: size)
+          : IconButton(onPressed: onPressed, icon: Icon(icon), constraints: size),
+    );
+  }
+}
+
 class StatTile extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -512,28 +547,32 @@ class StatTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
-    return BentoTile(
-      padding: const EdgeInsets.all(AppSpace.md),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Icon(icon, size: 18, color: color),
-        const SizedBox(height: AppSpace.sm),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerLeft,
-          child: Text(
-            microLabel(label),
-            maxLines: 1,
-            softWrap: false,
-            style: t.labelSmall?.copyWith(color: AppColors.textFaint, fontSize: 12),
+    return Semantics(
+      label: trf('{0}: {1}', [label, value]),
+      excludeSemantics: true,
+      child: BentoTile(
+        padding: const EdgeInsets.all(AppSpace.md),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(icon, size: 18, color: color),
+          const SizedBox(height: AppSpace.sm),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              microLabel(label),
+              maxLines: 1,
+              softWrap: false,
+              style: t.labelSmall?.copyWith(color: AppColors.textFaint, fontSize: 12),
+            ),
           ),
-        ),
-        const SizedBox(height: AppSpace.md),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerLeft,
-          child: Text(value, style: t.headlineSmall?.copyWith(fontFeatures: tabular)),
-        ),
-      ]),
+          const SizedBox(height: AppSpace.md),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(value, style: t.headlineSmall?.copyWith(fontFeatures: tabular)),
+          ),
+        ]),
+      ),
     );
   }
 }

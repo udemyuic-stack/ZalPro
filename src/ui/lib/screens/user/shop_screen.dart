@@ -124,17 +124,21 @@ class _ShopScreenState extends State<ShopScreen> {
             ],
             const SizedBox(height: AppSpace.lg),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              IconButton.filledTonal(
+              StepButton(
+                tonal: true,
+                icon: Icons.remove,
+                label: tr('Kamaytirish'),
                 onPressed: qty > 1 ? () => setS(() => qty--) : null,
-                icon: const Icon(Icons.remove),
               ),
               SizedBox(
                 width: 72,
                 child: Text('$qty', textAlign: TextAlign.center, style: t.headlineSmall),
               ),
-              IconButton.filledTonal(
+              StepButton(
+                tonal: true,
+                icon: Icons.add,
+                label: tr('Oshirish'),
                 onPressed: qty < max ? () => setS(() => qty++) : null,
-                icon: const Icon(Icons.add),
               ),
             ]),
             const SizedBox(height: AppSpace.md),

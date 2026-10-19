@@ -20,6 +20,7 @@ class AppColors {
   static Color get bubbleOwn => accentFill;
   static Color get onBubbleOwn => onAccentFill;
   static Color get success => _c(0xFF4ADE80, 0xFF15803D);
+  static Color get successText => _c(0xFF4ADE80, 0xFF166534);
   static Color get warning => _c(0xFFFBBF24, 0xFFB45309);
   static Color get danger => _c(0xFFFB7185, 0xFFD3173D);
   static Color get water => _c(0xFF38BDF8, 0xFF0369A1);

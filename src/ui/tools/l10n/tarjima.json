@@ -1923,6 +1923,10 @@
   "ru": "Калории не указаны",
   "en": "Calories not entered"
  },
+ "Kamaytirish": {
+  "ru": "Уменьшить",
+  "en": "Decrease"
+ },
  "Kamera": {
   "ru": "Камера",
   "en": "Camera"
@@ -1974,6 +1978,10 @@
  "Kategoriya": {
   "ru": "Категория",
   "en": "Category"
+ },
+ "Kategoriya tanlanmagan": {
+  "ru": "Категория не выбрана",
+  "en": "No category selected"
  },
  "Kategoriyani tanlang: Ozish yoki Massa nabor": {
   "ru": "Выберите категорию: похудение или набор массы",
@@ -2974,6 +2982,10 @@
  "Osh": {
   "ru": "Плов",
   "en": "Plov (pilaf)"
+ },
+ "Oshirish": {
+  "ru": "Увеличить",
+  "en": "Increase"
  },
  "Osilib oyoqni ko'tarish": {
   "ru": "Подъём ног в висе",
@@ -4307,6 +4319,10 @@
   "ru": "Индекс массы тела",
   "en": "Body mass index"
  },
+ "Tana massasi indeksi: {0}, {1}": {
+  "ru": "Индекс массы тела: {0}, {1}",
+  "en": "Body mass index: {0}, {1}"
+ },
  "Tana o'lchamlari": {
   "ru": "Параметры тела",
   "en": "Body measurements"
@@ -4706,6 +4722,10 @@
  "Trener tanlang": {
   "ru": "Выберите тренера",
   "en": "Choose a trainer"
+ },
+ "Trener tanlanmagan": {
+  "ru": "Тренер не выбран",
+  "en": "No trainer selected"
  },
  "Trener tanlansinmi?": {
   "ru": "Выбрать тренера?",
@@ -5823,6 +5843,10 @@
   "ru": "Выполнено {0} / {1}",
   "en": "{0} / {1} done"
  },
+ "{0} / {1} qoldi": {
+  "ru": "Осталось {0} / {1}",
+  "en": "{0} / {1} left"
+ },
  "{0} ball": {
   "ru": "{0} б.",
   "en": "{0} pts"
@@ -6055,6 +6079,10 @@
   "ru": "Учеников, не выбравших дни зала: {0}.",
   "en": "{0} clients haven't chosen gym days yet."
  },
+ "{0} ta shogirdda hali ovqatlanish rejasi yo'q": {
+  "ru": "Нет плана питания у клиентов: {0}",
+  "en": "{0} clients have no meal plan yet"
+ },
  "{0} ta tanlangan": {
   "ru": "Выбрано: {0}",
   "en": "{0} selected"
@@ -6146,6 +6174,10 @@
  "{0}: obuna yo'q": {
   "ru": "{0}: нет абонемента",
   "en": "{0}: no membership"
+ },
+ "{0}: {1}": {
+  "ru": "{0}: {1}",
+  "en": "{0}: {1}"
  },
  "{0}{1} (minimum {2})": {
   "ru": "{0}{1} (минимум {2})",

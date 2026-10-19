@@ -112,7 +112,8 @@ class TodayScreen extends StatelessWidget {
                                 ExtraFood.totalKcal(extraSnap.data ?? const <ExtraFood>[]);
                             return page([
                               FadeInUp(
-                                  child: _HeroPanel(plan: plan, eaten: eaten, weekday: weekday)),
+                                  child:
+                                      TodayHeroPanel(plan: plan, eaten: eaten, weekday: weekday)),
                               const SizedBox(height: AppSpace.md),
                               FadeInUp(
                                 index: 1,
@@ -204,8 +205,6 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final t = Theme.of(context).textTheme;
-    final first = user.name.trim().split(' ').first;
     return Padding(
       padding: const EdgeInsets.fromLTRB(2, AppSpace.md, 2, AppSpace.xl),
       child: Row(children: [
@@ -213,12 +212,7 @@ class _Header extends StatelessWidget {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Eyebrow(uzDate(DateTime.now())),
             const SizedBox(height: AppSpace.sm),
-            Text(
-              first.isEmpty ? tr('Salom') : trf('Salom, {0}', [first]),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: t.headlineLarge,
-            ),
+            TodayGreeting(name: user.name),
           ]),
         ),
         const SizedBox(width: AppSpace.sm),
@@ -242,6 +236,26 @@ class _Header extends StatelessWidget {
         const SizedBox(width: AppSpace.xs),
         UserAvatar(name: user.name, size: 46),
       ]),
+    );
+  }
+}
+
+class TodayGreeting extends StatelessWidget {
+  final String name;
+  const TodayGreeting({super.key, required this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    final first = name.trim().split(' ').first;
+    final shown = first.length > 20 ? '${first.substring(0, 19)}…' : first;
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Text(
+        shown.isEmpty ? tr('Salom') : trf('Salom, {0}', [shown]),
+        maxLines: 1,
+        style: Theme.of(context).textTheme.headlineLarge,
+      ),
     );
   }
 }
@@ -290,11 +304,11 @@ class _NoPlan extends StatelessWidget {
 }
 
 /// Bosh blok: to'q ink yuza, laym halqa — kunning asosiy ko'rsatkichi
-class _HeroPanel extends StatelessWidget {
+class TodayHeroPanel extends StatelessWidget {
   final Plan plan;
   final double eaten;
   final int weekday;
-  const _HeroPanel({required this.plan, required this.eaten, required this.weekday});
+  const TodayHeroPanel({super.key, required this.plan, required this.eaten, required this.weekday});
 
   @override
   Widget build(BuildContext context) {
@@ -324,8 +338,6 @@ class _HeroPanel extends StatelessWidget {
             const SizedBox(height: AppSpace.xs),
             Text(
               tr(plan.title),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
               style: t.titleMedium?.copyWith(color: AppColors.text),
             ),
             const SizedBox(height: AppSpace.lg),

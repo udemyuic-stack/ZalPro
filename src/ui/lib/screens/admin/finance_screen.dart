@@ -264,18 +264,16 @@ class _FinanceScreenState extends State<FinanceScreen> {
                           tr('Trenerlar haqi'),
                           eyebrow: tr('Abonement tushumidan ulush'),
                           trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                            IconButton(
-                              constraints: const BoxConstraints(
-                                  minWidth: kTouchTarget, minHeight: kTouchTarget),
+                            StepButton(
+                              icon: Icons.remove_circle_outline,
+                              label: tr('Kamaytirish'),
                               onPressed: _pct > 0 ? () => _setPct(_pct - 5) : null,
-                              icon: const Icon(Icons.remove_circle_outline),
                             ),
                             Text('$_pct%', style: t.titleMedium),
-                            IconButton(
-                              constraints: const BoxConstraints(
-                                  minWidth: kTouchTarget, minHeight: kTouchTarget),
+                            StepButton(
+                              icon: Icons.add_circle_outline,
+                              label: tr('Oshirish'),
                               onPressed: _pct < 100 ? () => _setPct(_pct + 5) : null,
-                              icon: const Icon(Icons.add_circle_outline),
                             ),
                           ]),
                         ),

@@ -27,6 +27,14 @@ void main() {
       }
     });
 
+    test('$name: yashil BMI chipi matni >= 4.5', () {
+      AppColors.light = light;
+      for (final base in [AppColors.card, AppColors.bg]) {
+        final chip = Color.alphaBlend(AppColors.success.withValues(alpha: 0.12), base);
+        expect(_ratio(AppColors.successText, chip), greaterThanOrEqualTo(4.5));
+      }
+    });
+
     test('$name: karta fondan ajraladi', () {
       AppColors.light = light;
       expect(_ratio(AppColors.card, AppColors.bg), greaterThan(1.05));
