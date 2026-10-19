@@ -190,11 +190,16 @@ class OrderTile extends StatelessWidget {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text('${o.title} × ${o.qty}', style: t.titleSmall),
               Text(
-                '$who${o.createdAt == null ? '' : ' • ${uzDate(o.createdAt!)}'}',
+                who,
                 style: t.bodySmall?.copyWith(color: AppColors.textMuted),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
+              if (o.createdAt != null)
+                Text(
+                  uzDate(o.createdAt!),
+                  style: t.bodySmall?.copyWith(color: AppColors.textFaint),
+                ),
             ]),
           ),
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: [

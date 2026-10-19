@@ -633,11 +633,13 @@ class GoalPill extends StatelessWidget {
   const GoalPill({super.key, required this.user});
 
   @override
-  Widget build(BuildContext context) => Pill(
-        text: tr(user.goalLabel),
-        color: user.isGain ? AppColors.protein : AppColors.water,
-        icon: user.isGain ? Icons.trending_up : Icons.trending_down,
-      );
+  Widget build(BuildContext context) => user.goalLabel.isEmpty
+      ? const SizedBox.shrink()
+      : Pill(
+          text: tr(user.goalLabel),
+          color: user.isGain ? AppColors.protein : AppColors.water,
+          icon: user.isGain ? Icons.trending_up : Icons.trending_down,
+        );
 }
 
 /// Shogirdni trenerga biriktirish — faqat bosh admin ko'radi
