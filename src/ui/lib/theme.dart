@@ -11,20 +11,22 @@ class AppColors {
   static Color get text => _c(0xFFF5F5F7, 0xFF141418);
   static Color get textMuted => _c(0xFFA4A4B0, 0xFF5A5A66);
   static Color get textFaint => _c(0xFF8F8F9A, 0xFF666672);
-  static Color get accent => _c(0xFFFF3B5C, 0xFFC8102E);
+  static Color get accent => _c(0xFFFF4A66, 0xFFC8102E);
   static Color get accentFill => _c(0xFFE11D48, 0xFFC8102E);
   static Color get accentSoft => _c(0xFFFF7A92, 0xFF9F0D25);
-  static Color get accentText => _c(0xFFFF3B5C, 0xFFC8102E);
+  static Color get accentText => accent;
   static Color get onAccent => _c(0xFF14050A, 0xFFFFFFFF);
   static Color get onAccentFill => const Color(0xFFFFFFFF);
   static Color get bubbleOwn => accentFill;
   static Color get onBubbleOwn => onAccentFill;
   static Color get success => _c(0xFF4ADE80, 0xFF15803D);
   static Color get successText => _c(0xFF4ADE80, 0xFF166534);
-  static Color get warning => _c(0xFFFBBF24, 0xFFB45309);
+  static Color get warning => _c(0xFFFBBF24, 0xFFAD4D08);
   static Color get danger => _c(0xFFFB7185, 0xFFD3173D);
   static Color get water => _c(0xFF38BDF8, 0xFF0369A1);
   static Color get protein => _c(0xFFA78BFA, 0xFF7C3AED);
+  static Color get outline => _c(0xFF34343C, 0xFFC9C9D1);
+  static Color get outlineVariant => _c(0xFF26262C, 0xFFE0E0E6);
   static Color get hairline => _c(0x1AFFFFFF, 0x1F141418);
   static Color get hairlineStrong => _c(0x2EFFFFFF, 0x47141418);
   static Color get hairlineSoft => _c(0x0AFFFFFF, 0x0F141418);
@@ -83,8 +85,8 @@ class AppTheme {
       surfaceContainerHighest: AppColors.cardHigh,
       surfaceContainerHigh: AppColors.cardHigh,
       surfaceContainer: AppColors.card,
-      outline: isLight ? const Color(0xFFC9C9D1) : const Color(0xFF34343C),
-      outlineVariant: isLight ? const Color(0xFFE0E0E6) : const Color(0xFF26262C),
+      outline: AppColors.outline,
+      outlineVariant: AppColors.outlineVariant,
       error: AppColors.danger,
       onError: AppColors.onAccent,
       inverseSurface: AppColors.text,

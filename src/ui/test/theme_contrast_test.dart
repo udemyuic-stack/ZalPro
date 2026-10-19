@@ -40,4 +40,30 @@ void main() {
       expect(_ratio(AppColors.card, AppColors.bg), greaterThan(1.05));
     });
   }
+
+  for (final light in [false, true]) {
+    final name = light ? 'Kvars' : 'Grafit';
+    test('$name: barcha matn tokenlari >= 4.5', () {
+      AppColors.light = light;
+      final fg = {
+        'text': AppColors.text,
+        'textMuted': AppColors.textMuted,
+        'textFaint': AppColors.textFaint,
+        'accentText': AppColors.accentText,
+        'accentSoft': AppColors.accentSoft,
+        'successText': AppColors.successText,
+        'warning': AppColors.warning,
+        'danger': AppColors.danger,
+        'water': AppColors.water,
+        'protein': AppColors.protein,
+      };
+      for (final bg in [AppColors.bg, AppColors.card, AppColors.cardHigh]) {
+        fg.forEach((k, c) {
+          expect(_ratio(c, bg), greaterThanOrEqualTo(4.5), reason: '$name $k');
+        });
+      }
+      expect(_ratio(AppColors.onAccentFill, AppColors.accentFill), greaterThanOrEqualTo(4.5));
+      expect(_ratio(AppColors.onAccent, AppColors.accent), greaterThanOrEqualTo(4.5));
+    });
+  }
 }
