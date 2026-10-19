@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
 import 'food_image.dart';
-import 'ui.dart';
 
 /// Do'kon bo'limining ikonkasi va rangi — rasmi yo'q tovarlar uchun
 IconData shopIcon(String category) => switch (category) {
@@ -47,6 +46,47 @@ class ProductImage extends StatelessWidget {
     final hasPicture = url.trim().isNotEmpty || foodAsset(name) != null;
     return hasPicture
         ? FoodImage(name: name, url: url, size: size)
-        : IconBadge(shopIcon(category), color: shopColor(category), size: size);
+        : _StudioPanel(
+            icon: shopIcon(category), tint: shopColor(category), size: size);
+  }
+}
+
+class _StudioPanel extends StatelessWidget {
+  final IconData icon;
+  final Color tint;
+  final double size;
+  const _StudioPanel(
+      {required this.icon, required this.tint, required this.size});
+
+  @override
+  Widget build(BuildContext context) {
+    final light = AppColors.light;
+    final center = light ? AppColors.card : AppColors.cardHigh;
+    final edge = light ? AppColors.cardHigh : AppColors.card;
+    Color mix(Color c) => Color.alphaBlend(tint.withValues(alpha: 0.06), c);
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        border: Border.all(color: AppColors.hairline),
+        gradient: RadialGradient(colors: [mix(center), mix(edge)]),
+      ),
+      child: Stack(alignment: Alignment.center, children: [
+        Positioned(
+          bottom: size * 0.14,
+          child: Container(
+            width: size * 0.5,
+            height: size * 0.08,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(size),
+              color: (light ? AppColors.text : AppColors.bgDeep)
+                  .withValues(alpha: light ? 0.12 : 0.35),
+            ),
+          ),
+        ),
+        Icon(icon, color: tint, size: size * 0.46),
+      ]),
+    );
   }
 }

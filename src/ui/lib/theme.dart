@@ -241,7 +241,7 @@ class AppTheme {
           fontFamily: appFontFamily,
           fontSize: 14,
           fontWeight: FontWeight.w600,
-          color: AppColors.accentText,
+          color: AppColors.text,
         ),
       ),
       dialogTheme: DialogThemeData(

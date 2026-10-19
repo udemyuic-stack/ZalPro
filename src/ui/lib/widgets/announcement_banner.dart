@@ -61,7 +61,6 @@ class _AnnouncementBannerState extends State<AnnouncementBanner> {
           padding: const EdgeInsets.only(bottom: AppSpace.lg),
           child: BentoTile(
             key: const Key('announcement-banner'),
-            feature: true,
             padding:
                 const EdgeInsets.fromLTRB(AppSpace.md + 2, AppSpace.sm, AppSpace.xs, AppSpace.sm),
             onTap: () => showAnnouncements(context, active),

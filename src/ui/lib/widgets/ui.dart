@@ -291,9 +291,11 @@ class BentoTile extends StatelessWidget {
     final radius = BorderRadius.circular(AppRadius.lg);
     final fill = color ??
         (feature
-            ? Color.alphaBlend(AppColors.accent.withValues(alpha: 0.08), AppColors.card)
+            ? Color.alphaBlend(AppColors.accent.withValues(alpha: AppColors.light ? 0.025 : 0.08), AppColors.card)
             : AppColors.card.withValues(alpha: AppColors.light ? 0.9 : 0.92));
-    final edge = feature ? AppColors.accent.withValues(alpha: 0.4) : AppColors.hairline;
+    final edge = feature
+        ? AppColors.accent.withValues(alpha: AppColors.light ? 0.28 : 0.4)
+        : AppColors.hairline;
 
     Widget content = DecoratedBox(
       decoration: BoxDecoration(
@@ -608,7 +610,7 @@ class KcalRing extends StatelessWidget {
               strokeWidth: size * 0.055,
               strokeCap: StrokeCap.round,
               color: color ?? AppColors.accent,
-              backgroundColor: trackColor ?? AppColors.cardHigh,
+              backgroundColor: trackColor ?? (AppColors.light ? AppColors.hairlineStrong : AppColors.cardHigh),
             ),
           ),
         ),

@@ -328,7 +328,7 @@ class TodayHeroPanel extends StatelessWidget {
           total: total,
           size: 112,
           color: AppColors.accent,
-          trackColor: AppColors.cardHigh,
+          trackColor: AppColors.light ? AppColors.hairlineStrong : AppColors.cardHigh,
           textColor: AppColors.text,
         ),
         const SizedBox(width: AppSpace.xl),
