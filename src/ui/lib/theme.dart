@@ -4,12 +4,12 @@ class AppColors {
   static bool light = false;
 
   static Color _c(int dark, int lightValue) => Color(light ? lightValue : dark);
-  static Color get bg => _c(0xFF0D0D0F, 0xFFF6F6F8);
-  static Color get bgDeep => _c(0xFF070708, 0xFFEDEDF1);
-  static Color get card => _c(0xFF17171B, 0xFFFFFFFF);
-  static Color get cardHigh => _c(0xFF222228, 0xFFF0F0F4);
+  static Color get bg => _c(0xFF121216, 0xFFF4F4F7);
+  static Color get bgDeep => _c(0xFF0E0E12, 0xFFECECF1);
+  static Color get card => _c(0xFF1A1A20, 0xFFFFFFFF);
+  static Color get cardHigh => _c(0xFF24242C, 0xFFF0F0F4);
   static Color get text => _c(0xFFF5F5F7, 0xFF141418);
-  static Color get textMuted => _c(0xFF9A9AA5, 0xFF5C5C68);
+  static Color get textMuted => _c(0xFFA4A4B0, 0xFF5A5A66);
   static Color get textFaint => _c(0xFF8F8F9A, 0xFF666672);
   static Color get accent => _c(0xFFFF3B5C, 0xFFC8102E);
   static Color get accentFill => _c(0xFFE11D48, 0xFFC8102E);
@@ -24,15 +24,15 @@ class AppColors {
   static Color get danger => _c(0xFFFB7185, 0xFFD3173D);
   static Color get water => _c(0xFF38BDF8, 0xFF0369A1);
   static Color get protein => _c(0xFFA78BFA, 0xFF7C3AED);
-  static Color get hairline => _c(0x14FFFFFF, 0x1A141418);
-  static Color get hairlineStrong => _c(0x33FFFFFF, 0x4D141418);
+  static Color get hairline => _c(0x1AFFFFFF, 0x1F141418);
+  static Color get hairlineStrong => _c(0x2EFFFFFF, 0x47141418);
   static Color get hairlineSoft => _c(0x0AFFFFFF, 0x0F141418);
   static RadialGradient get glow => RadialGradient(
         center: const Alignment(0, -1.05),
         radius: 1.25,
         colors: light
-            ? const [Color(0x14C8102E), Color(0x00F6F6F8), Color(0x00F6F6F8)]
-            : const [Color(0x2BFF3B5C), Color(0x00070708), Color(0x00070708)],
+            ? const [Color(0x14C8102E), Color(0x00F4F4F7), Color(0x00F4F4F7)]
+            : const [Color(0x2BFF3B5C), Color(0x000E0E12), Color(0x000E0E12)],
         stops: const [0.0, 0.55, 1.0],
       );
   static LinearGradient get headerGradient => LinearGradient(

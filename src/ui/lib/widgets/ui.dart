@@ -515,21 +515,18 @@ class StatTile extends StatelessWidget {
     return BentoTile(
       padding: const EdgeInsets.all(AppSpace.md),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Icon(icon, size: 16, color: color),
-          const SizedBox(width: AppSpace.sm - 2),
-          Expanded(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                microLabel(label),
-                maxLines: 1,
-                style: t.labelSmall?.copyWith(color: AppColors.textFaint),
-              ),
-            ),
+        Icon(icon, size: 18, color: color),
+        const SizedBox(height: AppSpace.sm),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Text(
+            microLabel(label),
+            maxLines: 1,
+            softWrap: false,
+            style: t.labelSmall?.copyWith(color: AppColors.textFaint, fontSize: 12),
           ),
-        ]),
+        ),
         const SizedBox(height: AppSpace.md),
         FittedBox(
           fit: BoxFit.scaleDown,

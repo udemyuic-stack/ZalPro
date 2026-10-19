@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/input_rules.dart';
 import '../../l10n/tr.dart';
 import '../../models/models.dart';
 import '../../models/shop.dart';
@@ -27,6 +28,18 @@ class _ShopAdminScreenState extends State<ShopAdminScreen> {
   int _tab = 0;
 
   Future<void> _setStatus(ShopOrder o, String status) async {
+    if (status == orderGiven) {
+      final ok = await confirm(
+        context,
+        title: tr('Berildi deb belgilash'),
+        message: trf(
+          '{0}: "{1}" × {2} berildimi? Omborxonadan ayiriladi, qaytarib bo\'lmaydi.',
+          [o.clientName, o.productName, o.qty],
+        ),
+        ok: tr('Berildi'),
+      );
+      if (!ok || !mounted) return;
+    }
     if (status == orderCanceled) {
       final ok = await confirm(
         context,
@@ -61,14 +74,13 @@ class _ShopAdminScreenState extends State<ShopAdminScreen> {
       body: Column(children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.sm),
-          child: SegmentedButton<int>(
-            showSelectedIcon: false,
+          child: AppSegmented<int>(
             segments: [
-              ButtonSegment(value: 0, label: Text(tr('Buyurtmalar'))),
-              ButtonSegment(value: 1, label: Text(tr('Tovarlar'))),
+              AppSegment(value: 0, label: tr('Buyurtmalar')),
+              AppSegment(value: 1, label: tr('Tovarlar')),
             ],
-            selected: {_tab},
-            onSelectionChanged: (s) => setState(() => _tab = s.first),
+            selected: _tab,
+            onChanged: (v) => setState(() => _tab = v),
           ),
         ),
         Expanded(
@@ -140,7 +152,7 @@ class _OrdersTab extends StatelessWidget {
             for (final o in waiting)
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSpace.sm),
-                child: _OrderTile(order: o, onStatus: onStatus),
+                child: OrderTile(order: o, onStatus: onStatus),
               ),
             if (done.isNotEmpty) ...[
               const SizedBox(height: AppSpace.lg),
@@ -148,7 +160,7 @@ class _OrdersTab extends StatelessWidget {
               for (final o in done.take(30))
                 Padding(
                   padding: const EdgeInsets.only(bottom: AppSpace.sm),
-                  child: _OrderTile(order: o, onStatus: onStatus),
+                  child: OrderTile(order: o, onStatus: onStatus),
                 ),
             ],
           ],
@@ -158,10 +170,10 @@ class _OrdersTab extends StatelessWidget {
   }
 }
 
-class _OrderTile extends StatelessWidget {
+class OrderTile extends StatelessWidget {
   final ShopOrder order;
   final Future<void> Function(ShopOrder, String) onStatus;
-  const _OrderTile({required this.order, required this.onStatus});
+  const OrderTile({super.key, required this.order, required this.onStatus});
 
   @override
   Widget build(BuildContext context) {
@@ -199,15 +211,18 @@ class _OrderTile extends StatelessWidget {
           Row(children: [
             Expanded(
               child: FilledButton.icon(
-                style: FilledButton.styleFrom(minimumSize: const Size(0, 42)),
+                style: FilledButton.styleFrom(minimumSize: const Size(0, kTouchTarget)),
                 onPressed: () => onStatus(o, orderGiven),
                 icon: const Icon(Icons.check, size: 18),
                 label: Text(tr('Berildi')),
               ),
             ),
-            const SizedBox(width: AppSpace.sm),
+            const SizedBox(width: AppSpace.xl),
             OutlinedButton(
-              style: OutlinedButton.styleFrom(minimumSize: const Size(0, 42)),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(0, kTouchTarget),
+                foregroundColor: AppColors.danger,
+              ),
               onPressed: () => onStatus(o, orderCanceled),
               child: Text(tr('Bekor')),
             ),
@@ -349,217 +364,254 @@ Future<void> editProduct(BuildContext context, [Product? p]) async {
   var category = p?.category ?? shopCategories.first;
   var currency = p?.currency ?? uzs;
   var active = p?.active ?? true;
-  int n(TextEditingController c) => int.tryParse(c.text.replaceAll(RegExp(r'\D'), '')) ?? 0;
+  int n(TextEditingController c) => InputRules.parseInt(c.text) ?? 0;
+  final productForm = GlobalKey<FormState>();
 
   final saved = await showSheet<bool>(
     context,
     StatefulBuilder(
       builder: (ctx, setS) => SingleChildScrollView(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          const SizedBox(height: AppSpace.md),
-          Row(children: [
-            ProductImage(
-              category: category,
-              name: name.text,
-              url: cover,
-              size: 52,
-            ),
-            const SizedBox(width: AppSpace.md),
-            Expanded(
-              child: Text(p == null ? tr("Yangi tovar") : tr('Tovarni tahrirlash'),
-                  style: Theme.of(ctx).textTheme.titleLarge),
-            ),
-          ]),
-          const SizedBox(height: AppSpace.lg),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Wrap(spacing: AppSpace.sm, children: [
-              for (final c in shopCategories)
-                ChoiceChip(
-                  selected: category == c,
-                  onSelected: (_) => setS(() => category = c),
-                  avatar: Icon(shopIcon(c), size: 16),
-                  label: Text(c),
-                ),
+        child: Form(
+          key: productForm,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            const SizedBox(height: AppSpace.md),
+            Row(children: [
+              ProductImage(
+                category: category,
+                name: name.text,
+                url: cover,
+                size: 52,
+              ),
+              const SizedBox(width: AppSpace.md),
+              Expanded(
+                child: Text(p == null ? tr("Yangi tovar") : tr('Tovarni tahrirlash'),
+                    style: Theme.of(ctx).textTheme.titleLarge),
+              ),
             ]),
-          ),
-          const SizedBox(height: AppSpace.md),
-          TextField(
-            controller: name,
-            autofocus: p == null,
-            textCapitalization: TextCapitalization.sentences,
-            // nom yozilganda yuqoridagi rasm ham yangilanadi (protein, gainer ...)
-            onChanged: (_) => setS(() {}),
-            decoration: InputDecoration(
-                labelText: tr('Nomi'), hintText: tr('Protein izolyat 900 g (shokolad)')),
-          ),
-          const SizedBox(height: AppSpace.md),
-          TextField(
-            controller: note,
-            maxLines: 2,
-            decoration: InputDecoration(
-              labelText: tr('Izoh (ixtiyoriy)'),
-              hintText: tr("O'lchami, ta'mi, ishlab chiqaruvchi"),
+            const SizedBox(height: AppSpace.lg),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Wrap(spacing: AppSpace.sm, children: [
+                for (final c in shopCategories)
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: kTouchTarget),
+                    child: ChoiceChip(
+                      selected: category == c,
+                      onSelected: (_) => setS(() => category = c),
+                      avatar: Icon(shopIcon(c), size: 16),
+                      label: Text(c),
+                    ),
+                  ),
+              ]),
             ),
-          ),
-          // Ruscha / inglizcha nom va izoh — ixtiyoriy; bo'sh bo'lsa o'zbekchasi ko'rinadi
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            childrenPadding: const EdgeInsets.only(bottom: AppSpace.sm),
-            title: Text(tr('Tarjima (ixtiyoriy)')),
-            subtitle: Text(tr("Bo'sh qolsa, rus va ingliz tilida ham o'zbekcha nom chiqadi")),
-            children: [
-              TextField(
-                  controller: nameRu, decoration: InputDecoration(labelText: tr('Nomi — ruscha'))),
-              const SizedBox(height: AppSpace.sm),
-              TextField(
-                  controller: noteRu,
-                  maxLines: 2,
-                  decoration: InputDecoration(labelText: tr('Izoh — ruscha'))),
-              const SizedBox(height: AppSpace.sm),
-              TextField(
-                  controller: nameEn,
-                  decoration: InputDecoration(labelText: tr('Nomi — inglizcha'))),
-              const SizedBox(height: AppSpace.sm),
-              TextField(
-                  controller: noteEn,
-                  maxLines: 2,
-                  decoration: InputDecoration(labelText: tr('Izoh — inglizcha'))),
-            ],
-          ),
-          const SizedBox(height: AppSpace.md),
-          Row(children: [
-            Expanded(
-              child: TextField(
+            const SizedBox(height: AppSpace.md),
+            TextFormField(
+              controller: name,
+              autofocus: p == null,
+              maxLength: InputLimits.productName,
+              buildCounter: InputRules.counterAtEighty,
+              validator: InputRules.required(InputLimits.productName),
+              textCapitalization: TextCapitalization.sentences,
+              // nom yozilganda yuqoridagi rasm ham yangilanadi (protein, gainer ...)
+              onChanged: (_) => setS(() {}),
+              decoration: InputDecoration(
+                  labelText: tr('Nomi'), hintText: tr('Protein izolyat 900 g (shokolad)')),
+            ),
+            const SizedBox(height: AppSpace.md),
+            TextFormField(
+              controller: note,
+              maxLines: 2,
+              maxLength: InputLimits.productNote,
+              buildCounter: InputRules.counterAtEighty,
+              validator: InputRules.optional(InputLimits.productNote),
+              decoration: InputDecoration(
+                labelText: tr('Izoh (ixtiyoriy)'),
+                hintText: tr("O'lchami, ta'mi, ishlab chiqaruvchi"),
+              ),
+            ),
+            // Ruscha / inglizcha nom va izoh — ixtiyoriy; bo'sh bo'lsa o'zbekchasi ko'rinadi
+            ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              childrenPadding: const EdgeInsets.only(bottom: AppSpace.sm),
+              title: Text(tr('Tarjima (ixtiyoriy)')),
+              subtitle: Text(tr("Bo'sh qolsa, rus va ingliz tilida ham o'zbekcha nom chiqadi")),
+              children: [
+                TextFormField(
+                    controller: nameRu,
+                    maxLength: InputLimits.productName,
+                    buildCounter: InputRules.counterAtEighty,
+                    validator: InputRules.optional(InputLimits.productName),
+                    decoration: InputDecoration(labelText: tr('Nomi — ruscha'))),
+                const SizedBox(height: AppSpace.sm),
+                TextFormField(
+                    controller: noteRu,
+                    maxLines: 2,
+                    maxLength: InputLimits.productNote,
+                    buildCounter: InputRules.counterAtEighty,
+                    validator: InputRules.optional(InputLimits.productNote),
+                    decoration: InputDecoration(labelText: tr('Izoh — ruscha'))),
+                const SizedBox(height: AppSpace.sm),
+                TextFormField(
+                    controller: nameEn,
+                    maxLength: InputLimits.productName,
+                    buildCounter: InputRules.counterAtEighty,
+                    validator: InputRules.optional(InputLimits.productName),
+                    decoration: InputDecoration(labelText: tr('Nomi — inglizcha'))),
+                const SizedBox(height: AppSpace.sm),
+                TextFormField(
+                    controller: noteEn,
+                    maxLines: 2,
+                    maxLength: InputLimits.productNote,
+                    buildCounter: InputRules.counterAtEighty,
+                    validator: InputRules.optional(InputLimits.productNote),
+                    decoration: InputDecoration(labelText: tr('Izoh — inglizcha'))),
+              ],
+            ),
+            const SizedBox(height: AppSpace.md),
+            Column(children: [
+              TextFormField(
                 controller: price,
                 keyboardType: TextInputType.number,
+                inputFormatters: InputRules.digitsMax(10),
+                validator: InputRules.intRange(0, InputLimits.maxInt),
                 onChanged: (_) => setS(() {}),
                 decoration: InputDecoration(
                   labelText: tr('Narxi'),
                   suffixText: currencyLabel(currency),
                 ),
               ),
-            ),
-            const SizedBox(width: AppSpace.sm),
-            Expanded(
-              child: TextField(
+              const SizedBox(height: AppSpace.sm),
+              TextFormField(
                 controller: costPrice,
                 keyboardType: TextInputType.number,
+                inputFormatters: InputRules.digitsMax(10),
+                validator: InputRules.intRange(0, InputLimits.maxInt, required: false),
                 onChanged: (_) => setS(() {}),
                 decoration: InputDecoration(labelText: tr('Tan narxi (ixtiyoriy)')),
               ),
-            ),
-          ]),
-          if (n(costPrice) > 0) ...[
-            const SizedBox(height: AppSpace.xs),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                trf('Foyda: {0} {1}', [fmtSum(n(price) - n(costPrice)), currencyLabel(currency)]),
-                style: TextStyle(color: AppColors.textMuted, fontSize: 12.5),
-              ),
-            ),
-          ],
-          const SizedBox(height: AppSpace.sm),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Wrap(spacing: AppSpace.sm, children: [
-              for (final c in currencies)
-                ChoiceChip(
-                  selected: currency == c,
-                  onSelected: (_) => setS(() => currency = c),
-                  label: Text(c == usd ? tr('Dollar (\$)') : tr("So'm")),
-                ),
             ]),
-          ),
-          const SizedBox(height: AppSpace.md),
-          ProductPhotos(product: p, onCover: (url) => setS(() => cover = url)),
-          const SizedBox(height: AppSpace.md),
-          TextField(
-            controller: sizes,
-            onChanged: (_) => setS(() {}),
-            decoration: InputDecoration(
-              labelText: tr("O'lchamlar (ixtiyoriy)"),
-              hintText: 'XL, XXL, 3XL, 4XL',
-              helperText: tr("Vergul bilan. Yozilsa — shogird buyurtmada o'lchamni tanlaydi"),
-            ),
-          ),
-          const SizedBox(height: AppSpace.md),
-          TextField(
-            controller: colors,
-            decoration: InputDecoration(
-              labelText: tr('Ranglar (ixtiyoriy)'),
-              hintText: tr('sariq, kulrang, yashil'),
-              helperText: tr('Vergul bilan. Yozilsa — shogird buyurtmada rangni tanlaydi'),
-            ),
-          ),
-          const SizedBox(height: AppSpace.md),
-          if (sizes.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).isEmpty)
-            TextField(
-              controller: stock,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: tr('Qoldiq'), suffixText: 'dona'),
-            )
-          else
+            if (n(costPrice) > 0) ...[
+              const SizedBox(height: AppSpace.xs),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  trf('Foyda: {0} {1}', [fmtSum(n(price) - n(costPrice)), currencyLabel(currency)]),
+                  style: TextStyle(color: AppColors.textMuted, fontSize: 12.5),
+                ),
+              ),
+            ],
+            const SizedBox(height: AppSpace.sm),
             Align(
               alignment: Alignment.centerLeft,
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(tr("Qoldiq (o'lcham bo'yicha)"),
-                    style: TextStyle(color: AppColors.textMuted, fontSize: 12.5)),
-                const SizedBox(height: AppSpace.xs),
-                Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
-                  for (final sz
-                      in sizes.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty))
-                    SizedBox(
-                      width: 90,
-                      child: TextField(
-                        controller: sizeStockCtrl(sz),
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(labelText: sz),
-                      ),
+              child: Wrap(spacing: AppSpace.sm, children: [
+                for (final c in currencies)
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: kTouchTarget),
+                    child: ChoiceChip(
+                      selected: currency == c,
+                      onSelected: (_) => setS(() => currency = c),
+                      label: Text(c == usd ? tr('Dollar (\$)') : tr("So'm")),
                     ),
-                ]),
+                  ),
               ]),
             ),
-          const SizedBox(height: AppSpace.md),
-          SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            value: active,
-            onChanged: (v) => setS(() => active = v),
-            title: Text(tr('Sotuvda')),
-            subtitle: Text(
-              active ? tr("Shogirdlar ko'radi") : tr("Shogirdlarga ko'rinmaydi"),
-              style: TextStyle(color: AppColors.textMuted),
-            ),
-          ),
-          const SizedBox(height: AppSpace.sm),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(tr('Saqlash')),
-            ),
-          ),
-          const SizedBox(height: AppSpace.sm),
-          if (p != null)
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(foregroundColor: AppColors.danger),
-                onPressed: () => Navigator.pop(ctx, false),
-                icon: const Icon(Icons.delete_outline),
-                label: Text(tr("O'chirish")),
+            const SizedBox(height: AppSpace.md),
+            ProductPhotos(product: p, onCover: (url) => setS(() => cover = url)),
+            const SizedBox(height: AppSpace.md),
+            TextFormField(
+              controller: sizes,
+              validator: InputRules.variantsText,
+              onChanged: (_) => setS(() {}),
+              decoration: InputDecoration(
+                labelText: tr("O'lchamlar (ixtiyoriy)"),
+                hintText: 'XL, XXL, 3XL, 4XL',
+                helperText: tr("Vergul bilan. Yozilsa — shogird buyurtmada o'lchamni tanlaydi"),
               ),
             ),
-          const SizedBox(height: AppSpace.sm),
-        ]),
+            const SizedBox(height: AppSpace.md),
+            TextFormField(
+              controller: colors,
+              validator: InputRules.variantsText,
+              decoration: InputDecoration(
+                labelText: tr('Ranglar (ixtiyoriy)'),
+                hintText: tr('sariq, kulrang, yashil'),
+                helperText: tr('Vergul bilan. Yozilsa — shogird buyurtmada rangni tanlaydi'),
+              ),
+            ),
+            const SizedBox(height: AppSpace.md),
+            if (InputRules.splitVariants(sizes.text).isEmpty)
+              TextFormField(
+                controller: stock,
+                keyboardType: TextInputType.number,
+                inputFormatters: InputRules.digitsMax(10),
+                validator: InputRules.intRange(0, InputLimits.maxInt, required: false),
+                decoration: InputDecoration(labelText: tr('Qoldiq'), suffixText: 'dona'),
+              )
+            else
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(tr("Qoldiq (o'lcham bo'yicha)"),
+                      style: TextStyle(color: AppColors.textMuted, fontSize: 12.5)),
+                  const SizedBox(height: AppSpace.xs),
+                  Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
+                    for (final sz in InputRules.splitVariants(sizes.text))
+                      SizedBox(
+                        width: 90,
+                        child: TextFormField(
+                          controller: sizeStockCtrl(sz),
+                          keyboardType: TextInputType.number,
+                          inputFormatters: InputRules.digitsMax(10),
+                          validator: InputRules.intRange(0, InputLimits.maxInt, required: false),
+                          decoration: InputDecoration(labelText: sz),
+                        ),
+                      ),
+                  ]),
+                ]),
+              ),
+            const SizedBox(height: AppSpace.md),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              value: active,
+              onChanged: (v) => setS(() => active = v),
+              title: Text(tr('Sotuvda')),
+              subtitle: Text(
+                active ? tr("Shogirdlar ko'radi") : tr("Shogirdlarga ko'rinmaydi"),
+                style: TextStyle(color: AppColors.textMuted),
+              ),
+            ),
+            const SizedBox(height: AppSpace.sm),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: () {
+                  if (InputRules.validateAndFocus(productForm)) Navigator.pop(ctx, true);
+                },
+                child: Text(tr('Saqlash')),
+              ),
+            ),
+            const SizedBox(height: AppSpace.sm),
+            if (p != null)
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(foregroundColor: AppColors.danger),
+                  onPressed: () => Navigator.pop(ctx, false),
+                  icon: const Icon(Icons.delete_outline),
+                  label: Text(tr("O'chirish")),
+                ),
+              ),
+            const SizedBox(height: AppSpace.sm),
+          ]),
+        ),
       ),
     ),
   );
 
   if (saved == true) {
     if (name.text.trim().isEmpty) return;
-    final sizeList = sizes.text.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    final sizeList = InputRules.splitVariants(sizes.text).toList();
     await Db.saveProduct(Product(
       id: p?.id ?? '',
       category: category,
@@ -570,12 +622,7 @@ Future<void> editProduct(BuildContext context, [Product? p]) async {
       noteRu: noteRu.text.trim(),
       noteEn: noteEn.text.trim(),
       sizes: sizeList,
-      colors: colors.text
-          .split(',')
-          .map((e) => e.trim())
-          .where((e) => e.isNotEmpty)
-          .map((e) => e.length > 30 ? e.substring(0, 30) : e)
-          .toList(),
+      colors: InputRules.splitVariants(colors.text),
       price: n(price),
       currency: currency,
       stock: n(stock),
