@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../l10n/tr.dart';
+import '../theme.dart';
 
 /// Telefon/brauzerda saqlanadigan shaxsiy sozlamalar: ko'rinish (tema) va bildirishnomalar.
 /// Hisobga bog'lanmagan — har qurilmada o'z tanlovi.
@@ -9,6 +10,8 @@ class AppSettings {
 
   /// Ko'rinish: qorong'i (asosiy), yorug' yoki telefon sozlamasiga qarab
   static final themeMode = ValueNotifier<ThemeMode>(ThemeMode.dark);
+
+  static final palette = ValueNotifier<AppPalette>(AppPalette.graphite);
 
   /// Bildirishnoma sozlamalari o'zgarganda oshadi (eslatmalarni qayta rejalashtirish uchun)
   static final notifChanged = ValueNotifier<int>(0);
@@ -24,6 +27,7 @@ class AppSettings {
       'system' => ThemeMode.system,
       _ => ThemeMode.dark,
     };
+    palette.value = AppPalette.values.asNameMap()[_p?.getString('palette')] ?? AppPalette.graphite;
     final lang = _p?.getString('lang');
     appLang.value = appLangs.containsKey(lang) ? lang! : 'uz';
     _loadFeedSeen();
@@ -39,6 +43,11 @@ class AppSettings {
   static Future<void> setThemeMode(ThemeMode m) async {
     themeMode.value = m;
     await _p?.setString('theme', m.name);
+  }
+
+  static Future<void> setPalette(AppPalette v) async {
+    palette.value = v;
+    await _p?.setString('palette', v.name);
   }
 
   // ---------- bildirishnomalar (hammasi standart holatda yoqilgan) ----------
