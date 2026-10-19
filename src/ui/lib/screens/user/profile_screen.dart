@@ -175,7 +175,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ],
               const SizedBox(height: AppSpace.md),
-              _BmiCard(bmi: user.bmi),
+              BmiCard(bmi: user.bmi),
               const SizedBox(height: AppSpace.md),
               StreamBuilder<Plan?>(
                 stream: user.planId == null ? Stream.value(null) : Db.plan(user.planId!),
@@ -237,80 +237,85 @@ class ProfileScreen extends StatelessWidget {
 }
 
 /// BMI shkalasi: rangli oraliqlar va foydalanuvchi joylashuvi
-class _BmiCard extends StatelessWidget {
+class BmiCard extends StatelessWidget {
   final double bmi;
-  const _BmiCard({required this.bmi});
+  const BmiCard({super.key, required this.bmi});
 
   static const _lo = 15.0, _hi = 40.0;
-  static final _segments = [
-    (18.5, tr('Vazn kam'), AppColors.water),
-    (25.0, tr('Normal'), AppColors.success),
-    (30.0, tr('Ortiqcha vazn'), AppColors.warning),
-    (40.0, tr('Semizlik'), AppColors.danger),
-  ];
+  static List<(double, String, Color, Color)> get _segments => [
+        (18.5, tr('Vazn kam'), AppColors.water, AppColors.water),
+        (25.0, tr('Normal'), AppColors.success, AppColors.successText),
+        (30.0, tr('Ortiqcha vazn'), AppColors.warning, AppColors.warning),
+        (40.0, tr('Semizlik'), AppColors.danger, AppColors.danger),
+      ];
 
   @override
   Widget build(BuildContext context) {
     final s = Theme.of(context).colorScheme;
     final t = Theme.of(context).textTheme;
-    final idx = _segments.indexWhere((sg) => bmi < sg.$1);
-    final seg = _segments[idx == -1 ? _segments.length - 1 : idx];
-    return BentoTile(
-      child: Padding(
-        padding: EdgeInsets.zero,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Expanded(child: Eyebrow(tr('Tana massasi indeksi'), color: s.onSurfaceVariant)),
-            Pill(text: seg.$2, color: seg.$3),
-          ]),
-          const SizedBox(height: AppSpace.sm),
-          Text(
-            bmi.toStringAsFixed(1),
-            style: t.displaySmall?.copyWith(fontFeatures: tabular),
-          ),
-          const SizedBox(height: AppSpace.lg),
-          LayoutBuilder(builder: (context, c) {
-            final x = (bmi.clamp(_lo, _hi) - _lo) / (_hi - _lo) * c.maxWidth;
-            return SizedBox(
-              height: 22,
-              child: Stack(clipBehavior: Clip.none, children: [
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  top: 7,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(99),
-                    child: Row(children: [
-                      for (var i = 0; i < _segments.length; i++)
-                        Expanded(
-                          flex: ((_segments[i].$1 - (i == 0 ? _lo : _segments[i - 1].$1)) * 10)
-                              .round(),
-                          child: Container(height: 8, color: _segments[i].$3),
-                        ),
-                    ]),
-                  ),
-                ),
-                Positioned(
-                  left: (x - 11).clamp(0.0, c.maxWidth - 22),
-                  top: 0,
-                  child: Container(
-                    width: 22,
-                    height: 22,
-                    decoration: BoxDecoration(
-                      color: AppColors.text,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: seg.$3, width: 4),
-                      // soyasiz dizayn — belgi ink halqa bilan ajratiladi
+    final segments = _segments;
+    final idx = segments.indexWhere((sg) => bmi < sg.$1);
+    final seg = segments[idx == -1 ? segments.length - 1 : idx];
+    return Semantics(
+      label: trf('Tana massasi indeksi: {0}, {1}', [bmi.toStringAsFixed(1), seg.$2]),
+      excludeSemantics: true,
+      child: BentoTile(
+        child: Padding(
+          padding: EdgeInsets.zero,
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
+              Expanded(child: Eyebrow(tr('Tana massasi indeksi'), color: s.onSurfaceVariant)),
+              Pill(text: seg.$2, color: seg.$3, textColor: seg.$4),
+            ]),
+            const SizedBox(height: AppSpace.sm),
+            Text(
+              bmi.toStringAsFixed(1),
+              style: t.displaySmall?.copyWith(fontFeatures: tabular),
+            ),
+            const SizedBox(height: AppSpace.lg),
+            LayoutBuilder(builder: (context, c) {
+              final x = (bmi.clamp(_lo, _hi) - _lo) / (_hi - _lo) * c.maxWidth;
+              return SizedBox(
+                height: 22,
+                child: Stack(clipBehavior: Clip.none, children: [
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 7,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(99),
+                      child: Row(children: [
+                        for (var i = 0; i < segments.length; i++)
+                          Expanded(
+                            flex: ((segments[i].$1 - (i == 0 ? _lo : segments[i - 1].$1)) * 10)
+                                .round(),
+                            child: Container(height: 8, color: segments[i].$3),
+                          ),
+                      ]),
                     ),
                   ),
-                ),
-              ]),
-            );
-          }),
-          const SizedBox(height: 10),
-          Text(tr('Normal oraliq: 18.5 – 24.9'),
-              style: t.bodySmall?.copyWith(color: s.onSurfaceVariant)),
-        ]),
+                  Positioned(
+                    left: (x - 11).clamp(0.0, c.maxWidth - 22),
+                    top: 0,
+                    child: Container(
+                      width: 22,
+                      height: 22,
+                      decoration: BoxDecoration(
+                        color: AppColors.text,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: seg.$3, width: 4),
+                        // soyasiz dizayn — belgi ink halqa bilan ajratiladi
+                      ),
+                    ),
+                  ),
+                ]),
+              );
+            }),
+            const SizedBox(height: 10),
+            Text(tr('Normal oraliq: 18.5 – 24.9'),
+                style: t.bodySmall?.copyWith(color: s.onSurfaceVariant)),
+          ]),
+        ),
       ),
     );
   }

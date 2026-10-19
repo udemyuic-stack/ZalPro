@@ -78,7 +78,7 @@ class _ShopScreenState extends State<ShopScreen> {
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(p.displayName, style: t.titleMedium),
-                  Text(p.priceText, style: t.bodyMedium?.copyWith(color: AppColors.accent)),
+                  Text(p.priceText, style: t.bodyMedium?.copyWith(color: AppColors.text)),
                 ]),
               ),
             ]),
@@ -124,17 +124,21 @@ class _ShopScreenState extends State<ShopScreen> {
             ],
             const SizedBox(height: AppSpace.lg),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              IconButton.filledTonal(
+              StepButton(
+                tonal: true,
+                icon: Icons.remove,
+                label: tr('Kamaytirish'),
                 onPressed: qty > 1 ? () => setS(() => qty--) : null,
-                icon: const Icon(Icons.remove),
               ),
               SizedBox(
                 width: 72,
                 child: Text('$qty', textAlign: TextAlign.center, style: t.headlineSmall),
               ),
-              IconButton.filledTonal(
+              StepButton(
+                tonal: true,
+                icon: Icons.add,
+                label: tr('Oshirish'),
                 onPressed: qty < max ? () => setS(() => qty++) : null,
-                icon: const Icon(Icons.add),
               ),
             ]),
             const SizedBox(height: AppSpace.md),
@@ -270,8 +274,7 @@ class _ShopScreenState extends State<ShopScreen> {
                         ),
                       )
                     else ...[
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
+                      _EdgeFade(
                         child: Row(children: [
                           for (final g in groups)
                             _CatChip(
@@ -287,8 +290,7 @@ class _ShopScreenState extends State<ShopScreen> {
                       ),
                       if (subs.isNotEmpty) ...[
                         const SizedBox(height: AppSpace.sm),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
+                        _EdgeFade(
                           child: Row(children: [
                             for (final c in subs)
                               _CatChip(
@@ -357,6 +359,21 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 }
 
+class _EdgeFade extends StatelessWidget {
+  final Widget child;
+  const _EdgeFade({required this.child});
+
+  @override
+  Widget build(BuildContext context) => ShaderMask(
+        blendMode: BlendMode.dstIn,
+        shaderCallback: (r) => const LinearGradient(
+          colors: [Colors.black, Colors.black, Colors.transparent],
+          stops: [0, 0.92, 1],
+        ).createShader(r),
+        child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: child),
+      );
+}
+
 class _CatChip extends StatelessWidget {
   final String label;
   final IconData? icon;
@@ -370,7 +387,9 @@ class _CatChip extends StatelessWidget {
         child: ChoiceChip(
           selected: selected,
           onSelected: (_) => onTap(),
-          avatar: icon == null ? null : Icon(icon, size: 16),
+          avatar: icon == null
+              ? null
+              : Icon(icon, size: 16, color: selected ? AppColors.text : AppColors.accentText),
           label: Text(tr(label)),
         ),
       );
@@ -412,7 +431,7 @@ class _ProductTile extends StatelessWidget {
                     style: t.bodySmall?.copyWith(color: AppColors.water)),
               ),
             Row(children: [
-              Text(p.priceText, style: t.titleSmall?.copyWith(color: AppColors.accent)),
+              Text(p.priceText, style: t.titleSmall?.copyWith(color: AppColors.text)),
               const SizedBox(width: AppSpace.sm),
               if (p.totalStock <= 0)
                 Pill(text: tr('Hozir yo\'q'), color: AppColors.danger)
