@@ -16,9 +16,16 @@ import 'l10n/tr.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (kIsWeb) SemanticsBinding.instance.ensureSemantics();
-  final info = await PackageInfo.fromPlatform();
-  apiClient.setAppVersion('${info.version}+${info.buildNumber}');
-  await apiClient.restore();
+  try {
+    final info = await PackageInfo.fromPlatform();
+    apiClient.setAppVersion('${info.version}+${info.buildNumber}');
+  } catch (_) {
+    debugPrint('PackageInfo olinmadi');
+  }
+  try {
+    await apiClient.restore().timeout(const Duration(seconds: 8));
+  } catch (_) {
+  }
   await AppSettings.init();
   runApp(const ProviderScope(child: App()));
 }
@@ -71,12 +78,15 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       valueListenable: appLang,
       builder: (context, lang, _) => ValueListenableBuilder<ThemeMode>(
         valueListenable: AppSettings.themeMode,
-        builder: (context, mode, _) {
+        builder: (context, mode, _) => ValueListenableBuilder<AppPalette>(
+        valueListenable: AppSettings.palette,
+        builder: (context, palette, _) {
           final platformLight =
               WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.light;
           final light = mode == ThemeMode.light || (mode == ThemeMode.system && platformLight);
           AppColors.light = light;
-          final look = '$light-$lang';
+          AppColors.palette = palette;
+          final look = '$light-$palette-$lang';
           if (_look != null && _look != look) {
             WidgetsBinding.instance.addPostFrameCallback((_) => _rebuildAll());
           }
@@ -97,6 +107,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             home: const AuthGate(),
           );
         },
+        ),
       ),
     );
   }

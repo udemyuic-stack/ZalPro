@@ -5,20 +5,25 @@ import '../services/settings.dart';
 import '../theme.dart';
 import 'change_password.dart';
 import 'lang_picker.dart';
+import 'theme_picker.dart';
 import 'ui.dart';
 
 Future<void> showSettings(
   BuildContext context, {
   required bool student,
+  bool chat = true,
   VoidCallback? onSignOut,
 }) =>
-    showSheet<void>(context, _SettingsSheet(student: student, host: context, onSignOut: onSignOut));
+    showSheet<void>(
+        context, _SettingsSheet(student: student, chat: chat, host: context, onSignOut: onSignOut));
 
 class _SettingsSheet extends StatefulWidget {
   final bool student;
+  final bool chat;
   final BuildContext host;
   final VoidCallback? onSignOut;
-  const _SettingsSheet({required this.student, required this.host, this.onSignOut});
+  const _SettingsSheet(
+      {required this.student, required this.chat, required this.host, this.onSignOut});
 
   @override
   State<_SettingsSheet> createState() => _SettingsSheetState();
@@ -48,21 +53,23 @@ class _SettingsSheetState extends State<_SettingsSheet> {
         const SizedBox(height: AppSpace.lg),
         Eyebrow(tr("Ko'rinish")),
         const SizedBox(height: AppSpace.sm),
-        ValueListenableBuilder<ThemeMode>(
-          valueListenable: AppSettings.themeMode,
-          builder: (context, mode, _) => AppSegmented<ThemeMode>(
-            segments: [
-              AppSegment(
-                  value: ThemeMode.dark, icon: Icons.dark_mode_outlined, label: tr("Qorong'i")),
-              AppSegment(
-                  value: ThemeMode.light, icon: Icons.light_mode_outlined, label: tr("Yorug'")),
-              AppSegment(
-                  value: ThemeMode.system,
-                  icon: Icons.phone_android_outlined,
-                  label: tr('Telefon')),
-            ],
-            selected: mode,
-            onChanged: AppSettings.setThemeMode,
+        ListenableBuilder(
+          listenable: Listenable.merge([AppSettings.themeMode, AppSettings.palette]),
+          builder: (context, _) => BentoTile(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
+            onTap: () => showThemePicker(context),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: kTouchTarget),
+              child: Row(children: [
+                const Icon(Icons.palette_outlined),
+                const SizedBox(width: AppSpace.md),
+                Expanded(child: Text(tr('Dizayn mavzulari'), style: t.titleSmall)),
+                Text(currentThemeChoice().title,
+                    style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
+                const SizedBox(width: AppSpace.xs),
+                Icon(Icons.chevron_right_outlined, color: AppColors.textFaint),
+              ]),
+            ),
           ),
         ),
         const SizedBox(height: AppSpace.xl),
@@ -98,8 +105,9 @@ class _SettingsSheetState extends State<_SettingsSheet> {
           sw('notif_plan', AppSettings.planNotifications, tr('Yangi reja'),
               tr('Trener reja biriktirganda')),
         ],
-        sw('notif_chat', AppSettings.chatNotifications, tr('Yangi xabar'),
-            widget.student ? tr('Trener yozganda') : tr('Shogird yozganda')),
+        if (widget.chat)
+          sw('notif_chat', AppSettings.chatNotifications, tr('Yangi xabar'),
+              widget.student ? tr('Trener yozganda') : tr('Shogird yozganda')),
         if (widget.onSignOut != null) ...[
           const SizedBox(height: AppSpace.xl),
           OutlinedButton.icon(

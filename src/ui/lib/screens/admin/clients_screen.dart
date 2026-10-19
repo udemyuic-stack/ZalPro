@@ -130,7 +130,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                     icon: Icons.hourglass_empty,
                     label: tr('Kutmoqda'),
                     value: '$waiting',
-                    color: waiting > 0 ? AppColors.warning : s.onSurfaceVariant,
+                    color: s.onSurfaceVariant,
                   ),
                 ),
               ]),
@@ -196,7 +196,7 @@ class ClientTile extends StatelessWidget {
     final Widget status = !u.profileDone
         ? Pill(text: tr("Anketa yo'q"), color: s.outline)
         : u.planId == null
-            ? Pill(text: tr('Rejasiz'), color: AppColors.warning)
+            ? Pill(text: tr('Rejasiz'), color: s.outline)
             : planMismatch
                 ? Pill(text: tr('Reja mos emas'), color: AppColors.danger)
                 : Pill(text: tr('Reja bor'), color: AppColors.success, icon: Icons.check_rounded);
@@ -633,11 +633,13 @@ class GoalPill extends StatelessWidget {
   const GoalPill({super.key, required this.user});
 
   @override
-  Widget build(BuildContext context) => Pill(
-        text: tr(user.goalLabel),
-        color: user.isGain ? AppColors.protein : AppColors.water,
-        icon: user.isGain ? Icons.trending_up : Icons.trending_down,
-      );
+  Widget build(BuildContext context) => user.goalLabel.isEmpty
+      ? const SizedBox.shrink()
+      : Pill(
+          text: tr(user.goalLabel),
+          color: user.isGain ? AppColors.protein : AppColors.water,
+          icon: user.isGain ? Icons.trending_up : Icons.trending_down,
+        );
 }
 
 /// Shogirdni trenerga biriktirish — faqat bosh admin ko'radi
@@ -790,6 +792,11 @@ class _MyCatalogCard extends StatelessWidget {
             ),
             const SizedBox(height: AppSpace.lg),
             FilledButton(onPressed: () => Navigator.pop(context, true), child: Text(tr('Saqlash'))),
+            const SizedBox(height: AppSpace.sm),
+            OutlinedButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(tr('Bekor')),
+            ),
           ]),
     );
     if (ok != true || name.text.trim().isEmpty) return;

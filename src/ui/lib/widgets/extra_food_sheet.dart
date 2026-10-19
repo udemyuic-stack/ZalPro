@@ -101,6 +101,10 @@ class _ExtraFoodPickerState extends State<_ExtraFoodPicker> {
               child: Text(tr("Qo'shish")),
             ),
             const SizedBox(height: AppSpace.sm),
+            OutlinedButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(tr('Bekor')),
+            ),
           ]);
     }
 

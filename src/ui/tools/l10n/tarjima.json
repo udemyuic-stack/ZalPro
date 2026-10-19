@@ -1,4 +1,84 @@
 {
+ "Rang": {
+  "ru": "Цвет",
+  "en": "Color"
+ },
+ "Grafit": {
+  "ru": "Графит",
+  "en": "Graphite"
+ },
+ "Grafit Tungi": {
+  "ru": "Графит Ночь",
+  "en": "Graphite Night"
+ },
+ "Kvars Kunduzgi": {
+  "ru": "Кварц День",
+  "en": "Quartz Day"
+ },
+ "Kiber Zumrad": {
+  "ru": "Кибер Изумруд",
+  "en": "Cyber Emerald"
+ },
+ "Tungi Oltin": {
+  "ru": "Ночное Золото",
+  "en": "Midnight Gold"
+ },
+ "Kunduzgi": {
+  "ru": "Дневная",
+  "en": "Daylight"
+ },
+ "Energiya": {
+  "ru": "Энергия",
+  "en": "Energy"
+ },
+ "VIP klub": {
+  "ru": "VIP клуб",
+  "en": "VIP club"
+ },
+ "Qorong'i grafit fon, yorqin qizil urg'u": {
+  "ru": "Тёмный графитовый фон, яркий красный акцент",
+  "en": "Dark graphite background, vivid red accent"
+ },
+ "Yorug' va toza kvars fon, qirollik qizil urg'u": {
+  "ru": "Светлый чистый кварцевый фон, королевский красный акцент",
+  "en": "Light clean quartz background, royal red accent"
+ },
+ "To'q slanets fon, baquvvat neon zumrad urg'u": {
+  "ru": "Тёмный сланцевый фон, мощный неоново-изумрудный акцент",
+  "en": "Deep slate background, bold neon emerald accent"
+ },
+ "Obsidian fon, VIP qirollik oltin urg'u": {
+  "ru": "Обсидиановый фон, VIP золотой акцент",
+  "en": "Obsidian background, VIP royal gold accent"
+ },
+ "Dizayn mavzulari": {
+  "ru": "Темы оформления",
+  "en": "Design themes"
+ },
+ "Aura Fit uchun 4 ta rang palitrasi": {
+  "ru": "4 цветовые палитры для Aura Fit",
+  "en": "4 colour palettes for Aura Fit"
+ },
+ "Tugmalar, kartalar, chiziqlar va fon ranglari tanlangan mavzuga darhol o'zgaradi.": {
+  "ru": "Цвета кнопок, карточек, линий и фона сразу меняются под выбранную тему.",
+  "en": "Button, card, line and background colours change to the chosen theme instantly."
+ },
+ "Telefon sozlamasiga ergashish": {
+  "ru": "Следовать настройке телефона",
+  "en": "Follow phone setting"
+ },
+ "Telefon qorong'i bo'lsa tanlangan rang, yorug' bo'lsa Kvars": {
+  "ru": "Если телефон тёмный — выбранный цвет, если светлый — Кварц",
+  "en": "Chosen colour when the phone is dark, Quartz when it is light"
+ },
+ "Zumrad": {
+  "ru": "Изумруд",
+  "en": "Emerald"
+ },
+ "Oltin": {
+  "ru": "Золото",
+  "en": "Gold"
+ },
  "\n\nUnga biriktirilgan {0} ta shogird trenersiz qoladi.": {
   "ru": "\n\nЕго ученики ({0}) останутся без тренера.",
   "en": "\n\nTheir {0} clients will have no trainer."
@@ -4382,6 +4462,10 @@
  "Tavsiya etilgan me'yor: {0}": {
   "ru": "Рекомендуемая норма: {0}",
   "en": "Recommended target: {0}"
+ },
+ "Tavsiya etilgan me'yor: {0} kkal": {
+  "ru": "Рекомендуемая норма: {0} ккал",
+  "en": "Recommended intake: {0} kcal"
  },
  "Tavsiya: {0} kkal": {
   "ru": "Рекомендация: {0} ккал",

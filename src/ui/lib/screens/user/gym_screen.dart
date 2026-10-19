@@ -310,6 +310,11 @@ class _DaysPickerState extends State<_DaysPicker> {
                 : null,
             child: Text(tr('Saqlash')),
           ),
+          const SizedBox(height: AppSpace.sm),
+          OutlinedButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(tr('Bekor')),
+          ),
         ]);
   }
 }

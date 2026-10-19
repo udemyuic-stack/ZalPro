@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme.dart';
 import 'body_parts_data.dart';
 
 /// Qismli tana chizmasi (old yoki orqa tomon): har mushak — alohida ko'pburchak, bosilsa
@@ -16,7 +17,7 @@ class BodyMap extends StatelessWidget {
   final Set<String> secondary;
   final ValueChanged<String>? onTap;
   final double height;
-  final Color accent;
+  final Color? accent;
 
   const BodyMap({
     super.key,
@@ -25,7 +26,7 @@ class BodyMap extends StatelessWidget {
     this.secondary = const {},
     this.onTap,
     this.height = 360,
-    this.accent = const Color(0xFFFF3B5C),
+    this.accent,
   });
 
   static const _w = 200.0, _h = 440.0;
@@ -64,7 +65,7 @@ class BodyMap extends StatelessWidget {
     final width = height * _w / _h;
     final paint = CustomPaint(
       size: Size(width, height),
-      painter: _BodyPainter(back: back, primary: primary, secondary: secondary, accent: accent),
+      painter: _BodyPainter(back: back, primary: primary, secondary: secondary, accent: accent ?? AppColors.accent),
     );
     if (onTap == null) return paint;
     return GestureDetector(

@@ -14,13 +14,31 @@ class SecureSessionStore implements SessionStore {
   final FlutterSecureStorage _storage;
 
   @override
-  Future<String?> readRefreshToken() => _storage.read(key: _key);
+  Future<String?> readRefreshToken() async {
+    try {
+      return await _storage.read(key: _key);
+    } catch (_) {
+      return null;
+    }
+  }
 
   @override
-  Future<void> writeRefreshToken(String token) => _storage.write(key: _key, value: token);
+  Future<void> writeRefreshToken(String token) async {
+    try {
+      await _storage.write(key: _key, value: token);
+    } catch (_) {
+      return;
+    }
+  }
 
   @override
-  Future<void> clear() => _storage.delete(key: _key);
+  Future<void> clear() async {
+    try {
+      await _storage.delete(key: _key);
+    } catch (_) {
+      return;
+    }
+  }
 }
 
 class MemorySessionStore implements SessionStore {

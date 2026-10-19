@@ -65,7 +65,7 @@ class _BarmenHomeState extends ConsumerState<BarmenHome> {
           IconButton(
             tooltip: tr('Sozlamalar'),
             constraints: const BoxConstraints(minWidth: kTouchTarget, minHeight: kTouchTarget),
-            onPressed: () => showSettings(context, student: false),
+            onPressed: () => showSettings(context, student: false, chat: false),
             icon: const Icon(Icons.settings_outlined),
           ),
           IconButton(

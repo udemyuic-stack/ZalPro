@@ -686,6 +686,11 @@ class _ExerciseFormState extends State<ExerciseForm> {
               onPressed: _busy || _uploading ? null : _save,
               child: Text(_busy ? tr('Saqlanmoqda…') : tr('Saqlash')),
             ),
+            const SizedBox(height: AppSpace.sm),
+            OutlinedButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(tr('Bekor')),
+            ),
           ]),
     );
   }
