@@ -274,7 +274,7 @@ class _ShopScreenState extends State<ShopScreen> {
                         ),
                       )
                     else ...[
-                      _EdgeFade(
+                      EdgeFade(
                         child: Row(children: [
                           for (final g in groups)
                             _CatChip(
@@ -290,7 +290,7 @@ class _ShopScreenState extends State<ShopScreen> {
                       ),
                       if (subs.isNotEmpty) ...[
                         const SizedBox(height: AppSpace.sm),
-                        _EdgeFade(
+                        EdgeFade(
                           child: Row(children: [
                             for (final c in subs)
                               _CatChip(
@@ -359,9 +359,10 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 }
 
-class _EdgeFade extends StatelessWidget {
+@visibleForTesting
+class EdgeFade extends StatelessWidget {
   final Widget child;
-  const _EdgeFade({required this.child});
+  const EdgeFade({required this.child});
 
   @override
   Widget build(BuildContext context) => ShaderMask(

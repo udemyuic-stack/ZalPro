@@ -1,6 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kotta_qani_diet/l10n/tr.dart';
+import 'package:kotta_qani_diet/models/announcement.dart';
+import 'package:kotta_qani_diet/screens/user/shop_screen.dart';
+import 'package:kotta_qani_diet/widgets/announcement_banner.dart';
+import 'package:kotta_qani_diet/widgets/app_nav_bar.dart';
+import 'package:kotta_qani_diet/widgets/product_image.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:kotta_qani_diet/screens/admin/admin_home.dart';
 import 'package:kotta_qani_diet/screens/user/today_screen.dart';
 import 'package:kotta_qani_diet/theme.dart';
@@ -10,6 +17,14 @@ void setSize(WidgetTester tester, double width) {
   tester.view.physicalSize = Size(width, 800);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
+}
+
+Future<void> pump360(WidgetTester tester, Widget child, {bool light = false}) async {
+  setSize(tester, 360);
+  AppColors.light = light;
+  addTearDown(() => AppColors.light = false);
+  await tester.pumpWidget(MaterialApp(theme: AppTheme.current(), home: Scaffold(body: child)));
+  await tester.pump();
 }
 
 Future<void> pumpWater(
@@ -107,5 +122,140 @@ void main() {
       expect(size.height, greaterThanOrEqualTo(48));
     }
     expect(tester.takeException(), isNull);
+  });
+
+  group('EdgeFade', () {
+    testWidgets('8 chips at 360 px scroll horizontally without overflow', (tester) async {
+      await pump360(
+        tester,
+        EdgeFade(
+          child: Row(children: [
+            for (var i = 0; i < 8; i++)
+              Padding(
+                padding: const EdgeInsets.only(right: AppSpace.sm),
+                child: ChoiceChip(
+                  key: Key('chip$i'),
+                  selected: i == 0,
+                  onSelected: (_) {},
+                  label: Text('Kategoriya $i'),
+                ),
+              ),
+          ]),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      final scroll = tester.state<ScrollableState>(find.byType(Scrollable));
+      expect(scroll.position.maxScrollExtent, greaterThan(0));
+      final before = tester.getTopLeft(find.byKey(const Key('chip7'))).dx;
+      expect(before, greaterThan(360));
+      await tester.drag(find.byType(EdgeFade), const Offset(-300, 0));
+      await tester.pump();
+      expect(scroll.position.pixels, greaterThan(0));
+      expect(tester.getTopLeft(find.byKey(const Key('chip7'))).dx, lessThan(before));
+      expect(tester.takeException(), isNull);
+    });
+  });
+
+  group('ProductImage without a picture', () {
+    for (final light in [false, true]) {
+      for (final size in [56.0, 60.0]) {
+        testWidgets('${light ? 'light' : 'dark'} $size: no overflow', (tester) async {
+          await pump360(
+            tester,
+            Row(children: [
+              ProductImage(category: 'Protein', name: 'zzz-yo\'q', size: size),
+              ProductImage(category: 'Forma', name: 'zzz-yo\'q', size: size),
+            ]),
+            light: light,
+          );
+          expect(tester.getSize(find.byType(ProductImage).first), Size(size, size));
+          expect(find.byIcon(shopIcon('Protein')), findsOneWidget);
+          expect(tester.takeException(), isNull);
+        });
+      }
+    }
+  });
+
+  group('AppNavBar', () {
+    const items = [
+      AppNavItem(icon: Icon(Icons.home), label: 'Bosh'),
+      AppNavItem(icon: Icon(Icons.restaurant), label: 'Ovqat'),
+      AppNavItem(icon: Icon(Icons.shopping_bag), label: 'Do\'kon'),
+      AppNavItem(icon: Icon(Icons.person), label: 'Profil'),
+      AppNavItem(icon: Icon(Icons.settings), label: 'Sozlama'),
+    ];
+
+    Future<void> pumpBar(WidgetTester tester, {int? primary, required ValueChanged<int> on}) async {
+      setSize(tester, 360);
+      await tester.pumpWidget(MaterialApp(
+        theme: AppTheme.current(),
+        home: Scaffold(
+          bottomNavigationBar: AppNavBar(items: items, primary: primary, selected: 0, onSelected: on),
+        ),
+      ));
+      await tester.pump();
+    }
+
+    testWidgets('selection callback fires with the tapped index', (tester) async {
+      final picked = <int>[];
+      await pumpBar(tester, on: picked.add);
+      await tester.tap(find.text('Ovqat'));
+      await tester.pump();
+      expect(picked, [1]);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets("Ko'proq variant opens the sheet and selects a hidden item", (tester) async {
+      final picked = <int>[];
+      await pumpBar(tester, primary: 3, on: picked.add);
+      expect(find.text('Sozlama'), findsNothing);
+      await tester.tap(find.text(tr("Ko'proq")));
+      await tester.pumpAndSettle();
+      expect(find.text('Sozlama'), findsOneWidget);
+      await tester.tap(find.text('Sozlama'));
+      await tester.pumpAndSettle();
+      expect(picked, [4]);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('visible destinations still select in the Ko\'proq variant', (tester) async {
+      final picked = <int>[];
+      await pumpBar(tester, primary: 3, on: picked.add);
+      await tester.tap(find.text('Do\'kon'));
+      await tester.pump();
+      expect(picked, [2]);
+    });
+  });
+
+  group('AnnouncementBanner', () {
+    setUp(() => SharedPreferences.setMockInitialValues({}));
+
+    testWidgets('neutral card, dismiss button at least 52 px', (tester) async {
+      await pump360(
+        tester,
+        AnnouncementBanner(
+          userId: 'u',
+          clock: () => DateTime(2026, 10, 19, 12),
+          source: Stream.value([
+            const Announcement(
+              id: 'a1',
+              title: 'Yangilik',
+              body: 'Ertaga zal 10:00 da ochiladi',
+              audience: AnnouncementAudience.all,
+              authorId: 'x',
+              authorName: 'Admin',
+            ),
+          ]),
+        ),
+      );
+      await tester.pump();
+      await tester.pump();
+      final tile = tester.widget<BentoTile>(find.byKey(const Key('announcement-banner')));
+      expect(tile.feature, isFalse);
+      final size = tester.getSize(find.byKey(const Key('announcement-dismiss')));
+      expect(size.width, greaterThanOrEqualTo(52));
+      expect(size.height, greaterThanOrEqualTo(52));
+      expect(tester.takeException(), isNull);
+    });
   });
 }
