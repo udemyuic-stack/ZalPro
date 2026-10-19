@@ -6230,5 +6230,25 @@
  "🛒 Buyurtma: {0} × {1} — {2}": {
   "ru": "🛒 Заказ: {0} × {1} — {2}",
   "en": "🛒 Order: {0} × {1} — {2}"
+ },
+ "3-versiya (maslahatlar)": {
+  "ru": "Версия 3 (советы)",
+  "en": "Version 3 (tips)"
+ },
+ "1-versiya (grammli)": {
+  "ru": "Версия 1 (в граммах)",
+  "en": "Version 1 (in grams)"
+ },
+ "2-versiya (tanlovli)": {
+  "ru": "Версия 2 (на выбор)",
+  "en": "Version 2 (choose your own)"
+ },
+ "60 / 65 / 75 kg (2-versiya)": {
+  "ru": "60 / 65 / 75 кг (версия 2)",
+  "en": "60 / 65 / 75 kg (version 2)"
+ },
+ "80-90 kg (asosiy)": {
+  "ru": "80–90 кг (основной)",
+  "en": "80–90 kg (main)"
  }
 }
