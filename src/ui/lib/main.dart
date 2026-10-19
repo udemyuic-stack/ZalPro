@@ -71,12 +71,15 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       valueListenable: appLang,
       builder: (context, lang, _) => ValueListenableBuilder<ThemeMode>(
         valueListenable: AppSettings.themeMode,
-        builder: (context, mode, _) {
+        builder: (context, mode, _) => ValueListenableBuilder<AppPalette>(
+        valueListenable: AppSettings.palette,
+        builder: (context, palette, _) {
           final platformLight =
               WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.light;
           final light = mode == ThemeMode.light || (mode == ThemeMode.system && platformLight);
           AppColors.light = light;
-          final look = '$light-$lang';
+          AppColors.palette = palette;
+          final look = '$light-$palette-$lang';
           if (_look != null && _look != look) {
             WidgetsBinding.instance.addPostFrameCallback((_) => _rebuildAll());
           }
@@ -97,6 +100,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             home: const AuthGate(),
           );
         },
+        ),
       ),
     );
   }

@@ -14,7 +14,11 @@ double _ratio(Color a, Color b) {
 }
 
 void main() {
-  tearDown(() => AppColors.light = false);
+  tearDown(() {
+    AppColors.light = false;
+    AppColors.palette = AppPalette.graphite;
+  });
+  paletteTests();
 
   for (final light in [false, true]) {
     final name = light ? 'yorug' : 'qorong\'i';
@@ -40,4 +44,29 @@ void main() {
       expect(_ratio(AppColors.card, AppColors.bg), greaterThan(1.05));
     });
   }
+}
+
+void paletteTests() {
+  for (final pal in [AppPalette.emerald, AppPalette.amber]) {
+    test('${pal.name}: kontrast >= 4.5 va karta fondan ajraladi', () {
+      AppColors.light = false;
+      AppColors.palette = pal;
+      for (final bg in [AppColors.bg, AppColors.card, AppColors.cardHigh]) {
+        expect(_ratio(AppColors.text, bg), greaterThanOrEqualTo(4.5));
+        expect(_ratio(AppColors.textMuted, bg), greaterThanOrEqualTo(4.5));
+        expect(_ratio(AppColors.accentText, bg), greaterThanOrEqualTo(4.5));
+      }
+      expect(_ratio(AppColors.onAccentFill, AppColors.accentFill), greaterThanOrEqualTo(4.5));
+      expect(_ratio(AppColors.card, AppColors.bg), greaterThan(1.05));
+      AppColors.palette = AppPalette.graphite;
+    });
+  }
+
+  test('yorug' 'da palitra e\'tiborga olinmaydi', () {
+    AppColors.light = true;
+    AppColors.palette = AppPalette.emerald;
+    expect(AppColors.bg, const Color(0xFFF4F4F7));
+    AppColors.palette = AppPalette.graphite;
+    AppColors.light = false;
+  });
 }

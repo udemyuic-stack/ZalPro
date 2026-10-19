@@ -1,22 +1,47 @@
 import 'package:flutter/material.dart';
 
+enum AppPalette { graphite, emerald, amber }
+
 class AppColors {
   static bool light = false;
+  static AppPalette palette = AppPalette.graphite;
+
+  static ({Color bg, Color card, Color accent}) swatch(AppPalette p, {required bool isLight}) {
+    final savedLight = light;
+    final savedPalette = palette;
+    light = isLight;
+    palette = p;
+    final result = (bg: bg, card: card, accent: accent);
+    light = savedLight;
+    palette = savedPalette;
+    return result;
+  }
+
+  static bool get _emerald => !light && palette == AppPalette.emerald;
+  static bool get _amber => !light && palette == AppPalette.amber;
 
   static Color _c(int dark, int lightValue) => Color(light ? lightValue : dark);
-  static Color get bg => _c(0xFF121216, 0xFFF4F4F7);
-  static Color get bgDeep => _c(0xFF0E0E12, 0xFFECECF1);
-  static Color get card => _c(0xFF1A1A20, 0xFFFFFFFF);
-  static Color get cardHigh => _c(0xFF24242C, 0xFFF0F0F4);
-  static Color get text => _c(0xFFF5F5F7, 0xFF141418);
-  static Color get textMuted => _c(0xFFA4A4B0, 0xFF5A5A66);
-  static Color get textFaint => _c(0xFF8F8F9A, 0xFF666672);
-  static Color get accent => _c(0xFFFF3B5C, 0xFFC8102E);
-  static Color get accentFill => _c(0xFFE11D48, 0xFFC8102E);
-  static Color get accentSoft => _c(0xFFFF7A92, 0xFF9F0D25);
-  static Color get accentText => _c(0xFFFF3B5C, 0xFFC8102E);
-  static Color get onAccent => _c(0xFF14050A, 0xFFFFFFFF);
-  static Color get onAccentFill => const Color(0xFFFFFFFF);
+  static Color _p(int dark, int lightValue, {int? emerald, int? amber}) {
+    if (_emerald && emerald != null) return Color(emerald);
+    if (_amber && amber != null) return Color(amber);
+    return Color(light ? lightValue : dark);
+  }
+
+  static Color get bg => _p(0xFF121216, 0xFFF4F4F7, emerald: 0xFF0A1115, amber: 0xFF120F0C);
+  static Color get bgDeep => _p(0xFF0E0E12, 0xFFECECF1, emerald: 0xFF070C0F, amber: 0xFF0C0A08);
+  static Color get card => _p(0xFF1A1A20, 0xFFFFFFFF, emerald: 0xFF121F26, amber: 0xFF1C1712);
+  static Color get cardHigh => _p(0xFF24242C, 0xFFF0F0F4, emerald: 0xFF1B2D36, amber: 0xFF2A2319);
+  static Color get text => _p(0xFFF5F5F7, 0xFF141418, emerald: 0xFFF0FDF4, amber: 0xFFFFFBEB);
+  static Color get textMuted => _p(0xFFA4A4B0, 0xFF5A5A66, emerald: 0xFF9FB8B0, amber: 0xFFBFAE92);
+  static Color get textFaint => _p(0xFF8F8F9A, 0xFF666672, emerald: 0xFF8AA39B, amber: 0xFFA8977C);
+  static Color get accent => _p(0xFFFF3B5C, 0xFFC8102E, emerald: 0xFF10B981, amber: 0xFFF59E0B);
+  static Color get accentFill => _p(0xFFE11D48, 0xFFC8102E, emerald: 0xFF047857, amber: 0xFFD97706);
+  static Color get accentSoft => _p(0xFFFF7A92, 0xFF9F0D25, emerald: 0xFF6EE7B7, amber: 0xFFFCD34D);
+  static Color get accentText => accent;
+  static Color get accentContainer =>
+      _p(0xFF3A0F18, 0xFFFFD9DF, emerald: 0xFF0B3B2B, amber: 0xFF3A2708);
+  static Color get onAccent => _p(0xFF14050A, 0xFFFFFFFF, emerald: 0xFF04130D, amber: 0xFF1A1003);
+  static Color get onAccentFill => _p(0xFFFFFFFF, 0xFFFFFFFF, amber: 0xFF1A1003);
   static Color get bubbleOwn => accentFill;
   static Color get onBubbleOwn => onAccentFill;
   static Color get success => _c(0xFF4ADE80, 0xFF15803D);
@@ -33,11 +58,16 @@ class AppColors {
         radius: 1.25,
         colors: light
             ? const [Color(0x14C8102E), Color(0x00F4F4F7), Color(0x00F4F4F7)]
-            : const [Color(0x2BFF3B5C), Color(0x000E0E12), Color(0x000E0E12)],
+            : [accent.withValues(alpha: 0.17), bgDeep.withValues(alpha: 0), bgDeep.withValues(alpha: 0)],
         stops: const [0.0, 0.55, 1.0],
       );
   static LinearGradient get headerGradient => LinearGradient(
-        colors: [light ? const Color(0xFFFCE8EB) : const Color(0xFF1C1618), bg],
+        colors: [
+          light
+              ? const Color(0xFFFCE8EB)
+              : _p(0xFF1C1618, 0, emerald: 0xFF0F2019, amber: 0xFF1F1810),
+          bg
+        ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       );
@@ -73,7 +103,7 @@ class AppTheme {
     final s = (isLight ? const ColorScheme.light() : const ColorScheme.dark()).copyWith(
       primary: AppColors.accent,
       onPrimary: AppColors.onAccent,
-      primaryContainer: isLight ? const Color(0xFFFFD9DF) : const Color(0xFF3A0F18),
+      primaryContainer: AppColors.accentContainer,
       onPrimaryContainer: AppColors.accentSoft,
       secondary: AppColors.water,
       onSecondary: AppColors.onAccent,
