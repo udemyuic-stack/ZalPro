@@ -64,7 +64,7 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                 const Icon(Icons.palette_outlined),
                 const SizedBox(width: AppSpace.md),
                 Expanded(child: Text(tr('Dizayn mavzulari'), style: t.titleSmall)),
-                Text(currentThemeChoice().title,
+                Text(currentThemeTitle(),
                     style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
                 const SizedBox(width: AppSpace.xs),
                 Icon(Icons.chevron_right_outlined, color: AppColors.textFaint),

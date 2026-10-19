@@ -30,13 +30,13 @@ class PlansScreen extends StatelessWidget {
           Text(tr('Shablonni tanlang'), style: t.titleLarge),
           for (final g in groups.entries) ...[
             const SizedBox(height: AppSpace.lg),
-            Eyebrow(g.key),
+            Eyebrow(tr(g.key)),
             const SizedBox(height: AppSpace.sm),
             for (final p in g.value)
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.restaurant_menu),
-                  title: Text(p.title.substring(g.key.length).replaceFirst(' • ', '')),
+                  title: Text(tr(p.title.substring(g.key.length).replaceFirst(' • ', ''))),
                   subtitle: Text(p.meals.isEmpty && !p.isWeekly
                       ? tr("Faqat maslahatlar — mahallarni o'zingiz qo'shasiz")
                       : trf(
@@ -65,7 +65,7 @@ class PlansScreen extends StatelessWidget {
       context,
       title: tr("Rejani o'chirish"),
       message: trf(
-          '"{0}" butunlay o\'chiriladi. Unga biriktirilgan mijozlar rejasiz qoladi.', [p.title]),
+          '"{0}" butunlay o\'chiriladi. Unga biriktirilgan mijozlar rejasiz qoladi.', [tr(p.title)]),
       ok: tr("O'chirish"),
       destructive: true,
     );
@@ -121,7 +121,7 @@ class PlansScreen extends StatelessWidget {
                     onCopy: () => _open(
                       context,
                       Plan(
-                        title: trf('{0} (nusxa)', [p.title]),
+                        title: trf('{0} (nusxa)', [tr(p.title)]),
                         note: p.note,
                         meals: p.meals,
                         week: p.week,
@@ -430,7 +430,7 @@ class _PlanEditorState extends State<PlanEditor> {
     final ok = await confirm(
       context,
       title: tr("Mahalni o'chirish"),
-      message: trf('"{0}" va undagi mahsulotlar olib tashlanadi.', [_current[index].title]),
+      message: trf('"{0}" va undagi mahsulotlar olib tashlanadi.', [tr(_current[index].title)]),
       ok: tr("O'chirish"),
       destructive: true,
     );
