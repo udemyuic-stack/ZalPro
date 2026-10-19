@@ -16,9 +16,16 @@ import 'l10n/tr.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (kIsWeb) SemanticsBinding.instance.ensureSemantics();
-  final info = await PackageInfo.fromPlatform();
-  apiClient.setAppVersion('${info.version}+${info.buildNumber}');
-  await apiClient.restore();
+  try {
+    final info = await PackageInfo.fromPlatform();
+    apiClient.setAppVersion('${info.version}+${info.buildNumber}');
+  } catch (_) {
+    debugPrint('PackageInfo olinmadi');
+  }
+  try {
+    await apiClient.restore().timeout(const Duration(seconds: 8));
+  } catch (_) {
+  }
   await AppSettings.init();
   runApp(const ProviderScope(child: App()));
 }
