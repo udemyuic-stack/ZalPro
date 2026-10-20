@@ -94,7 +94,7 @@ class _SubscriptionTile extends StatelessWidget {
       await Db.sendSubscriptionReminder(client, daysLeft, adminId);
       if (context.mounted) showSnack(context, tr('Eslatma yuborildi'));
     } catch (e) {
-      if (context.mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+      if (context.mounted) showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
     }
   }
 
@@ -110,7 +110,7 @@ class _SubscriptionTile extends StatelessWidget {
     final status = switch (Subscription.urgencyOf(exp)) {
       SubscriptionUrgency.none => Pill(text: tr("Abonement yo'q"), color: AppColors.textMuted),
       SubscriptionUrgency.expired =>
-        Pill(text: trf("{0} kun o'tdi", [-daysLeft]), color: AppColors.danger),
+        Pill(text: trf('{0} kun kechikdi', [-daysLeft]), color: AppColors.danger),
       SubscriptionUrgency.soon =>
         Pill(text: trf('{0} kun qoldi', [daysLeft]), color: AppColors.warning),
       SubscriptionUrgency.ok =>
@@ -133,7 +133,7 @@ class _SubscriptionTile extends StatelessWidget {
         if (expiringSoon || expired)
           IconButton(
             constraints: const BoxConstraints.tightFor(width: kTouchTarget, height: kTouchTarget),
-            tooltip: tr('Eslatma yubor'),
+            tooltip: tr('Eslatma yuborish'),
             onPressed: () => _sendReminder(context, daysLeft),
             icon: Icon(Icons.notifications_active_outlined, color: AppColors.textMuted),
           ),
@@ -219,7 +219,7 @@ Future<void> addSubscriptionSheet(BuildContext context, AppUser client) async {
       );
       if (context.mounted) showSnack(context, tr("Abonement qo'shildi"));
     } catch (e) {
-      if (context.mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+      if (context.mounted) showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
     }
   }
 }

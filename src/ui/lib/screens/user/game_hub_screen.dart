@@ -166,7 +166,7 @@ class _Body extends StatelessWidget {
           child: Row(children: [
             Icon(Icons.flag_outlined, color: AppColors.gold),
             const SizedBox(width: AppSpace.md),
-            Expanded(child: Text(tr('Challenjlar'), style: t.titleMedium)),
+            Expanded(child: Text(tr('Vazifalar'), style: t.titleMedium)),
             Icon(Icons.chevron_right, color: AppColors.textFaint),
           ]),
         ),

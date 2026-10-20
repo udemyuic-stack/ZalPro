@@ -132,7 +132,7 @@ List<FeedItem> studentFeed({
     items.add(FeedItem(
       kind: FeedKind.order,
       title: switch (o.status) {
-        orderGiven => tr('Buyurtma berildi'),
+        orderGiven => tr('Buyurtma topshirildi'),
         orderCanceled => tr('Buyurtma bekor qilindi'),
         _ => tr('Buyurtma kutilmoqda'),
       },

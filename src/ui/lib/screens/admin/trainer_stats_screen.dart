@@ -486,7 +486,7 @@ class _OwnerRatingCardState extends State<_OwnerRatingCard> {
         return BentoTile(
           padding: const EdgeInsets.all(AppSpace.md),
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Eyebrow(tr('Sizning bahoingiz')),
+            Eyebrow(tr('Sizning bahongiz')),
             const SizedBox(height: AppSpace.xs),
             Text(
               tr("Faqat siz ko'rasiz — trener bu bahoni ko'rmaydi."),

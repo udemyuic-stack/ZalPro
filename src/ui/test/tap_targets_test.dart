@@ -316,7 +316,7 @@ void main() {
       ),
     );
     expect(audit(t).length, greaterThanOrEqualTo(2));
-    for (final label in ['Berildi', 'Bekor']) {
+    for (final label in ['Topshirildi', 'Bekor']) {
       final button = find.ancestor(of: find.text(label), matching: find.byWidgetPredicate((w) =>
           w is FilledButton || w is OutlinedButton));
       expect(t.getSize(button.first).height, greaterThanOrEqualTo(48), reason: label);

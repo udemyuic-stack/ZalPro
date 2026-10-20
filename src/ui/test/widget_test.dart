@@ -569,7 +569,7 @@ void main() {
 
     test('holat nomlari', () {
       expect(order().statusLabel, 'Kutilmoqda');
-      expect(order(status: orderGiven).statusLabel, 'Berildi');
+      expect(order(status: orderGiven).statusLabel, 'Topshirildi');
       expect(order(status: orderCanceled).statusLabel, 'Bekor qilindi');
       expect(order(status: orderGiven).isGiven, isTrue);
       expect(order(status: orderCanceled).isNew, isFalse);

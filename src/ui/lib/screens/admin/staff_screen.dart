@@ -803,7 +803,7 @@ class _StaffScreenState extends State<StaffScreen> {
                           } catch (e) {
                             final msg = (e is ApiException && e.code == 'phone_taken')
                                 ? tr('Bu raqam allaqachon ro\'yxatdan o\'tgan')
-                                : trf('Bo\'lmadi: {0}', [apiErrorText(e)]);
+                                : trf('Amalga oshmadi: {0}', [apiErrorText(e)]);
                             setS(() {
                               busy = false;
                               error = msg;
@@ -1069,7 +1069,7 @@ class _StaffScreenState extends State<StaffScreen> {
                     '{0} oddiy foydalanuvchiga aylanadi. Unga biriktirilgan {1} ta '
                     'shogird trenersiz qoladi — ularni boshqa trenerga biriktirishingiz kerak.',
                     [name, count])),
-        ok: tr('Olish'),
+        ok: tr('Olib tashlash'),
         destructive: true,
       );
       if (!ok) return;

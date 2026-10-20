@@ -184,7 +184,7 @@ class _ShopScreenState extends State<ShopScreen> {
       await Db.createOrder(widget.user, p, qty, size: size ?? '', color: color ?? '');
       if (mounted) showSnack(context, tr('Buyurtma yuborildi — trener xabardor bo\'ldi'));
     } catch (e) {
-      if (mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+      if (mounted) showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
     }
   }
 
@@ -200,7 +200,7 @@ class _ShopScreenState extends State<ShopScreen> {
     try {
       await Db.cancelOrder(o.id);
     } catch (e) {
-      if (mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+      if (mounted) showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
     }
   }
 
@@ -445,7 +445,7 @@ class _ProductTile extends StatelessWidget {
         FilledButton(
           style: FilledButton.styleFrom(minimumSize: const Size(0, kTouchTarget)),
           onPressed: p.totalStock > 0 ? onOrder : null,
-          child: Text(tr('Olaman')),
+          child: Text(tr('Sotib olaman')),
         ),
       ]),
     );

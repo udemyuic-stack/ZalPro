@@ -80,7 +80,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                       const SizedBox(height: AppSpace.xs),
                       Text(total.money, style: t.headlineMedium?.copyWith(color: AppColors.accent)),
                       const SizedBox(height: 2),
-                      Text(trf('{0} ta buyurtma berildi', [total.count]),
+                      Text(trf('{0} ta buyurtma topshirildi', [total.count]),
                           style: TextStyle(color: AppColors.textMuted, fontSize: 13)),
                     ]),
                   ),
@@ -107,7 +107,7 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                                   Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                                 Text(
                                   e.key.isEmpty
-                                      ? tr('Kim bergani yozilmagan')
+                                      ? tr('Kim topshirgani yozilmagan')
                                       : (names[e.key] ?? tr('Xodim')),
                                   style: t.titleSmall,
                                 ),

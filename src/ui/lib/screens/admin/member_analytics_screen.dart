@@ -152,7 +152,7 @@ class _ChurnSectionState extends State<_ChurnSection> {
             return EmptyState(
               icon: Icons.favorite_border,
               title: tr("Ketish xavfi ostida shogird yo'q"),
-              subtitle: tr('Hammasi odatdagidek kelyapti'),
+              subtitle: tr('Hamma odatdagidek qatnayapti'),
             );
           }
           int count(String key) => key == 'all'

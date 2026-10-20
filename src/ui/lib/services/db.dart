@@ -386,7 +386,7 @@ class Db {
     return _shop.createOrder(p.id, qty, size: size, color: color);
   }
 
-  /// Trener holatni belgilaydi. "Berildi" — zaldagi qoldiqdan ayiriladi.
+  /// Trener holatni belgilaydi. 'Topshirildi' — zaldagi qoldiqdan ayiriladi.
   /// Shogird chatda javob xabarini ko'radi.
   static Future<void> setOrderStatus(ShopOrder o, String status, String byId) async {
     return _shop.setOrderStatus(o.id, status);

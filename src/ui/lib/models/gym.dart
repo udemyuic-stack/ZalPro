@@ -80,7 +80,7 @@ const weekdayNames = {
   7: 'Yakshanba',
 };
 
-const weekdayShort = {1: 'Du', 2: 'Se', 3: 'Chor', 4: 'Pay', 5: 'Ju', 6: 'Sha', 7: 'Yak'};
+const weekdayShort = {1: 'Du', 2: 'Se', 3: 'Ch', 4: 'Pa', 5: 'Ju', 6: 'Sh', 7: 'Ya'};
 
 /// Ikki variant (zal qoidasi): Seshanba/Payshanba/Shanba yoki Dushanba/Chorshanba/Juma
 const evenDays = [2, 4, 6]; // Se, Pay, Sha

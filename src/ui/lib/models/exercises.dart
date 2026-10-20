@@ -38,7 +38,7 @@ Muscle? muscleById(String id) {
 /// Mashq darajalari: kalit (bazada) → o'zbekcha nom (ekranda `tr()` bilan)
 const levels = {
   'beginner': 'Boshlovchi',
-  'middle': "O'rta",
+  'middle': "O'rta daraja",
   'pro': 'Professional',
 };
 

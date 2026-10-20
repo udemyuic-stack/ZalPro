@@ -32,12 +32,12 @@ class _ShopAdminScreenState extends State<ShopAdminScreen> {
     if (status == orderGiven) {
       final ok = await confirm(
         context,
-        title: tr('Berildi deb belgilash'),
+        title: tr('Topshirildi deb belgilash'),
         message: trf(
-          '{0}: "{1}" × {2} berildimi? Omborxonadan ayiriladi, qaytarib bo\'lmaydi.',
+          "{0}: \"{1}\" × {2} topshirildimi? Ombordan ayiriladi, qaytarib bo'lmaydi.",
           [o.clientName, o.productName, o.qty],
         ),
-        ok: tr('Berildi'),
+        ok: tr('Topshirildi'),
       );
       if (!ok || !mounted) return;
     }
@@ -55,10 +55,10 @@ class _ShopAdminScreenState extends State<ShopAdminScreen> {
       await Db.setOrderStatus(o, status, widget.admin.id);
       if (mounted) {
         showSnack(
-            context, status == orderGiven ? tr('Berildi deb belgilandi') : tr('Bekor qilindi'));
+            context, status == orderGiven ? tr('Topshirildi deb belgilandi') : tr('Bekor qilindi'));
       }
     } catch (e) {
-      if (mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+      if (mounted) showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
     }
   }
 
@@ -135,7 +135,7 @@ class _OrdersTab extends StatelessWidget {
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text(trf('30 kunda: {0}', [month.money]), style: t.titleMedium),
-                    Text(trf('{0} ta buyurtma berildi', [month.count]),
+                    Text(trf('{0} ta buyurtma topshirildi', [month.count]),
                         style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
                   ]),
                 ),
@@ -223,7 +223,7 @@ class OrderTile extends StatelessWidget {
                 ),
                 onPressed: () => onStatus(o, orderGiven),
                 icon: const Icon(Icons.check, size: 16),
-                label: Text(tr('Berildi')),
+                label: Text(tr('Topshirildi')),
               ),
             ),
             const SizedBox(width: AppSpace.md),

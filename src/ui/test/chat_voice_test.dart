@@ -292,7 +292,7 @@ void main() {
       await pump(tester, [audio('http://r2/a', 5000)]);
       await tester.tap(find.byKey(const Key('audio-play')));
       await tester.pump();
-      expect(find.text("Ijro bo'lmadi"), findsOneWidget);
+      expect(find.text("Ijro etib bo'lmadi"), findsOneWidget);
     });
 
     testWidgets('completion resets to the play state', (tester) async {

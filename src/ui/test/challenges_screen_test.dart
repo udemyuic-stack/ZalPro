@@ -64,7 +64,7 @@ void main() {
       steps: [],
     );
     await pump(tester, Stream.value(done));
-    expect(find.text(tr('Hamma challenjlar tugadi!')), findsOneWidget);
+    expect(find.text(tr('Barcha vazifalar bajarildi!')), findsOneWidget);
     expect(find.text(tr('Boshlash')), findsNothing);
   });
 }

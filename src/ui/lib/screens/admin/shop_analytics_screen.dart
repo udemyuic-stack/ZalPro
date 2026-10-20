@@ -84,7 +84,7 @@ class _ShopAnalyticsScreenState extends State<ShopAnalyticsScreen> {
                   return EmptyState(
                     icon: Icons.storefront_outlined,
                     title: tr("Bu davrda sotuv yo'q"),
-                    subtitle: tr('Berilgan buyurtmalar shu yerda ko\'rinadi'),
+                    subtitle: tr("Topshirilgan buyurtmalar shu yerda ko'rinadi"),
                   );
                 }
                 return _Body(data: data);
