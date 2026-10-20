@@ -65,21 +65,24 @@ class ProfileScreen extends StatelessWidget {
                     ]),
                   ),
                   const SizedBox(width: AppSpace.lg),
-                  Container(
-                    width: 64,
-                    height: 64,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: AppColors.accent,
-                      borderRadius: BorderRadius.circular(AppRadius.lg),
-                    ),
-                    child: Text(
-                      initials(user.name),
-                      style: TextStyle(
-                        color: AppColors.onAccent,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -1,
+                  PopIn(
+                    child: Container(
+                      width: 64,
+                      height: 64,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: AppColors.cardHigh,
+                        borderRadius: BorderRadius.circular(AppRadius.lg),
+                        border: Border.all(color: AppColors.accent.withValues(alpha: 0.6), width: 1.5),
+                      ),
+                      child: Text(
+                        initials(user.name),
+                        style: TextStyle(
+                          color: AppColors.accentText,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -1,
+                        ),
                       ),
                     ),
                   ),
@@ -94,13 +97,15 @@ class ProfileScreen extends StatelessWidget {
                 GameLevelCard(user: user),
                 const SizedBox(height: 10),
               ],
-              Row(children: [
+              FadeInUp(
+                index: 1,
+                child: Row(children: [
                 Expanded(
                   child: StatTile(
                     icon: male ? Icons.male : Icons.female,
                     label: tr('Jins'),
                     value: male ? tr('Erkak') : tr('Ayol'),
-                    color: AppColors.protein,
+                    color: AppColors.violet,
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -109,18 +114,21 @@ class ProfileScreen extends StatelessWidget {
                     icon: Icons.cake_outlined,
                     label: tr('Yosh'),
                     value: '${user.age}',
-                    color: AppColors.warning,
+                    color: AppColors.gold,
                   ),
                 ),
               ]),
+              ),
               const SizedBox(height: 10),
-              Row(children: [
+              FadeInUp(
+                index: 2,
+                child: Row(children: [
                 Expanded(
                   child: StatTile(
                     icon: Icons.height,
                     label: tr("Bo'y"),
                     value: trf('{0} sm', [user.height.round()]),
-                    color: AppColors.water,
+                    color: AppColors.sky,
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -129,18 +137,21 @@ class ProfileScreen extends StatelessWidget {
                     icon: Icons.monitor_weight_outlined,
                     label: tr('Vazn'),
                     value: trf('{0} kg', [fmtNum(user.weight)]),
-                    color: s.primary,
+                    color: AppColors.mint,
                   ),
                 ),
               ]),
+              ),
               const SizedBox(height: 10),
-              Row(children: [
+              FadeInUp(
+                index: 3,
+                child: Row(children: [
                 Expanded(
                   child: StatTile(
                     icon: user.isGain ? Icons.trending_up : Icons.trending_down,
                     label: tr('Maqsad'),
                     value: user.goalLabel.isEmpty ? '—' : tr(user.goalLabel),
-                    color: user.isGain ? AppColors.protein : AppColors.water,
+                    color: AppColors.secondary,
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -153,10 +164,11 @@ class ProfileScreen extends StatelessWidget {
                       'slow' => tr('Sekin'),
                       _ => '—',
                     },
-                    color: AppColors.warning,
+                    color: AppColors.gold,
                   ),
                 ),
               ]),
+              ),
               const SizedBox(height: 10),
               MySubscriptionCard(uid: user.id),
               if (user.trainerId != null) ...[

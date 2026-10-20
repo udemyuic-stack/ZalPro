@@ -12,6 +12,7 @@ import '../../widgets/checkin_qr_sheet.dart';
 import '../../widgets/extra_food_sheet.dart';
 import '../../widgets/food_image.dart';
 import '../../widgets/plan_photo.dart';
+import '../../widgets/shimmer_bar.dart';
 import '../../widgets/today_workout_card.dart';
 import '../../widgets/ui.dart';
 import '../../widgets/watermark.dart';
@@ -424,7 +425,7 @@ class _MetricsGrid extends StatelessWidget {
             icon: Icons.flag_outlined,
             label: tr('Maqsad'),
             value: goal.target == 0 ? '—' : trf('{0} kkal', [goal.target]),
-            color: AppColors.accent,
+            color: AppColors.sky,
           ),
         ),
         const SizedBox(width: AppSpace.md),
@@ -433,7 +434,7 @@ class _MetricsGrid extends StatelessWidget {
             icon: Icons.restaurant_outlined,
             label: tr('Ovqat'),
             value: '$doneCount/$mealCount',
-            color: AppColors.accent,
+            color: AppColors.mint,
           ),
         ),
       ]),
@@ -946,23 +947,27 @@ class _WeekCard extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpace.lg),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              Icon(Icons.local_fire_department_outlined, size: 17, color: AppColors.accent),
+              Icon(Icons.local_fire_department_outlined, size: 17, color: AppColors.coral),
               const SizedBox(width: AppSpace.sm),
               Expanded(child: Eyebrow(tr('Bu hafta'))),
             ]),
             const SizedBox(height: AppSpace.sm),
-            Text(
-              ready ? '${week.done}/${week.goal}' : '–/${week.goal}',
-              style: t.displaySmall?.copyWith(
-                fontFeatures: tabular,
-                color: week.reached && ready ? AppColors.success : AppColors.text,
-              ),
-            ),
+            if (ready)
+              CountUp(
+                week.done.toDouble(),
+                suffix: '/${week.goal}',
+                style: t.displaySmall?.copyWith(
+                  color: week.reached ? AppColors.success : AppColors.text,
+                ),
+              )
+            else
+              Text('–/${week.goal}', style: t.displaySmall?.copyWith(fontFeatures: tabular)),
             const SizedBox(height: AppSpace.md),
             Row(children: [
               for (var i = 0; i < 7; i++)
                 Expanded(
                   child: _DayDot(
+                    index: i,
                     label: tr(weekdayNames[i + 1] ?? '').characters.take(1).toString(),
                     present: ready && week.days[i],
                     isToday: i == week.todayIndex,
@@ -971,12 +976,20 @@ class _WeekCard extends StatelessWidget {
             ]),
             if (!failed) ...[
               const SizedBox(height: AppSpace.md),
-              Text(
-                streak > 0 ? trf('{0} hafta ketma-ket', [streak]) : tr('Bu haftani boshlang'),
-                style: t.bodyMedium?.copyWith(
-                  color: streak > 0 ? AppColors.success : AppColors.textMuted,
+              Row(children: [
+                if (streak > 0) ...[
+                  Icon(Icons.local_fire_department_outlined, size: 18, color: AppColors.coral),
+                  const SizedBox(width: AppSpace.xs),
+                ],
+                Expanded(
+                  child: Text(
+                    streak > 0 ? trf('{0} hafta ketma-ket', [streak]) : tr('Bu haftani boshlang'),
+                    style: t.bodyMedium?.copyWith(
+                      color: streak > 0 ? AppColors.success : AppColors.textMuted,
+                    ),
+                  ),
                 ),
-              ),
+              ]),
             ],
           ]),
         );
@@ -986,35 +999,47 @@ class _WeekCard extends StatelessWidget {
 }
 
 class _DayDot extends StatelessWidget {
+  final int index;
   final String label;
   final bool present, isToday;
-  const _DayDot({required this.label, required this.present, required this.isToday});
+  const _DayDot({
+    required this.index,
+    required this.label,
+    required this.present,
+    required this.isToday,
+  });
 
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
-    return Column(children: [
-      Container(
-        width: 28,
-        height: 28,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: isToday ? AppColors.accent : Colors.transparent,
-            width: 1.5,
-          ),
-        ),
-        child: Container(
-          width: 18,
-          height: 18,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: present ? AppColors.accent : AppColors.cardHigh,
-          ),
-          child: present ? Icon(Icons.check_rounded, size: 12, color: AppColors.onAccent) : null,
+    final dot = Container(
+      width: 28,
+      height: 28,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: isToday ? AppColors.accent : Colors.transparent,
+          width: 1.5,
         ),
       ),
+      child: Container(
+        width: 18,
+        height: 18,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: present ? AppColors.accent : AppColors.cardHigh,
+        ),
+        child: present ? Icon(Icons.check_rounded, size: 12, color: AppColors.onAccent) : null,
+      ),
+    );
+    return Column(children: [
+      if (present)
+        PopIn(delayMs: index * 70, child: dot)
+      else if (isToday)
+        Breathe(child: dot)
+      else
+        dot,
       const SizedBox(height: AppSpace.xs),
       Text(label, style: t.labelSmall?.copyWith(color: AppColors.textFaint)),
     ]);

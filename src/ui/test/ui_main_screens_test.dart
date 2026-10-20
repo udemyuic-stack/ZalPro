@@ -19,6 +19,7 @@ import 'package:kotta_qani_diet/widgets/ui.dart';
 import 'support/fake_api.dart';
 
 const _sizes = <String, Size>{
+  '320x720': Size(320, 720),
   '360x740': Size(360, 740),
   '390x844': Size(390, 844),
   '412x915': Size(412, 915)
@@ -26,7 +27,7 @@ const _sizes = <String, Size>{
 
 const _themes = <String, bool>{'light': true, 'dark': false};
 
-const _scales = <double>[1.0, 1.3];
+const _scales = <double>[1.0, 1.3, 1.5];
 
 Map<String, dynamic> _userJson(String id, String name,
         {String role = 'user'}) =>

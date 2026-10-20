@@ -257,7 +257,7 @@ class ProgressScreen extends StatelessWidget {
                               ],
                               isCurved: true,
                               preventCurveOverShooting: true,
-                              color: s.primary,
+                              color: AppColors.secondary,
                               barWidth: 3,
                               isStrokeCapRound: true,
                               dotData: FlDotData(
@@ -265,7 +265,7 @@ class ProgressScreen extends StatelessWidget {
                                   radius: 4,
                                   color: s.surface,
                                   strokeWidth: 2.5,
-                                  strokeColor: s.primary,
+                                  strokeColor: AppColors.secondary,
                                 ),
                               ),
                               belowBarData: BarAreaData(
@@ -274,8 +274,8 @@ class ProgressScreen extends StatelessWidget {
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
                                   colors: [
-                                    s.primary.withValues(alpha: 0.25),
-                                    s.primary.withValues(alpha: 0.0),
+                                    AppColors.secondary.withValues(alpha: 0.25),
+                                    AppColors.secondary.withValues(alpha: 0.0),
                                   ],
                                 ),
                               ),
@@ -292,7 +292,7 @@ class ProgressScreen extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     child: Column(children: [
                       for (var i = logs.length - 1; i >= 0; i--) ...[
-                        _HistoryRow(log: logs[i], prev: i > 0 ? logs[i - 1] : null),
+                        _HistoryRow(log: logs[i], prev: i > 0 ? logs[i - 1] : null, gain: user.isGain),
                         if (i > 0) const Divider(indent: AppSpace.lg, endIndent: AppSpace.lg),
                       ],
                     ]),
@@ -389,20 +389,24 @@ class _ChangePanel extends StatelessWidget {
           ),
         ]),
         const SizedBox(height: AppSpace.md),
-        Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                '$sign${diff.abs().toStringAsFixed(1)}',
-                style: t.displaySmall?.copyWith(color: accent, fontFeatures: tabular),
-              ),
-              const SizedBox(width: AppSpace.sm),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Text(tr('kg'), style: t.titleMedium?.copyWith(color: AppColors.textFaint)),
-              ),
-            ]),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  '$sign${diff.abs().toStringAsFixed(1)}',
+                  style: t.displaySmall?.copyWith(color: accent, fontFeatures: tabular),
+                ),
+                const SizedBox(width: AppSpace.sm),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Text(tr('kg'), style: t.titleMedium?.copyWith(color: AppColors.textFaint)),
+                ),
+              ]),
+        ),
         const SizedBox(height: AppSpace.sm),
         Text(
           trf('{0} kg dan {1} kg gacha', [fmtNum(from), fmtNum(to)]),
@@ -419,7 +423,8 @@ class _ChangePanel extends StatelessWidget {
 class _HistoryRow extends StatelessWidget {
   final WeightLog log;
   final WeightLog? prev;
-  const _HistoryRow({required this.log, this.prev});
+  final bool gain;
+  const _HistoryRow({required this.log, this.prev, this.gain = false});
 
   @override
   Widget build(BuildContext context) {
@@ -432,7 +437,7 @@ class _HistoryRow extends StatelessWidget {
           ? null
           : Pill(
               text: '${d > 0 ? '+' : ''}${d.toStringAsFixed(1)}',
-              color: d <= 0 ? AppColors.success : AppColors.warning,
+              color: weightTrendColor(weightTrendOf(d, gainGoal: gain)),
               icon: d <= 0 ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
             ),
     );

@@ -26,7 +26,7 @@ void main() {
     expect(weightTrendOf(0, gainGoal: true), WeightTrend.flat);
     AppColors.light = false;
     expect(weightTrendColor(WeightTrend.good), AppColors.success);
-    expect(weightTrendColor(WeightTrend.bad), AppColors.warning);
+    expect(weightTrendColor(WeightTrend.bad), AppColors.danger);
   });
 
   for (final light in [false, true]) {

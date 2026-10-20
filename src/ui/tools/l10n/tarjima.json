@@ -543,6 +543,22 @@
   "ru": "Снять с должности бармена",
   "en": "Remove bar staff role"
  },
+ "Barmog'ingizni orqa kamera va chiroq ustiga qo'ying": {
+  "ru": "Приложите палец к задней камере и вспышке",
+  "en": "Place your finger over the rear camera and flash"
+ },
+ "Barmog'ingizni orqa kamera va chiroqqa yengil bosing, qimirlatmang": {
+  "ru": "Слегка прижмите палец к задней камере и вспышке, не двигайте им",
+  "en": "Press your finger lightly on the rear camera and flash and keep it still"
+ },
+ "Barmog'ingizni orqa kameraga qo'yib, 30 soniyada o'lchang": {
+  "ru": "Приложите палец к задней камере — измерение займёт 30 секунд",
+  "en": "Place your finger on the rear camera — it takes 30 seconds"
+ },
+ "Barmoq topilmadi": {
+  "ru": "Палец не обнаружен",
+  "en": "Finger not detected"
+ },
  "Baxmal": {
   "ru": "Бахмал",
   "en": "Bakhmal"
@@ -974,6 +990,10 @@
  "Bugun keldi deb belgilangan": {
   "ru": "Отмечен как пришедший сегодня",
   "en": "Marked as present today"
+ },
+ "Bugun nima yeyman?": {
+  "ru": "Что мне съесть сегодня?",
+  "en": "What should I eat today?"
  },
  "Bugun tugaydi": {
   "ru": "Истекает сегодня",
@@ -2223,6 +2243,10 @@
   "ru": "Следующая: {0} — {1}",
   "en": "Next: {0} — {1}"
  },
+ "Keyinroq": {
+  "ru": "Позже",
+  "en": "Later"
+ },
  "Kiber Zumrad": {
   "ru": "Кибер Изумруд",
   "en": "Cyber Emerald"
@@ -2555,6 +2579,10 @@
   "ru": "Добавить упражнение",
   "en": "Add exercise"
  },
+ "Mashq rejasi haqida savol": {
+  "ru": "Вопрос о плане тренировок",
+  "en": "Question about my workout plan"
+ },
  "Mashq saqlandi": {
   "ru": "Упражнение сохранено",
   "en": "Exercise saved"
@@ -2566,6 +2594,10 @@
  "Mashq yo'q": {
   "ru": "Нет упражнений",
   "en": "No exercises"
+ },
+ "Mashqdan keyin yurak urishini o'lchang": {
+  "ru": "Измерьте пульс после тренировки",
+  "en": "Measure your heart rate after the workout"
  },
  "Mashqlar": {
   "ru": "Упражнения",
@@ -2958,6 +2990,18 @@
  "O'lchamni tanlang": {
   "ru": "Выберите размер",
   "en": "Choose a size"
+ },
+ "O'lchanmoqda...": {
+  "ru": "Измерение...",
+  "en": "Measuring..."
+ },
+ "O'lchash": {
+  "ru": "Измерить",
+  "en": "Measure"
+ },
+ "O'lchash barqaror chiqmadi": {
+  "ru": "Измерение получилось нестабильным",
+  "en": "The reading was not stable"
  },
  "O'lchov": {
   "ru": "Замеры",
@@ -3598,6 +3642,10 @@
  "Qayta kirish": {
   "ru": "Войти заново",
   "en": "Sign in again"
+ },
+ "Qayta o'lchash": {
+  "ru": "Измерить снова",
+  "en": "Measure again"
  },
  "Qayta urinish": {
   "ru": "Повторить",
@@ -4451,6 +4499,10 @@
   "ru": "Настройки (оформление, уведомления)",
   "en": "Settings (appearance, notifications)"
  },
+ "Sozlanmoqda...": {
+  "ru": "Настройка...",
+  "en": "Calibrating..."
+ },
  "Sportchi": {
   "ru": "Спортсмен",
   "en": "Athlete"
@@ -4718,6 +4770,10 @@
  "Tez — ovqat tez hazm bo'lib, tez-tez qorin ochadi. Sekin — ovqat sekin hazm bo'ladi, kuniga 2 mahal yeb ham yuraverasiz. Bilmasangiz — «Sekin»ni tanlang.": {
   "ru": "Быстрый — еда переваривается быстро, вы часто хотите есть. Медленный — еда переваривается медленно, вам хватает 2 приёмов пищи в день. Не знаете — выберите «Медленный».",
   "en": "Fast — food digests quickly and you get hungry often. Slow — food digests slowly and two meals a day are enough. If unsure, choose “Slow”."
+ },
+ "Tibbiy maqsadda emas": {
+  "ru": "Не для медицинских целей",
+  "en": "Not for medical use"
  },
  "Tik turib oyoq uchiga ko'tarilish": {
   "ru": "Подъём на носки стоя",
@@ -5311,6 +5367,10 @@
   "ru": "Вес не движется к цели",
   "en": "Weight isn't moving toward the goal"
  },
+ "Vazn tushirish bo'yicha maslahat": {
+  "ru": "Совет по снижению веса",
+  "en": "Weight loss advice"
+ },
  "Vazn: ertaga": {
   "ru": "Вес: завтра",
   "en": "Weight: tomorrow"
@@ -5867,6 +5927,10 @@
   "ru": "Юкоричирчик",
   "en": "Yukori Chirchik"
  },
+ "Yurak urishi": {
+  "ru": "Пульс",
+  "en": "Heart rate"
+ },
  "Zafarobod": {
   "ru": "Зафарабад",
   "en": "Zafarabad"
@@ -6175,6 +6239,10 @@
   "ru": "написавшие",
   "en": "who wrote"
  },
+ "zarba/daq": {
+  "ru": "уд/мин",
+  "en": "bpm"
+ },
  "{0} (nusxa)": {
   "ru": "{0} (копия)",
   "en": "{0} (copy)"
@@ -6407,6 +6475,10 @@
   "ru": "{0} см",
   "en": "{0} cm"
  },
+ "{0} soniya qoldi": {
+  "ru": "Осталось {0} с",
+  "en": "{0} s left"
+ },
  "{0} stakan": {
   "ru": "{0} стакан",
   "en": "{0} glass"
@@ -6634,85 +6706,5 @@
  "🛒 Buyurtma: {0} × {1} — {2}": {
   "ru": "🛒 Заказ: {0} × {1} — {2}",
   "en": "🛒 Order: {0} × {1} — {2}"
- },
- "3-versiya (maslahatlar)": {
-  "ru": "Версия 3 (советы)",
-  "en": "Version 3 (tips)"
- },
- "1-versiya (grammli)": {
-  "ru": "Версия 1 (в граммах)",
-  "en": "Version 1 (in grams)"
- },
- "2-versiya (tanlovli)": {
-  "ru": "Версия 2 (на выбор)",
-  "en": "Version 2 (choose your own)"
- },
- "60 / 65 / 75 kg (2-versiya)": {
-  "ru": "60 / 65 / 75 кг (версия 2)",
-  "en": "60 / 65 / 75 kg (version 2)"
- },
- "80-90 kg (asosiy)": {
-  "ru": "80–90 кг (основной)",
-  "en": "80–90 kg (main)"
- },
- "Yurak urishi": {
-  "ru": "Пульс",
-  "en": "Heart rate"
- },
- "Tibbiy maqsadda emas": {
-  "ru": "Не для медицинских целей",
-  "en": "Not for medical use"
- },
- "zarba/daq": {
-  "ru": "уд/мин",
-  "en": "bpm"
- },
- "Barmoq topilmadi": {
-  "ru": "Палец не обнаружен",
-  "en": "Finger not detected"
- },
- "O'lchash barqaror chiqmadi": {
-  "ru": "Измерение получилось нестабильным",
-  "en": "The reading was not stable"
- },
- "Barmog'ingizni orqa kamera va chiroqqa yengil bosing, qimirlatmang": {
-  "ru": "Слегка прижмите палец к задней камере и вспышке, не двигайте им",
-  "en": "Press your finger lightly on the rear camera and flash and keep it still"
- },
- "Barmog'ingizni orqa kamera va chiroq ustiga qo'ying": {
-  "ru": "Приложите палец к задней камере и вспышке",
-  "en": "Place your finger over the rear camera and flash"
- },
- "Sozlanmoqda...": {
-  "ru": "Настройка...",
-  "en": "Calibrating..."
- },
- "O'lchanmoqda...": {
-  "ru": "Измерение...",
-  "en": "Measuring..."
- },
- "{0} soniya qoldi": {
-  "ru": "Осталось {0} с",
-  "en": "{0} s left"
- },
- "Qayta o'lchash": {
-  "ru": "Измерить снова",
-  "en": "Measure again"
- },
- "Mashqdan keyin yurak urishini o'lchang": {
-  "ru": "Измерьте пульс после тренировки",
-  "en": "Measure your heart rate after the workout"
- },
- "Barmog'ingizni orqa kameraga qo'yib, 30 soniyada o'lchang": {
-  "ru": "Приложите палец к задней камере — измерение займёт 30 секунд",
-  "en": "Place your finger on the rear camera — it takes 30 seconds"
- },
- "O'lchash": {
-  "ru": "Измерить",
-  "en": "Measure"
- },
- "Keyinroq": {
-  "ru": "Позже",
-  "en": "Later"
  }
 }

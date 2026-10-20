@@ -65,7 +65,9 @@ class _Body extends StatelessWidget {
           child: Center(child: HeroBody(muscles: data.muscles, height: 380)),
         ),
         const SizedBox(height: AppSpace.md),
-        Row(children: [
+        FadeInUp(
+          index: 1,
+          child: Row(children: [
           Expanded(
             child: StatTile(
               icon: Icons.fitness_center_outlined,
@@ -92,10 +94,14 @@ class _Body extends StatelessWidget {
               color: AppColors.mint,
             ),
           ),
-        ]),
+          ]),
+        ),
         const SizedBox(height: AppSpace.lg),
         if (current != null)
-          _CurrentCard(step: current, progress: data.progress, onStart: onStart)
+          FadeInUp(
+            index: 2,
+            child: _CurrentCard(step: current, progress: data.progress, onStart: onStart),
+          )
         else
           BentoTile(
             child: Row(children: [

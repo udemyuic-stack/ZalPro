@@ -322,9 +322,9 @@ const _tones = [
   Color(0xFFABABAB),
   Color(0xFFD0D0D0),
   Color(0xFFFFFFFF),
-  Color(0xFFFF3B5C),
-  Color(0xFFFFB829),
-  Color(0xFF2BC4A4),
+  Color(0xFFD0D0D0),
+  Color(0xFFABABAB),
+  Color(0xFFD0D0D0),
 ];
 
 /// Tanlangan mushak ranglari: soyada to'q sariq, yorug'da och sariq (yorqinlik darajasi 0..5)

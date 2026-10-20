@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(children: [
           GradientHeader(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(AppSpace.xl, 44, AppSpace.xl, 40),
+              padding: const EdgeInsets.fromLTRB(AppSpace.xl, 36, AppSpace.xl, 28),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 const Row(children: [
                   AuraLogo(size: 30),
@@ -86,23 +86,31 @@ class _LoginScreenState extends State<LoginScreen> {
                   LangPicker(compact: true),
                 ]),
                 const SizedBox(height: AppSpace.xl),
-                Heading(tr('Biz bilan'), accent: tr("kuchliroq bo'ling"), style: t.headlineLarge),
+                FadeInUp(
+                  child: Heading(tr('Biz bilan'),
+                      accent: tr("kuchliroq bo'ling"), style: t.headlineLarge),
+                ),
                 const SizedBox(height: AppSpace.md),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 280),
-                  child: Text(
-                    tr('Trener tuzgan shaxsiy reja, kunlik nazorat va progress — bitta ilovada.'),
-                    style: t.bodyMedium?.copyWith(color: AppColors.textMuted),
+                FadeInUp(
+                  index: 1,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 280),
+                    child: Text(
+                      tr('Trener tuzgan shaxsiy reja, kunlik nazorat va progress — bitta ilovada.'),
+                      style: t.bodyMedium?.copyWith(color: AppColors.textMuted),
+                    ),
                   ),
                 ),
               ]),
             ),
           ),
-          Center(
+          FadeInUp(
+            index: 2,
+            child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 440),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
                 child: Form(
                   key: _form,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -179,16 +187,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 28),
-                      FilledButton(
-                        onPressed: _busy ? null : _submit,
-                        child: _busy
-                            ? SizedBox.square(
-                                dimension: 22,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.5,
-                                  color: AppColors.onAccentFill,
-                                ))
-                            : Text(_isRegister ? tr('Akkaunt yaratish') : tr('Kirish')),
+                      Pressable(
+                        enabled: !_busy,
+                        child: FilledButton(
+                          onPressed: _busy ? null : _submit,
+                          child: _busy
+                              ? SizedBox.square(
+                                  dimension: 22,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    color: AppColors.onAccentFill,
+                                  ))
+                              : Text(_isRegister ? tr('Akkaunt yaratish') : tr('Kirish')),
+                        ),
                       ),
                       if (_busy && _slow)
                         Padding(
@@ -225,6 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ],
                             ),
                           ),
+                          style: TextButton.styleFrom(foregroundColor: AppColors.textMuted),
                           child: Text(tr('Parolni unutdim')),
                         ),
                       const SizedBox(height: 12),
@@ -240,6 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+            ),
             ),
           ),
         ]),
@@ -281,8 +294,11 @@ class _Toggle extends StatelessWidget {
           height: kTouchTarget,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: active ? AppColors.accent.withValues(alpha: 0.16) : Colors.transparent,
+            color: active ? AppColors.accent.withValues(alpha: 0.24) : Colors.transparent,
             borderRadius: BorderRadius.circular(AppRadius.md - 4),
+            border: Border.all(
+              color: active ? AppColors.accent.withValues(alpha: 0.6) : Colors.transparent,
+            ),
           ),
           child: Text(
             label,

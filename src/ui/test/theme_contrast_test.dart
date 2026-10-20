@@ -19,6 +19,7 @@ void main() {
     AppColors.palette = AppPalette.graphite;
   });
   paletteTests();
+  accentSetTests();
 
   for (final light in [false, true]) {
     final name = light ? 'yorug' : 'qorong\'i';
@@ -69,4 +70,25 @@ void paletteTests() {
     AppColors.palette = AppPalette.graphite;
     AppColors.light = false;
   });
+}
+
+void accentSetTests() {
+  final themes = <(String, bool, AppPalette)>[
+    ('grafit', false, AppPalette.graphite),
+    ('zumrad', false, AppPalette.emerald),
+    ('oltin', false, AppPalette.amber),
+    ('kvars', true, AppPalette.graphite),
+  ];
+  for (final (name, light, pal) in themes) {
+    test('$name: o\'yin ranglari >= 3 va ikkilamchi >= 4.5', () {
+      AppColors.light = light;
+      AppColors.palette = pal;
+      for (final bg in [AppColors.bg, AppColors.card, AppColors.cardHigh]) {
+        for (final c in [AppColors.violet, AppColors.sky, AppColors.coral, AppColors.gold, AppColors.mint]) {
+          expect(_ratio(c, bg), greaterThanOrEqualTo(3.0));
+        }
+        expect(_ratio(AppColors.secondary, bg), greaterThanOrEqualTo(4.5));
+      }
+    });
+  }
 }

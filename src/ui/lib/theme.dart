@@ -27,17 +27,18 @@ class AppColors {
     return Color(light ? lightValue : dark);
   }
 
-  static Color get bg => _p(0xFF121216, 0xFFEFF1FA, emerald: 0xFF0A1115, amber: 0xFF120F0C);
-  static Color get bgDeep => _p(0xFF0E0E12, 0xFFECECF1, emerald: 0xFF070C0F, amber: 0xFF0C0A08);
-  static Color get card => _p(0xFF1A1A20, 0xFFFFFFFF, emerald: 0xFF121F26, amber: 0xFF1C1712);
-  static Color get cardHigh => _p(0xFF24242C, 0xFFF0F0F4, emerald: 0xFF1B2D36, amber: 0xFF2A2319);
+  static Color get bg => _p(0xFF13151F, 0xFFEFF1FA, emerald: 0xFF0A1115, amber: 0xFF120F0C);
+  static Color get bgDeep => _p(0xFF0E0F16, 0xFFECECF1, emerald: 0xFF070C0F, amber: 0xFF0C0A08);
+  static Color get card => _p(0xFF1B1E2A, 0xFFFFFFFF, emerald: 0xFF121F26, amber: 0xFF1C1712);
+  static Color get cardHigh => _p(0xFF262A38, 0xFFF0F0F4, emerald: 0xFF1B2D36, amber: 0xFF2A2319);
   static Color get text => _p(0xFFF5F5F7, 0xFF141418, emerald: 0xFFF0FDF4, amber: 0xFFFFFBEB);
   static Color get textMuted => _p(0xFFA4A4B0, 0xFF5A5A66, emerald: 0xFF9FB8B0, amber: 0xFFBFAE92);
-  static Color get textFaint => _p(0xFF8F8F9A, 0xFF666672, emerald: 0xFF8AA39B, amber: 0xFFA8977C);
+  static Color get textFaint => _p(0xFF9A9AA6, 0xFF666672, emerald: 0xFF8AA39B, amber: 0xFFA8977C);
   static Color get accent => _p(0xFFFF3B5C, 0xFFC8102E, emerald: 0xFF10B981, amber: 0xFFF59E0B);
   static Color get accentFill => _p(0xFFE11D48, 0xFFC8102E, emerald: 0xFF047857, amber: 0xFFD97706);
   static Color get accentSoft => _p(0xFFFF7A92, 0xFF9F0D25, emerald: 0xFF6EE7B7, amber: 0xFFFCD34D);
   static Color get accentText => accent;
+  static Color get secondary => _p(0xFF7C8BFF, 0xFF4338CA, emerald: 0xFF38BDF8, amber: 0xFF7C8BFF);
   static Color get accentContainer =>
       _p(0xFF3A0F18, 0xFFFFD9DF, emerald: 0xFF0B3B2B, amber: 0xFF3A2708);
   static Color get onAccent => _p(0xFF14050A, 0xFFFFFFFF, emerald: 0xFF04130D, amber: 0xFF1A1003);
@@ -48,11 +49,11 @@ class AppColors {
   static Color get successText => _c(0xFF4ADE80, 0xFF166534);
   static Color get warning => _c(0xFFFBBF24, 0xFFB45309);
   static Color get danger => _c(0xFFFB7185, 0xFFD3173D);
-  static Color get violet => const Color(0xFF8B5CF6);
-  static Color get sky => const Color(0xFF38BDF8);
-  static Color get coral => const Color(0xFFFB7185);
-  static Color get gold => const Color(0xFFFBBF24);
-  static Color get mint => const Color(0xFF34D399);
+  static Color get violet => _c(0xFF9B87FF, 0xFF6D3FE0);
+  static Color get sky => _c(0xFF38BDF8, 0xFF0369A1);
+  static Color get coral => _p(0xFFFB7185, 0xFFD3173D, emerald: 0xFFFB923C, amber: 0xFFFF8A65);
+  static Color get gold => _c(0xFFFBBF24, 0xFFB45309);
+  static Color get mint => _c(0xFF34D399, 0xFF047857);
   static Color get water => _c(0xFF38BDF8, 0xFF0369A1);
   static Color get protein => _c(0xFFA78BFA, 0xFF7C3AED);
   static Color get hairline => _c(0x1AFFFFFF, 0x1F141418);
@@ -70,7 +71,7 @@ class AppColors {
         colors: [
           light
               ? const Color(0xFFFCE8EB)
-              : _p(0xFF1C1618, 0, emerald: 0xFF0F2019, amber: 0xFF1F1810),
+              : _p(0xFF211A2B, 0, emerald: 0xFF0F2019, amber: 0xFF1F1810),
           bg
         ],
         begin: Alignment.topLeft,
@@ -241,7 +242,7 @@ class AppTheme {
         iconTheme: WidgetStateProperty.resolveWith(
           (st) => IconThemeData(
             size: 23,
-            color: st.contains(WidgetState.selected) ? AppColors.accentText : AppColors.textFaint,
+            color: st.contains(WidgetState.selected) ? AppColors.accentText : AppColors.textMuted,
           ),
         ),
         labelTextStyle: WidgetStateProperty.resolveWith(
@@ -250,7 +251,7 @@ class AppTheme {
             fontSize: 12,
             letterSpacing: 0.1,
             fontWeight: st.contains(WidgetState.selected) ? FontWeight.w700 : FontWeight.w500,
-            color: st.contains(WidgetState.selected) ? AppColors.accentText : AppColors.textFaint,
+            color: st.contains(WidgetState.selected) ? AppColors.accentText : AppColors.textMuted,
           ),
         ),
       ),

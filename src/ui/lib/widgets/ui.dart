@@ -399,7 +399,14 @@ class SectionHeader extends StatelessWidget {
               Heading(title, style: t.titleLarge),
             ]),
           ),
-          if (trailing != null) trailing!,
+          if (trailing != null)
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerRight,
+                child: trailing!,
+              ),
+            ),
         ]),
         const SizedBox(height: AppSpace.sm),
         Container(height: 1, color: AppColors.hairline),

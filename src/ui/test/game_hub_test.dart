@@ -73,7 +73,9 @@ void main() {
         width: w,
       );
       expect(tester.takeException(), isNull);
-      expect(find.text(trf('{0} takror', [30]), skipOffstage: false), findsOneWidget);
+      await tester.scrollUntilVisible(find.text(trf('{0} takror', [30])), 200);
+      expect(tester.takeException(), isNull);
+      expect(find.text(trf('{0} takror', [30])), findsOneWidget);
     });
   }
 

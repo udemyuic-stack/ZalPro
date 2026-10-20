@@ -160,18 +160,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final s = Theme.of(context).colorScheme;
     final t = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
         title: Row(children: [
-          UserAvatar(name: widget.title, size: 38),
+          UserAvatar(name: widget.title, size: 44),
           const SizedBox(width: 12),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(widget.title, maxLines: 1, overflow: TextOverflow.ellipsis),
               if (widget.subtitle != null)
-                Text(widget.subtitle!, style: t.bodySmall?.copyWith(color: s.onSurfaceVariant)),
+                Text(widget.subtitle!, style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
             ]),
           ),
         ]),
@@ -193,6 +192,28 @@ class _ChatScreenState extends State<ChatScreen> {
                   icon: Icons.forum_outlined,
                   title: tr('Suhbatni boshlang'),
                   subtitle: tr("Ovqatlanish, mashq yoki reja bo'yicha savolingizni yozing."),
+                  action: Padding(
+                    padding: const EdgeInsets.only(top: AppSpace.md),
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: AppSpace.sm,
+                      runSpacing: AppSpace.sm,
+                      children: [
+                        for (final q in [
+                          tr('Bugun nima yeyman?'),
+                          tr('Mashq rejasi haqida savol'),
+                          tr('Vazn tushirish bo\'yicha maslahat'),
+                        ])
+                          ActionChip(
+                            label: Text(q),
+                            onPressed: () {
+                              _c.text = q;
+                              _c.selection = TextSelection.collapsed(offset: q.length);
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
                 );
               }
               return ListView.builder(
@@ -298,10 +319,10 @@ class _SystemNote extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).cardTheme.color ?? Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(AppRadius.md),
-              border: Border.all(color: AppColors.warning),
+              border: Border.all(color: AppColors.hairline),
             ),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Icon(Icons.notifications_none_outlined, size: 22, color: AppColors.warning),
+              Icon(Icons.notifications_none_outlined, size: 22, color: AppColors.textMuted),
               const SizedBox(width: AppSpace.sm),
               Flexible(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -646,7 +667,8 @@ class _ChatComposerState extends State<ChatComposer> {
                     minimumSize: const Size(48, 48),
                     backgroundColor: AppColors.accent,
                     foregroundColor: AppColors.onAccent,
-                    disabledBackgroundColor: s.surfaceContainerHighest,
+                    disabledBackgroundColor: AppColors.cardHigh,
+                    disabledForegroundColor: AppColors.textMuted,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadius.md),
                     ),

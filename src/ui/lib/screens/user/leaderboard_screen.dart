@@ -119,10 +119,13 @@ class _Body extends StatelessWidget {
             subtitle: tr("Zalga keling va mashq qiling: ball to'planadi"),
           )
         else
-          for (final row in board.top)
+          for (var i = 0; i < board.top.length; i++)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpace.sm),
-              child: _Row(entry: row, mine: row.userId == user.id),
+              child: FadeInUp(
+                index: i < 8 ? i : 8,
+                child: _Row(entry: board.top[i], mine: board.top[i].userId == user.id),
+              ),
             ),
         if (canJoin) ...[
           const SizedBox(height: AppSpace.lg),
@@ -150,15 +153,24 @@ class _Row extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
+    final medal = switch (entry.rank) {
+      1 => AppColors.gold,
+      2 => AppColors.sky,
+      3 => AppColors.coral,
+      _ => null,
+    };
     return BentoTile(
+      feature: mine || entry.rank == 1,
       padding: const EdgeInsets.all(AppSpace.md),
       child: Row(children: [
         SizedBox(
           width: 36,
-          child: Text(
-            '${entry.rank}',
-            style: t.titleMedium?.copyWith(color: entry.rank <= 3 ? AppColors.accent : null),
-          ),
+          child: medal == null
+              ? Text('${entry.rank}', style: t.titleMedium?.copyWith(color: AppColors.textMuted))
+              : PopIn(
+                  delayMs: entry.rank * 80,
+                  child: Icon(Icons.emoji_events_outlined, color: medal, size: 28),
+                ),
         ),
         Expanded(
           child: Text(

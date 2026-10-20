@@ -318,10 +318,13 @@ class _ShopScreenState extends State<ShopScreen> {
                       itemCount: list.length,
                       itemBuilder: (_, i) => Padding(
                         padding: const EdgeInsets.only(bottom: AppSpace.sm),
-                        child: _ProductTile(
-                          key: ValueKey(list[i].id),
-                          product: list[i],
-                          onOrder: () => _order(list[i]),
+                        child: FadeInUp(
+                          index: i < 6 ? i : 6,
+                          child: _ProductTile(
+                            key: ValueKey(list[i].id),
+                            product: list[i],
+                            onOrder: () => _order(list[i]),
+                          ),
                         ),
                       ),
                     ),
@@ -343,7 +346,7 @@ class _ShopScreenState extends State<ShopScreen> {
                             const SizedBox(width: AppSpace.sm),
                             Pill(
                               text: o.statusLabel,
-                              color: o.isGiven ? AppColors.success : AppColors.textFaint,
+                              color: AppColors.textFaint,
                             ),
                           ]),
                         ),
@@ -410,7 +413,7 @@ class _ProductTile extends StatelessWidget {
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         GestureDetector(
           onTap: p.gallery.isEmpty ? null : () => showImageViewer(context, p.gallery),
-          child: ProductImage(category: p.category, name: p.name, url: p.image, size: 60),
+          child: ProductImage(category: p.category, name: p.name, url: p.image, size: 72),
         ),
         const SizedBox(width: AppSpace.md),
         Expanded(
@@ -442,8 +445,12 @@ class _ProductTile extends StatelessWidget {
           ]),
         ),
         const SizedBox(width: AppSpace.sm),
-        FilledButton(
-          style: FilledButton.styleFrom(minimumSize: const Size(0, kTouchTarget)),
+        FilledButton.tonal(
+          style: FilledButton.styleFrom(
+            minimumSize: const Size(0, kTouchTarget),
+            backgroundColor: AppColors.cardHigh,
+            foregroundColor: AppColors.accentText,
+          ),
           onPressed: p.totalStock > 0 ? onOrder : null,
           child: Text(tr('Olaman')),
         ),

@@ -51,21 +51,21 @@ class MusclesScreen extends StatefulWidget {
   State<MusclesScreen> createState() => _MusclesScreenState();
 }
 
-const _brand = Color(0xFFFF3B5C);
-const _brandFill = Color(0xFFE11D48);
-const _amber = Color(0xFFFFB829);
-const _white = Color(0xFFFFFFFF);
-const _silver = Color(0xFFBDBDBD);
-const _ash = Color(0xFF9A9A9A);
+Color get _brand => AppColors.accent;
+Color get _brandFill => AppColors.accentFill;
+Color get _white => AppColors.text;
+Color get _silver => AppColors.textMuted;
+Color get _ash => AppColors.textMuted;
 
-const _label = TextStyle(
-  fontSize: 13,
-  fontWeight: FontWeight.w600,
-  letterSpacing: 0.6,
-  color: _amber,
-);
+TextStyle get _label => TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0.6,
+      color: AppColors.textMuted,
+    );
 
-const _lead = TextStyle(fontSize: 17, height: 1.5, fontWeight: FontWeight.w300, color: _silver);
+TextStyle get _lead =>
+    TextStyle(fontSize: 17, height: 1.5, fontWeight: FontWeight.w300, color: _silver);
 
 class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserver {
   int _angle = ParticleBody.front;
@@ -237,7 +237,7 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
             padding: const EdgeInsets.only(bottom: 10),
             child: Text(
               '✓ ${trf('{0} — tugadi', [tr(muscleById(id)!.name)])}',
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: _brand),
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: _brand),
             ),
           ),
       if (active == null) ...[
@@ -331,12 +331,13 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
         if (!didPop) widget.onBack();
       },
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.bg,
         body: SafeArea(
           child: Column(children: [
             Expanded(
                 child: ListView(
-              padding: const EdgeInsets.fromLTRB(24, 6, 24, 60),
+              padding:
+                  EdgeInsets.fromLTRB(24, 6, 24, 60 + MediaQuery.viewPaddingOf(context).bottom),
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
@@ -347,7 +348,7 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                     alignment: Alignment.centerLeft,
                     tooltip: tr('Orqaga'),
                     onPressed: widget.onBack,
-                    icon: const Icon(Icons.arrow_back, color: _ash),
+                    icon: Icon(Icons.arrow_back, color: _ash),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -367,11 +368,26 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                   const SizedBox(height: 14),
                   Text(note.trim(), style: _lead),
                 ],
+                if (!_hasPlan) ...[
+                  const SizedBox(height: 16),
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: _brandFill,
+                      foregroundColor: AppColors.onAccentFill,
+                      minimumSize: const Size(double.infinity, kTouchTarget),
+                    ),
+                    onPressed: widget.onBack,
+                    child: Text(tr('Kunlarni tanlash')),
+                  ),
+                ],
                 const SizedBox(height: 14),
                 Text(
                   tr('Hozircha faqat zaldagi mashqlar. Uydagi mashqlar hali tayyor emas.'),
-                  style: const TextStyle(
-                      fontSize: 14, height: 1.45, fontWeight: FontWeight.w400, color: _amber),
+                  style: TextStyle(
+                      fontSize: 14,
+                      height: 1.45,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.textMuted),
                 ),
                 if (_gymToday && _plan.isNotEmpty) ...[
                   const SizedBox(height: 22),
@@ -381,7 +397,7 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                     FilledButton(
                       style: FilledButton.styleFrom(
                         backgroundColor: _brandFill,
-                        foregroundColor: _white,
+                        foregroundColor: AppColors.onAccentFill,
                         minimumSize: const Size(double.infinity, 54),
                         textStyle: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.4),
@@ -398,7 +414,7 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                                   _doneIn(active),
                                   _of(active).length
                                 ])}',
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 18, height: 1.3, fontWeight: FontWeight.w600, color: _white),
                     ),
                 ],
@@ -419,7 +435,7 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                   FilledButton(
                     style: FilledButton.styleFrom(
                       backgroundColor: _brandFill,
-                      foregroundColor: _white,
+                      foregroundColor: AppColors.onAccentFill,
                       minimumSize: const Size(0, kTouchTarget),
                       padding: const EdgeInsets.symmetric(horizontal: 18),
                       textStyle: const TextStyle(
@@ -430,22 +446,32 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                   ),
                 ]),
                 const SizedBox(height: 18),
-                Center(
-                  child: ParticleBody(
-                    angle: _angle,
-                    selected: _running ? null : _muscle,
-                    today: plan,
-                    onTap: _select,
-                    onRotate: _rotate,
-                    width: wide < 380 ? 290 : 320,
-                    height: wide < 380 ? 520 : 574,
+                FadeInUp(
+                  index: 2,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0B0C12),
+                      borderRadius: BorderRadius.circular(AppRadius.lg),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
+                    child: Center(
+                      child: ParticleBody(
+                        angle: _angle,
+                        selected: _running ? null : _muscle,
+                        today: plan,
+                        onTap: _select,
+                        onRotate: _rotate,
+                        width: wide < 380 ? 290 : 320,
+                        height: wide < 380 ? 520 : 574,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8),
                 Center(
                   child: Text(
                     tr('Surib aylantiring'),
-                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w300, color: _ash),
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300, color: _ash),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -461,45 +487,57 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                   ),
                 ),
                 const SizedBox(height: 18),
-                Wrap(spacing: 18, runSpacing: 0, children: [
+                Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
                   for (final m in muscles)
                     if (!_hasPlan || _plan.contains(m.id))
                       Semantics(
                         button: true,
                         selected: m.id == (_running ? active : _muscle),
                         child: InkWell(
-                        onTap: () => _select(m.id),
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(minWidth: 48, minHeight: kTouchTarget),
-                          child: Align(
-                            widthFactor: 1,
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              fresh.contains(m.id) ? '${tr(m.name)} · ${tr('yangi')}' : tr(m.name),
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: m.id == (_running ? active : _muscle)
-                                    ? FontWeight.w600
-                                    : FontWeight.w300,
-                                decoration: m.id == (_running ? active : _muscle)
-                                    ? TextDecoration.underline
-                                    : null,
-                                decorationColor: _amber,
+                          onTap: () => _select(m.id),
+                          child: ConstrainedBox(
+                            constraints:
+                                const BoxConstraints(minWidth: 48, minHeight: kTouchTarget),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 14),
+                              decoration: BoxDecoration(
                                 color: m.id == (_running ? active : _muscle)
-                                    ? _amber
-                                    : _running
-                                        ? (active == null ||
-                                                _plan.indexOf(m.id) < _plan.indexOf(active)
-                                            ? _brand
-                                            : _ash)
-                                        : plan.contains(m.id)
-                                            ? _white
-                                            : _ash,
+                                    ? AppColors.cardHigh
+                                    : AppColors.card,
+                                borderRadius: BorderRadius.circular(AppRadius.pill),
+                                border: Border.all(
+                                  color: m.id == (_running ? active : _muscle)
+                                      ? AppColors.accent
+                                      : AppColors.hairline,
+                                ),
+                              ),
+                              child: Center(
+                                widthFactor: 1,
+                                child: Text(
+                                  fresh.contains(m.id)
+                                      ? '${tr(m.name)} · ${tr('yangi')}'
+                                      : tr(m.name),
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: m.id == (_running ? active : _muscle)
+                                        ? FontWeight.w600
+                                        : FontWeight.w300,
+                                    color: m.id == (_running ? active : _muscle)
+                                        ? _white
+                                        : _running
+                                            ? (active == null ||
+                                                    _plan.indexOf(m.id) < _plan.indexOf(active)
+                                                ? _brand
+                                                : _ash)
+                                            : plan.contains(m.id)
+                                                ? _white
+                                                : _ash,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
                       ),
                 ]),
                 const SizedBox(height: 44),
@@ -522,7 +560,7 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                 const SizedBox(height: 18),
                 Text(
                   tr("Sinov versiyasi: mashqlar ro'yxati namunaviy — treneringiz bergan dastur ustun turadi."),
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 13, height: 1.5, fontWeight: FontWeight.w300, color: _ash),
                 ),
               ],
@@ -540,13 +578,13 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
   }
 }
 
-const _count = TextStyle(
-  fontSize: 30,
-  height: 1.05,
-  fontWeight: FontWeight.w400,
-  letterSpacing: -1,
-  color: _white,
-);
+TextStyle get _count => TextStyle(
+      fontSize: 30,
+      height: 1.05,
+      fontWeight: FontWeight.w400,
+      letterSpacing: -1,
+      color: _white,
+    );
 
 class _Side extends StatelessWidget {
   final String text;
@@ -608,7 +646,7 @@ class _ExerciseRow extends StatelessWidget {
                 ],
                 Text(
                   tr(e.name),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
                     height: 1.15,
                     fontWeight: FontWeight.w400,
@@ -620,8 +658,7 @@ class _ExerciseRow extends StatelessWidget {
                 if (e.sets.isNotEmpty)
                   Text(
                     tr(e.sets),
-                    style:
-                        const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: _brand),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: _brand),
                   ),
                 if (done != null) ...[
                   const SizedBox(height: 10),
@@ -640,7 +677,7 @@ class _ExerciseRow extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     trf('Yordamchi: {0}', [also.map((m) => tr(m.name)).join(', ')]),
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 13, height: 1.4, fontWeight: FontWeight.w300, color: _ash),
                   ),
                 ],
@@ -662,7 +699,7 @@ class _ExerciseRow extends StatelessWidget {
                       ],
                       Text(
                         tr(e.tip),
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 16, height: 1.5, fontWeight: FontWeight.w300, color: _silver),
                       ),
                     ]),
@@ -785,7 +822,7 @@ class _StoredVideoState extends State<_StoredVideo> {
       return const SizedBox.shrink();
     }
     if (_loading) {
-      body = const Center(child: CircularProgressIndicator(color: _brand));
+      body = Center(child: CircularProgressIndicator(color: _brand));
     } else if (_error == null && (url == null || url.isEmpty)) {
       body = Center(
         child: Padding(
@@ -793,7 +830,7 @@ class _StoredVideoState extends State<_StoredVideo> {
           child: Text(
             tr('Video tayyorlanmoqda'),
             textAlign: TextAlign.center,
-            style: const TextStyle(color: _silver),
+            style: TextStyle(color: _silver),
           ),
         ),
       );
@@ -803,11 +840,11 @@ class _StoredVideoState extends State<_StoredVideo> {
           Text(
             _error == null ? tr('Video yuklanmadi') : apiErrorText(_error!),
             textAlign: TextAlign.center,
-            style: const TextStyle(color: _silver),
+            style: TextStyle(color: _silver),
           ),
           TextButton(
             onPressed: _load,
-            child: Text(tr('Qayta urinish'), style: const TextStyle(color: _brand)),
+            child: Text(tr('Qayta urinish'), style: TextStyle(color: _brand)),
           ),
         ]),
       );
@@ -834,8 +871,8 @@ class _StoredVideoState extends State<_StoredVideo> {
                 child: Container(
                   width: 64,
                   height: 64,
-                  decoration: const BoxDecoration(color: _brand, shape: BoxShape.circle),
-                  child: const Icon(Icons.play_arrow, color: _white, size: 38),
+                  decoration: BoxDecoration(color: _brand, shape: BoxShape.circle),
+                  child: Icon(Icons.play_arrow, color: _white, size: 38),
                 ),
               ),
             ),
@@ -848,7 +885,7 @@ class _StoredVideoState extends State<_StoredVideo> {
           child: VideoProgressIndicator(
             controller,
             allowScrubbing: true,
-            colors: const VideoProgressColors(playedColor: _brand),
+            colors: VideoProgressColors(playedColor: _brand),
           ),
         ),
       ]);

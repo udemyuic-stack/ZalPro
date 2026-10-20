@@ -136,35 +136,14 @@ class _Body extends StatelessWidget {
             ),
           ),
         ]),
-        const SizedBox(height: AppSpace.lg),
-        SectionHeader(tr('Shaxsiy rekordlar')),
-        if (best.isEmpty)
-          BentoTile(
-            child: Text(
-              tr('Hali mashq yo\'q. Birinchi sessiyadan keyin rekordlar shu yerda chiqadi.'),
-              style: t.bodyMedium?.copyWith(color: AppColors.textMuted),
-            ),
-          )
-        else
-          for (final e in best) ...[
-            BentoTile(
-              child: Row(children: [
-                Expanded(child: Text(gameExerciseName(e.key), style: t.titleMedium)),
-                Text(
-                  trf('{0} takror', [e.value]),
-                  style: t.titleMedium?.copyWith(color: AppColors.gold, fontFeatures: tabular),
-                ),
-              ]),
-            ),
-            const SizedBox(height: AppSpace.sm),
-          ],
         const SizedBox(height: AppSpace.md),
         BentoTile(
+          feature: true,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute<void>(builder: (_) => const ChallengesScreen()),
           ),
           child: Row(children: [
-            Icon(Icons.flag_outlined, color: AppColors.gold),
+            Icon(Icons.flag_outlined, color: AppColors.violet),
             const SizedBox(width: AppSpace.md),
             Expanded(child: Text(tr('Challenjlar'), style: t.titleMedium)),
             Icon(Icons.chevron_right, color: AppColors.textFaint),
@@ -182,6 +161,39 @@ class _Body extends StatelessWidget {
             Icon(Icons.chevron_right, color: AppColors.textFaint),
           ]),
         ),
+        const SizedBox(height: AppSpace.lg),
+        SectionHeader(tr('Shaxsiy rekordlar')),
+        if (best.isEmpty)
+          BentoTile(
+            child: Text(
+              tr('Hali mashq yo\'q. Birinchi sessiyadan keyin rekordlar shu yerda chiqadi.'),
+              style: t.bodyMedium?.copyWith(color: AppColors.textMuted),
+            ),
+          )
+        else
+          for (var i = 0; i < best.length; i++) ...[
+            FadeInUp(
+              index: i < 6 ? i : 6,
+              child: BentoTile(
+                child: Row(children: [
+                  if (i < 3) ...[
+                    Icon(
+                      Icons.emoji_events_outlined,
+                      size: 22,
+                      color: i == 0 ? AppColors.gold : AppColors.textMuted,
+                    ),
+                    const SizedBox(width: AppSpace.sm),
+                  ],
+                  Expanded(child: Text(gameExerciseName(best[i].key), style: t.titleMedium)),
+                  Text(
+                    trf('{0} takror', [best[i].value]),
+                    style: t.titleMedium?.copyWith(color: AppColors.gold, fontFeatures: tabular),
+                  ),
+                ]),
+              ),
+            ),
+            const SizedBox(height: AppSpace.sm),
+          ],
         const SizedBox(height: AppSpace.md),
         BentoTile(
           child: SwitchListTile(
