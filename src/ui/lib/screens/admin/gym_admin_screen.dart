@@ -78,8 +78,8 @@ class _GymAdminScreenState extends State<GymAdminScreen> {
             if (home.isEmpty) _empty(context, tr("Hech kim uyda mashq qilmaydi")),
             for (final u in home) _ClientGymTile(client: u, today: today, adminId: widget.admin.id),
             const SizedBox(height: AppSpace.lg),
-            SectionHeader(tr('Hamma shogirdlar jadvali')),
-            for (final u in all)
+            if (all.length > noDays.length) SectionHeader(tr('Hamma shogirdlar jadvali')),
+            for (final u in all.where((u) => validGymDays(u.gymDays)))
               _ClientGymTile(client: u, today: today, adminId: widget.admin.id, showWeek: true),
             if (noDays.isNotEmpty)
               Padding(

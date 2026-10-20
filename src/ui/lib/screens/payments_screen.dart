@@ -59,11 +59,13 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                       UserAvatar(name: m.name),
                       const SizedBox(width: AppSpace.md),
                       Expanded(
-                        child: Text(m.name.isEmpty ? tr('Ismsiz') : m.name,
-                            style: t.titleMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text(m.name.isEmpty ? tr('Ismsiz') : m.name,
+                              style: t.titleMedium, maxLines: 2, overflow: TextOverflow.ellipsis),
+                          const SizedBox(height: AppSpace.xs),
+                          subscriptionPill(m.expiresAt),
+                        ]),
                       ),
-                      const SizedBox(width: AppSpace.sm),
-                      subscriptionPill(m.expiresAt),
                     ]),
                     const SizedBox(height: AppSpace.sm),
                     Text(

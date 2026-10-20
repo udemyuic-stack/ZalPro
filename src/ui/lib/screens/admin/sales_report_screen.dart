@@ -159,16 +159,16 @@ class _SalesReportScreenState extends State<SalesReportScreen> {
                   SectionHeader(tr('Har bir sotuv'), eyebrow: trf('{0} ta', [sold.length])),
                   for (final o in sold)
                     Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpace.xs),
-                      child: Row(children: [
+                      padding: const EdgeInsets.only(bottom: AppSpace.sm),
+                      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Expanded(
-                          child: Text('${o.title} × ${o.qty}',
-                              style: t.bodyMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
-                        ),
-                        const SizedBox(width: AppSpace.sm),
-                        Text(
-                          SalesReport.soldAt(o) == null ? '' : uzDate(SalesReport.soldAt(o)!),
-                          style: TextStyle(color: AppColors.textFaint, fontSize: 12),
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            Text('${o.title} × ${o.qty}',
+                                style: t.bodyMedium, maxLines: 2, overflow: TextOverflow.ellipsis),
+                            if (SalesReport.soldAt(o) != null)
+                              Text(uzDate(SalesReport.soldAt(o)!),
+                                  style: TextStyle(color: AppColors.textFaint, fontSize: 12)),
+                          ]),
                         ),
                         const SizedBox(width: AppSpace.sm),
                         Text(o.totalText, style: t.bodySmall?.copyWith(fontFeatures: tabular)),

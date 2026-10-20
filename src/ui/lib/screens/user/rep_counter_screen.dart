@@ -1,10 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../l10n/tr.dart';
+import '../../models/heart_rate.dart';
 import '../../models/rep_counter.dart';
 import '../../services/rep_camera.dart';
 import '../../theme.dart';
 import '../../widgets/ui.dart';
+import 'heart_rate_screen.dart';
 
 enum _CamState { starting, ready, denied, unavailable }
 
@@ -48,7 +51,48 @@ class _RepCounterScreenState extends State<RepCounterScreen> {
     setState(() => _visible = visible);
   }
 
-  void _toggle() => setState(() => _counting = !_counting);
+  bool get _heartRateOk => heartRateSupported(isWeb: kIsWeb, platform: defaultTargetPlatform);
+
+  Future<void> _openHeartRate() async {
+    await _source.stop();
+    if (!mounted) return;
+    await Navigator.of(context)
+        .pushReplacement(MaterialPageRoute<void>(builder: (_) => const HeartRateScreen()));
+  }
+
+  Future<void> _suggestHeartRate() async {
+    final t = Theme.of(context).textTheme;
+    final go = await showSheet<bool>(
+      context,
+      Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Text(tr("Mashqdan keyin yurak urishini o'lchang"), style: t.titleLarge),
+        const SizedBox(height: AppSpace.sm),
+        Text(
+          tr("Barmog'ingizni orqa kameraga qo'yib, 30 soniyada o'lchang"),
+          style: t.bodyMedium?.copyWith(color: AppColors.textMuted),
+        ),
+        const SizedBox(height: AppSpace.xl),
+        FilledButton(
+          key: const ValueKey('hr-suggest-go'),
+          onPressed: () => Navigator.of(context).pop(true),
+          style: FilledButton.styleFrom(minimumSize: const Size(0, kTouchTarget)),
+          child: Text(tr("O'lchash")),
+        ),
+        const SizedBox(height: AppSpace.sm),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(tr('Keyinroq')),
+        ),
+      ]),
+    );
+    if (go == true) await _openHeartRate();
+  }
+
+  void _toggle() {
+    final stopping = _counting;
+    setState(() => _counting = !_counting);
+    if (stopping && _counter.count > 0 && _heartRateOk) _suggestHeartRate();
+  }
 
   void _reset() => setState(_counter.reset);
 
@@ -61,7 +105,18 @@ class _RepCounterScreenState extends State<RepCounterScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text(tr('Takror sanagich'))),
+        appBar: AppBar(
+          title: Text(tr('Takror sanagich')),
+          actions: [
+            if (_heartRateOk)
+              IconButton(
+                key: const ValueKey('rep-heart-rate'),
+                tooltip: tr('Yurak urishi'),
+                icon: const Icon(Icons.favorite_outline),
+                onPressed: _openHeartRate,
+              ),
+          ],
+        ),
         body: switch (_state) {
           _CamState.starting => const Center(child: CircularProgressIndicator()),
           _CamState.denied => EmptyState(

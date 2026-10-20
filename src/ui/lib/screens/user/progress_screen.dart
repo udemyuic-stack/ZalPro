@@ -66,6 +66,11 @@ Future<void> addWeightSheet(BuildContext context, AppUser user, WeightLog? lastL
               },
               child: Text(tr('Saqlash')),
             ),
+            const SizedBox(height: AppSpace.sm),
+            OutlinedButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(tr('Bekor')),
+            ),
           ]),
     ),
   );

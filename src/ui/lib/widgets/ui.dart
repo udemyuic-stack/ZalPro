@@ -610,7 +610,7 @@ class KcalRing extends StatelessWidget {
               strokeWidth: size * 0.055,
               strokeCap: StrokeCap.round,
               color: color ?? AppColors.accent,
-              backgroundColor: trackColor ?? (AppColors.light ? AppColors.hairlineStrong : AppColors.cardHigh),
+              backgroundColor: trackColor ?? AppColors.hairlineStrong,
             ),
           ),
         ),

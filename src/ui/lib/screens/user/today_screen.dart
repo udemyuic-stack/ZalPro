@@ -437,9 +437,9 @@ class _MetricsGrid extends StatelessWidget {
           ),
         ),
       ]),
-      if (goal.recommended != null) ...[
+      if (goal.recommended != null && goal.recommended != goal.target) ...[
         const SizedBox(height: AppSpace.sm),
-        Text(trf('Tavsiya: {0} kkal', [goal.recommended]),
+        Text(trf("Tavsiya etilgan me'yor: {0} kkal", [goal.recommended]),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.textMuted)),
       ],
     ]);

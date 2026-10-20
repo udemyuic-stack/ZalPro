@@ -190,11 +190,16 @@ class OrderTile extends StatelessWidget {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text('${o.title} × ${o.qty}', style: t.titleSmall),
               Text(
-                '$who${o.createdAt == null ? '' : ' • ${uzDate(o.createdAt!)}'}',
+                who,
                 style: t.bodySmall?.copyWith(color: AppColors.textMuted),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
+              if (o.createdAt != null)
+                Text(
+                  uzDate(o.createdAt!),
+                  style: t.bodySmall?.copyWith(color: AppColors.textFaint),
+                ),
             ]),
           ),
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
@@ -589,6 +594,14 @@ Future<void> editProduct(BuildContext context, [Product? p]) async {
                   if (InputRules.validateAndFocus(productForm)) Navigator.pop(ctx, true);
                 },
                 child: Text(tr('Saqlash')),
+              ),
+            ),
+            const SizedBox(height: AppSpace.sm),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(tr('Bekor')),
               ),
             ),
             const SizedBox(height: AppSpace.sm),

@@ -580,6 +580,11 @@ class _StaffScreenState extends State<StaffScreen> {
                     },
                     child: Text(tr('Saqlash')),
                   ),
+                  const SizedBox(height: AppSpace.sm),
+                  OutlinedButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: Text(tr('Bekor')),
+                  ),
                   if (gym != null) ...[
                     const SizedBox(height: AppSpace.sm),
                     OutlinedButton.icon(

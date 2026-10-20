@@ -199,6 +199,11 @@ Future<void> addSubscriptionSheet(BuildContext context, AppUser client) async {
             ),
           ),
           const SizedBox(height: AppSpace.sm),
+          OutlinedButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(tr('Bekor')),
+          ),
+          const SizedBox(height: AppSpace.sm),
         ]),
       ),
     ),
