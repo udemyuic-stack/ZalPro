@@ -6334,5 +6334,65 @@
  "80-90 kg (asosiy)": {
   "ru": "80–90 кг (основной)",
   "en": "80–90 kg (main)"
+ },
+ "Yurak urishi": {
+  "ru": "Пульс",
+  "en": "Heart rate"
+ },
+ "Tibbiy maqsadda emas": {
+  "ru": "Не для медицинских целей",
+  "en": "Not for medical use"
+ },
+ "zarba/daq": {
+  "ru": "уд/мин",
+  "en": "bpm"
+ },
+ "Barmoq topilmadi": {
+  "ru": "Палец не обнаружен",
+  "en": "Finger not detected"
+ },
+ "O'lchash barqaror chiqmadi": {
+  "ru": "Измерение получилось нестабильным",
+  "en": "The reading was not stable"
+ },
+ "Barmog'ingizni orqa kamera va chiroqqa yengil bosing, qimirlatmang": {
+  "ru": "Слегка прижмите палец к задней камере и вспышке, не двигайте им",
+  "en": "Press your finger lightly on the rear camera and flash and keep it still"
+ },
+ "Barmog'ingizni orqa kamera va chiroq ustiga qo'ying": {
+  "ru": "Приложите палец к задней камере и вспышке",
+  "en": "Place your finger over the rear camera and flash"
+ },
+ "Sozlanmoqda...": {
+  "ru": "Настройка...",
+  "en": "Calibrating..."
+ },
+ "O'lchanmoqda...": {
+  "ru": "Измерение...",
+  "en": "Measuring..."
+ },
+ "{0} soniya qoldi": {
+  "ru": "Осталось {0} с",
+  "en": "{0} s left"
+ },
+ "Qayta o'lchash": {
+  "ru": "Измерить снова",
+  "en": "Measure again"
+ },
+ "Mashqdan keyin yurak urishini o'lchang": {
+  "ru": "Измерьте пульс после тренировки",
+  "en": "Measure your heart rate after the workout"
+ },
+ "Barmog'ingizni orqa kameraga qo'yib, 30 soniyada o'lchang": {
+  "ru": "Приложите палец к задней камере — измерение займёт 30 секунд",
+  "en": "Place your finger on the rear camera — it takes 30 seconds"
+ },
+ "O'lchash": {
+  "ru": "Измерить",
+  "en": "Measure"
+ },
+ "Keyinroq": {
+  "ru": "Позже",
+  "en": "Later"
  }
 }
