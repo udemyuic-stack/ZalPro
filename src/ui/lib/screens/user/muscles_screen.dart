@@ -425,24 +425,26 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                     active: _angle == ParticleBody.front,
                     onTap: () => _face(ParticleBody.front),
                   ),
-                  const SizedBox(width: 24),
+                  const SizedBox(width: AppSpace.md),
                   _Side(
                     text: tr('Orqa'),
                     active: _angle == ParticleBody.back,
                     onTap: () => _face(ParticleBody.back),
                   ),
                   const Spacer(),
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: _brandFill,
-                      foregroundColor: AppColors.onAccentFill,
-                      minimumSize: const Size(0, kTouchTarget),
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      textStyle: const TextStyle(
-                          fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 0.4),
+                  Flexible(
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: _brandFill,
+                        foregroundColor: AppColors.onAccentFill,
+                        minimumSize: const Size(0, kTouchTarget),
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        textStyle: const TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 0.4),
+                      ),
+                      onPressed: () => _rotate(1),
+                      child: FittedBox(fit: BoxFit.scaleDown, child: Text(tr('Aylantirish'))),
                     ),
-                    onPressed: () => _rotate(1),
-                    child: Text(tr('Aylantirish')),
                   ),
                 ]),
                 const SizedBox(height: 18),
