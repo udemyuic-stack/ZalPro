@@ -1,4 +1,5 @@
 import '../../models/game.dart';
+import 'api_error.dart';
 import 'api_service.dart';
 
 class GameApi extends ApiService {
@@ -36,6 +37,9 @@ class GameApi extends ApiService {
       client.request<Map<String, dynamic>>('POST', '/v1/game/sessions', data: draft.toJson()),
       const [_tag, 'leaderboard'],
     );
-    return GameSessionResult.fromJson(json ?? const {});
+    if (json == null || json.isEmpty) {
+      throw const ApiException(code: 'empty_response', message: '');
+    }
+    return GameSessionResult.fromJson(json);
   }
 }
