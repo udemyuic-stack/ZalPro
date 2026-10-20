@@ -23,6 +23,7 @@ const workoutMuscles = [
 /// Shu hafta kuni ishlaydigan mushaklar (dam olish kuni yoki kunlar tanlanmagan — bo'sh)
 List<String> musclesFor(List<int> days, int weekday) {
   if (!validGymDays(days)) return const [];
+  if (isEveryDay(days)) return [for (final g in workoutMuscles) ...g];
   final i = ([...days]..sort()).indexOf(weekday);
   return i < 0 ? const [] : workoutMuscles[i];
 }
@@ -61,6 +62,7 @@ String? activeMuscle(List<String> plan, Set<String> done, List<String> Function(
 int? weekdayOfMuscle(List<int> days, String muscle) {
   if (!validGymDays(days)) return null;
   final sorted = [...days]..sort();
+  if (isEveryDay(days)) return workoutMuscles.any((g) => g.contains(muscle)) ? sorted.first : null;
   for (var i = 0; i < workoutMuscles.length; i++) {
     if (workoutMuscles[i].contains(muscle)) return sorted[i];
   }
@@ -84,15 +86,22 @@ const weekdayShort = {1: 'Du', 2: 'Se', 3: 'Chor', 4: 'Pay', 5: 'Ju', 6: 'Sha', 
 const evenDays = [2, 4, 6]; // Se, Pay, Sha
 const oddDays = [1, 3, 5]; // Du, Chor, Ju
 
-/// Tanlov to'g'rimi: ikki variantdan biri
+const everyDays = [1, 2, 3, 4, 5, 6, 7];
+
+const everyDayLabel = "Har kuni — hamma guruh";
+
+bool isEveryDay(List<int> days) => ([...days]..sort()).join(',') == everyDays.join(',');
+
+/// Tanlov to'g'rimi: uch variantdan biri
 bool validGymDays(List<int> days) {
   final s = ([...days]..sort()).join(',');
-  return s == evenDays.join(',') || s == oddDays.join(',');
+  return s == evenDays.join(',') || s == oddDays.join(',') || s == everyDays.join(',');
 }
 
 /// Shu hafta kuni qaysi mashg'ulot (dam olish kuni bo'lsa null)
 String? workoutFor(List<int> days, int weekday) {
   if (!validGymDays(days)) return null;
+  if (isEveryDay(days)) return everyDayLabel;
   final sorted = [...days]..sort();
   final i = sorted.indexOf(weekday);
   return i < 0 ? null : workoutGroups[i];

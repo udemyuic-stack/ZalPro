@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../l10n/tr.dart';
 import '../../models/gym.dart';
 import '../../models/models.dart';
@@ -37,6 +38,8 @@ class _GymScreenState extends State<GymScreen> {
 
   /// Bugungi mashg'ulot holati (boshlangan, bajarilgan mashqlar)
   late final _progress = Db.workout(user.id, todayKey());
+
+  late final _gyms = Db.gyms();
 
   @override
   void initState() {
@@ -97,6 +100,7 @@ class _GymScreenState extends State<GymScreen> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.xxl),
         children: [
+          _GymLocationTile(stream: _gyms, gymId: user.gymId),
           if (!hasDays)
             BentoTile(
               feature: true,
@@ -159,6 +163,15 @@ class _GymScreenState extends State<GymScreen> {
                 label: Text(tr("O'zgartirish")),
               ),
             ),
+            if (isEveryDay(days))
+              BentoTile(
+                padding: const EdgeInsets.all(AppSpace.md),
+                child: Row(children: [
+                  Expanded(
+                      child: Text(tr(everyDayLabel), style: t.titleMedium)),
+                ]),
+              )
+            else
             for (final d in ([...days]..sort()))
               Padding(
                 padding: const EdgeInsets.only(bottom: AppSpace.sm),
@@ -269,7 +282,7 @@ class _DaysPicker extends StatefulWidget {
 class _DaysPickerState extends State<_DaysPicker> {
   late final Set<int> _sel = {...widget.initial};
 
-  bool _same(List<int> preset) => _sel.length == 3 && preset.every(_sel.contains);
+  bool _same(List<int> preset) => _sel.length == preset.length && preset.every(_sel.contains);
 
   @override
   Widget build(BuildContext context) {
@@ -296,16 +309,17 @@ class _DaysPickerState extends State<_DaysPicker> {
           const SizedBox(height: AppSpace.xs),
           Text(
               trf(
-                  "Haftasiga 3 kun. Mashg'ulotlar kunlar tartibida: 1) {0}, "
-                  "2) {1}, 3) {2}.",
+                  "Haftasiga 3 kun yoki har kun. 3 kunda mashg'ulotlar tartibida: 1) {0}, "
+                  "2) {1}, 3) {2}. Har kunlik variantda har kuni hamma guruh ishlaydi.",
                   [tr(workoutGroups[0]), tr(workoutGroups[1]), tr(workoutGroups[2])]),
               style: t.bodySmall?.copyWith(color: AppColors.textMuted)),
           const SizedBox(height: AppSpace.md),
           preset('1-variant', evenDays),
           preset('2-variant', oddDays),
+          preset(tr('Har kunlik'), everyDays),
           const SizedBox(height: AppSpace.lg),
           FilledButton(
-            onPressed: _same(evenDays) || _same(oddDays)
+            onPressed: _same(evenDays) || _same(oddDays) || _same(everyDays)
                 ? () => Navigator.pop(context, _sel.toList())
                 : null,
             child: Text(tr('Saqlash')),
@@ -316,5 +330,62 @@ class _DaysPickerState extends State<_DaysPicker> {
             child: Text(tr('Bekor')),
           ),
         ]);
+  }
+}
+
+
+class _GymLocationTile extends StatelessWidget {
+  final Stream<List<Gym>> stream;
+  final String? gymId;
+  const _GymLocationTile({required this.stream, required this.gymId});
+
+  Future<void> _open(BuildContext context, String url) async {
+    var ok = false;
+    try {
+      ok = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } catch (_) {}
+    if (!ok && context.mounted) showSnack(context, tr("Havolani ochib bo'lmadi"));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (gymId == null || gymId!.isEmpty) return const SizedBox.shrink();
+    return StreamBuilder<List<Gym>>(
+      stream: stream,
+      builder: (context, snap) {
+        final matches = (snap.data ?? const <Gym>[]).where((g) => g.id == gymId);
+        if (matches.isEmpty) return const SizedBox.shrink();
+        final gym = matches.first;
+        final t = Theme.of(context).textTheme;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: AppSpace.md),
+          child: BentoTile(
+            padding: const EdgeInsets.all(AppSpace.md),
+            child: Row(children: [
+              Icon(Icons.location_on_outlined, color: AppColors.textMuted),
+              const SizedBox(width: AppSpace.md),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(gym.name, style: t.titleMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  if (gym.fullAddress.isNotEmpty)
+                    Text(
+                      gym.fullAddress,
+                      style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                ]),
+              ),
+              if (gym.mapUrl.isNotEmpty)
+                OutlinedButton.icon(
+                  onPressed: () => _open(context, gym.mapUrl),
+                  icon: const Icon(Icons.directions_outlined, size: 18),
+                  label: Text(tr("Yo'nalish")),
+                ),
+            ]),
+          ),
+        );
+      },
+    );
   }
 }

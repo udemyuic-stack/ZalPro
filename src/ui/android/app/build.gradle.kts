@@ -57,6 +57,8 @@ android {
 
     buildTypes {
         release {
+            isMinifyEnabled = false
+            isShrinkResources = false
             // Doimiy kalit bilan imzolanadi — shunda ilova qaysi kompyuterda
             // yig'ilishidan qat'i nazar bir xil imzoga ega bo'ladi va yangilanish
             // eskisining ustiga tushadi.

@@ -66,14 +66,34 @@ class AppBackdrop extends StatelessWidget {
   final Widget child;
   const AppBackdrop({super.key, required this.child});
 
-  @override
-  Widget build(BuildContext context) => DecoratedBox(
-        decoration: BoxDecoration(color: AppColors.bg),
-        child: DecoratedBox(
-          decoration: BoxDecoration(gradient: AppColors.glow),
-          child: child,
+  Widget _blob(Alignment a, Color c, double r) => Positioned.fill(
+        child: IgnorePointer(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: a,
+                radius: r,
+                colors: [c, c.withValues(alpha: 0)],
+              ),
+            ),
+          ),
         ),
       );
+
+  @override
+  Widget build(BuildContext context) {
+    final k = AppColors.light ? 1.0 : 0.62;
+    return DecoratedBox(
+      decoration: BoxDecoration(color: AppColors.bg),
+      child: Stack(fit: StackFit.expand, children: [
+        _blob(const Alignment(-1.1, -0.95), AppColors.violet.withValues(alpha: 0.22 * k), 0.9),
+        _blob(const Alignment(1.15, -0.35), AppColors.sky.withValues(alpha: 0.20 * k), 0.8),
+        _blob(const Alignment(-0.9, 1.05), AppColors.coral.withValues(alpha: 0.16 * k), 0.85),
+        _blob(const Alignment(1.0, 1.0), AppColors.gold.withValues(alpha: 0.14 * k), 0.7),
+        DecoratedBox(decoration: BoxDecoration(gradient: AppColors.glow), child: child),
+      ]),
+    );
+  }
 }
 
 void showSnack(BuildContext context, String message) => ScaffoldMessenger.of(context)
@@ -155,6 +175,153 @@ class FadeInUp extends StatelessWidget {
           opacity: v.clamp(0.0, 1.0),
           child: Transform.translate(offset: Offset(0, (1 - v) * 12), child: c),
         ),
+        child: child,
+      );
+}
+
+class Reveal extends StatefulWidget {
+  final Widget child;
+  const Reveal({super.key, required this.child});
+
+  static int _batch = 0;
+  static bool _batchScheduled = false;
+
+  static int _nextSlot() {
+    if (!_batchScheduled) {
+      _batchScheduled = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _batch = 0;
+        _batchScheduled = false;
+      });
+    }
+    return _batch++;
+  }
+
+  @override
+  State<Reveal> createState() => _RevealState();
+}
+
+class _RevealState extends State<Reveal> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this);
+  ScrollPosition? _pos;
+  bool _started = false;
+  bool _queued = false;
+  double _delayFrac = 0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final pos = Scrollable.maybeOf(context)?.position;
+    if (pos != _pos) {
+      _pos?.removeListener(_onScroll);
+      _pos = pos;
+      _pos?.addListener(_onScroll);
+    }
+    if (!_started) WidgetsBinding.instance.addPostFrameCallback((_) => _check());
+  }
+
+  void _onScroll() {
+    if (_started || _queued) return;
+    _queued = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _queued = false;
+      _check();
+    });
+  }
+
+  void _check() {
+    if (_started || !mounted) return;
+    final box = context.findRenderObject();
+    if (box is! RenderBox || !box.attached || !box.hasSize) return;
+    final top = box.localToGlobal(Offset.zero).dy;
+    final host = Scrollable.maybeOf(context)?.context.findRenderObject();
+    if (host is RenderBox && host.attached && host.hasSize) {
+      final hostTop = host.localToGlobal(Offset.zero).dy;
+      if (top > hostTop + host.size.height * 0.96) return;
+    }
+    _started = true;
+    _pos?.removeListener(_onScroll);
+    final slot = Reveal._nextSlot().clamp(0, 7);
+    final reduce = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    if (reduce) {
+      _c.value = 1;
+      return;
+    }
+    final delay = slot * 45;
+    _delayFrac = delay / (420 + delay);
+    _c.duration = Duration(milliseconds: 420 + delay);
+    _c.forward();
+  }
+
+  @override
+  void dispose() {
+    _pos?.removeListener(_onScroll);
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final curve = CurvedAnimation(parent: _c, curve: Interval(_delayFrac, 1, curve: Curves.easeOutCubic));
+    return AnimatedBuilder(
+      animation: curve,
+      child: widget.child,
+      builder: (context, child) {
+        final v = curve.value;
+        return Opacity(
+          opacity: v.clamp(0.0, 1.0),
+          alwaysIncludeSemantics: true,
+          child: Transform.translate(
+            offset: Offset(0, (1 - v) * 28),
+            child: Transform.scale(scale: 0.96 + 0.04 * v, child: child),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class Pressable extends StatefulWidget {
+  final Widget child;
+  final bool enabled;
+  const Pressable({super.key, required this.child, this.enabled = true});
+
+  @override
+  State<Pressable> createState() => _PressableState();
+}
+
+class _PressableState extends State<Pressable> {
+  bool _down = false;
+
+  void _set(bool v) {
+    if (widget.enabled && _down != v) setState(() => _down = v);
+  }
+
+  @override
+  Widget build(BuildContext context) => Listener(
+        onPointerDown: (_) => _set(true),
+        onPointerUp: (_) => _set(false),
+        onPointerCancel: (_) => _set(false),
+        child: AnimatedScale(
+          scale: _down ? 0.97 : 1,
+          duration: motion(context, _down ? 90 : 200),
+          curve: _down ? Curves.easeOut : Curves.easeOutBack,
+          child: widget.child,
+        ),
+      );
+}
+
+class PopIn extends StatelessWidget {
+  final Widget child;
+  final int delayMs;
+  const PopIn({super.key, required this.child, this.delayMs = 0});
+
+  @override
+  Widget build(BuildContext context) => TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0.6, end: 1),
+        duration: motion(context, 420 + delayMs),
+        curve: Curves.elasticOut,
+        builder: (context, v, c) => Transform.scale(scale: v, child: c),
         child: child,
       );
 }
@@ -331,7 +498,8 @@ class BentoTile extends StatelessWidget {
         child: content,
       );
     }
-    return ClipRRect(borderRadius: radius, child: content);
+    final tile = ClipRRect(borderRadius: radius, child: content);
+    return Reveal(child: onTap == null ? tile : Pressable(child: tile));
   }
 }
 
@@ -359,7 +527,7 @@ class EmptyState extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.xl),
                 border: Border.all(color: AppColors.hairline),
               ),
-              child: Icon(icon, size: 30, color: AppColors.textFaint),
+              child: PopIn(child: Icon(icon, size: 30, color: AppColors.textFaint)),
             ),
             const SizedBox(height: AppSpace.lg),
             Text(title, textAlign: TextAlign.center, style: t.titleLarge),
@@ -453,16 +621,49 @@ class IconBadge extends StatelessWidget {
   const IconBadge(this.icon, {super.key, required this.color, this.size = 40});
 
   @override
-  Widget build(BuildContext context) => Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.10),
-          borderRadius: BorderRadius.circular(AppRadius.sm),
-          border: Border.all(color: color.withValues(alpha: 0.20)),
+  Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(size * 0.34);
+    final hi = Color.lerp(color, Colors.white, 0.38)!;
+    final lo = Color.lerp(color, Colors.black, 0.22)!;
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        borderRadius: radius,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [hi, color, lo],
+          stops: const [0.0, 0.5, 1.0],
         ),
-        child: Icon(icon, color: color, size: size * 0.46),
-      );
+        boxShadow: [
+          BoxShadow(color: color.withValues(alpha: 0.45), blurRadius: size * 0.4, offset: Offset(0, size * 0.18)),
+          BoxShadow(color: Colors.white.withValues(alpha: 0.25), blurRadius: 0, offset: const Offset(0, -1)),
+        ],
+      ),
+      child: Stack(alignment: Alignment.center, children: [
+        Positioned(
+          left: 0,
+          right: 0,
+          top: 0,
+          height: size * 0.5,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(size * 0.34)),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.white.withValues(alpha: 0.38), Colors.white.withValues(alpha: 0)],
+              ),
+            ),
+          ),
+        ),
+        Icon(icon, color: Colors.white, size: size * 0.5, shadows: [
+          Shadow(color: Colors.black.withValues(alpha: 0.28), blurRadius: 4, offset: const Offset(0, 2)),
+        ]),
+      ]),
+    );
+  }
 }
 
 class Pill extends StatelessWidget {
@@ -492,13 +693,17 @@ class Pill extends StatelessWidget {
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         if (icon != null) ...[Icon(icon, size: 13, color: fg), const SizedBox(width: 5)],
-        Text(
-          text,
-          style: TextStyle(
-            color: fg,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            fontFeatures: tabular,
+        Flexible(
+          child: Text(
+            text,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: fg,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              fontFeatures: tabular,
+            ),
           ),
         ),
       ]),

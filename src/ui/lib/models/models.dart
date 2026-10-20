@@ -54,6 +54,7 @@ class AppUser {
 
   final DateTime? lastWeighIn;
   final bool showInLeaderboard;
+  final bool gameEnabled;
 
   AppUser({
     required this.id,
@@ -78,6 +79,7 @@ class AppUser {
     this.program = const {},
     this.lastWeighIn,
     this.showInLeaderboard = true,
+    this.gameEnabled = true,
   });
 
   /// Bosh admin — zal egasi: trener tayinlaydi, hammani ko'radi, o'chira oladi
@@ -187,6 +189,7 @@ class AppUser {
         program: program,
         lastWeighIn: lastWeighIn,
         showInLeaderboard: showInLeaderboard,
+        gameEnabled: gameEnabled,
       );
 
   factory AppUser.fromJson(Map<String, dynamic> j) {
@@ -213,6 +216,7 @@ class AppUser {
       subscriptionExpiresAt: jsonDate(j['subscription_expires_at']),
       lastWeighIn: jsonDate(j['last_weigh_in']),
       showInLeaderboard: jsonBool(j['show_in_leaderboard'], true),
+      gameEnabled: jsonBool(j['game_enabled'], true),
       program: {
         if (program is Map)
           for (final e in program.entries)
@@ -252,6 +256,7 @@ class Gym {
 
   /// Ko'cha va uy raqami (ixtiyoriy)
   final String address;
+  final String mapUrl;
 
   const Gym({
     this.id = '',
@@ -260,6 +265,7 @@ class Gym {
     this.region = '',
     this.district = '',
     this.address = '',
+    this.mapUrl = '',
   });
 
   /// Ro'yxatda ko'rsatish uchun: "Chilonzor, Toshkent shahri"
@@ -275,6 +281,7 @@ class Gym {
         region: jsonString(j['region']),
         district: jsonString(j['district']),
         address: jsonString(j['address']),
+        mapUrl: jsonString(j['map_url']),
       );
 
   Map<String, dynamic> toMap() => {
@@ -283,6 +290,7 @@ class Gym {
         'region': region,
         'district': district,
         'address': address,
+        'map_url': mapUrl,
       };
 }
 

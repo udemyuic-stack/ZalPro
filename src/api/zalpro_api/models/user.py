@@ -60,5 +60,6 @@ class User(Base):
     subscription_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     last_weigh_in: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     show_in_leaderboard: Mapped[bool] = mapped_column(Boolean, default=True, server_default=true())
+    game_enabled: Mapped[bool] = mapped_column(Boolean, default=True, server_default=true())
     program: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict, server_default="{}")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

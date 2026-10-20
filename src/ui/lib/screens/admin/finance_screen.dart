@@ -218,7 +218,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
                                 builder: (_) => const MemberAnalyticsScreen(isOwner: true)),
                           ),
                           child: Row(children: [
-                            IconBadge(Icons.groups_outlined, color: AppColors.accent, size: 38),
+                            IconBadge(Icons.groups_outlined, color: AppColors.violet, size: 38),
                             const SizedBox(width: AppSpace.md),
                             Expanded(
                               child:
@@ -243,7 +243,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
                             MaterialPageRoute(builder: (_) => const ShopAnalyticsScreen()),
                           ),
                           child: Row(children: [
-                            IconBadge(Icons.insights_outlined, color: AppColors.accent, size: 38),
+                            IconBadge(Icons.insights_outlined, color: AppColors.sky, size: 38),
                             const SizedBox(width: AppSpace.md),
                             Expanded(
                               child:

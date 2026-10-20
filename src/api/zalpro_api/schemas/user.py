@@ -6,7 +6,7 @@ from pydantic import AwareDatetime, Field, field_validator
 from zalpro_api.schemas.base import Name, OutModel, Password, PatchModel, PhoneNumber, StrictModel
 
 Role = Literal["user", "admin", "owner", "barmen"]
-ALLOWED_GYM_DAYS = ([2, 4, 6], [1, 3, 5])
+ALLOWED_GYM_DAYS = ([2, 4, 6], [1, 3, 5], [1, 2, 3, 4, 5, 6, 7])
 HOME_WORKOUT_DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
@@ -31,6 +31,7 @@ class UserOut(OutModel):
     subscription_expires_at: AwareDatetime | None
     last_weigh_in: AwareDatetime | None
     show_in_leaderboard: bool
+    game_enabled: bool
     program: dict[str, Any]
     created_at: AwareDatetime
 
@@ -70,7 +71,7 @@ class UserPatch(PatchModel):
     @classmethod
     def validate_gym_days(cls, value: list[int] | None) -> list[int] | None:
         if value is not None and value not in ALLOWED_GYM_DAYS:
-            raise ValueError("Zal kunlari [2, 4, 6] yoki [1, 3, 5] bo'lishi kerak")
+            raise ValueError("Zal kunlari [2, 4, 6], [1, 3, 5] yoki [1..7] bo'lishi kerak")
         return value
 
     @field_validator("home_workout_date")

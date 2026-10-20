@@ -5,6 +5,7 @@ import '../../models/models.dart';
 import '../../services/api/api_error.dart';
 import '../../services/db.dart';
 import '../../theme.dart';
+import '../../widgets/game_board.dart';
 import '../../widgets/ui.dart';
 
 class LeaderboardScreen extends StatefulWidget {
@@ -12,12 +13,14 @@ class LeaderboardScreen extends StatefulWidget {
   final Stream<Leaderboard>? boardSource;
   final Stream<AppUser?>? userSource;
   final Future<void> Function(bool visible)? setVisible;
+  final GameBoardSource? gameBoardSource;
   const LeaderboardScreen({
     super.key,
     required this.user,
     this.boardSource,
     this.userSource,
     this.setVisible,
+    this.gameBoardSource,
   });
 
   @override
@@ -27,6 +30,7 @@ class LeaderboardScreen extends StatefulWidget {
 class _LeaderboardScreenState extends State<LeaderboardScreen> {
   late final _board = widget.boardSource ?? Db.leaderboard();
   late final _me = widget.userSource ?? Db.user(widget.user.id);
+  String _tab = 'points';
 
   Future<void> _toggle(bool visible) async {
     try {
@@ -39,24 +43,44 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: Text(tr('Zal reytingi'))),
-        body: StreamBuilder<Leaderboard>(
-          stream: _board,
-          builder: (context, snap) {
-            if (snap.hasError && !snap.hasData) return ErrorState(error: snap.error);
-            final board = snap.data;
-            if (board == null) return const Center(child: CircularProgressIndicator());
-            return StreamBuilder<AppUser?>(
-              stream: _me,
-              initialData: widget.user,
-              builder: (context, me) => _Body(
-                board: board,
-                user: me.data ?? widget.user,
-                canJoin: widget.user.role == 'user',
-                onToggle: _toggle,
+        body: Column(children: [
+          if (widget.user.gameEnabled)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, 0),
+              child: AppSegmented<String>(
+                segments: [
+                  AppSegment(value: 'points', label: tr('Ball')),
+                  AppSegment(value: 'reps', label: tr('Takror')),
+                ],
+                selected: _tab,
+                onChanged: (v) => setState(() => _tab = v),
               ),
-            );
-          },
-        ),
+            ),
+          Expanded(
+            child: _tab == 'reps' && widget.user.gameEnabled
+                ? GameBoardView(userId: widget.user.id, source: widget.gameBoardSource)
+                : _pointsBody(),
+          ),
+        ]),
+      );
+
+  Widget _pointsBody() => StreamBuilder<Leaderboard>(
+        stream: _board,
+        builder: (context, snap) {
+          if (snap.hasError && !snap.hasData) return ErrorState(error: snap.error);
+          final board = snap.data;
+          if (board == null) return const Center(child: CircularProgressIndicator());
+          return StreamBuilder<AppUser?>(
+            stream: _me,
+            initialData: widget.user,
+            builder: (context, me) => _Body(
+              board: board,
+              user: me.data ?? widget.user,
+              canJoin: widget.user.role == 'user',
+              onToggle: _toggle,
+            ),
+          );
+        },
       );
 }
 

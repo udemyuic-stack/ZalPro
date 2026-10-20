@@ -398,3 +398,21 @@ async def test_update_gym_rejects_extra_field(
     )
 
     assert response.status_code == 422
+
+
+async def test_gym_map_url_roundtrip_and_validation(
+    client: AsyncClient, make_user: UserFactory, auth_headers: HeadersFactory
+) -> None:
+    owner = await make_user(role="owner")
+    ok = await client.post(
+        "/v1/gyms",
+        json={"name": "G", "map_url": "https://maps.app.goo.gl/abc"},
+        headers=auth_headers(owner),
+    )
+    assert ok.status_code == 201
+    assert ok.json()["map_url"] == "https://maps.app.goo.gl/abc"
+    for bad in ("javascript:alert(1)", "ftp://x.y", "not a url", "https://a b"):
+        r = await client.post(
+            "/v1/gyms", json={"name": "G", "map_url": bad}, headers=auth_headers(owner)
+        )
+        assert r.status_code == 422

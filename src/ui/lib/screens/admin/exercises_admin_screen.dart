@@ -127,44 +127,51 @@ class _ExercisesAdminScreenState extends State<ExercisesAdminScreen> {
                     BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(24)),
                 padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
                 child: Column(children: [
-                  ParticleBody(
-                    angle: _angle,
-                    selected: m,
-                    today: fresh,
-                    onTap: (id) => id == null ? setState(() => _muscle = null) : _select(id),
-                    onRotate: _rotate,
-                    width: 280,
-                    height: 500,
+                  ShaderMask(
+                    blendMode: BlendMode.dstIn,
+                    shaderCallback: (r) => const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.transparent, Colors.black, Colors.black, Colors.transparent],
+                      stops: [0, 0.08, 0.92, 1],
+                    ).createShader(r),
+                    child: ParticleBody(
+                      angle: _angle,
+                      selected: m,
+                      today: fresh,
+                      onTap: (id) => id == null ? setState(() => _muscle = null) : _select(id),
+                      onRotate: _rotate,
+                      width: 280,
+                      height: 420,
+                    ),
                   ),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                    TextButton(
-                      onPressed: () => setState(() => _angle = ParticleBody.front),
-                      child: Text(tr('Old')),
-                    ),
-                    TextButton(
-                      onPressed: () => setState(() => _angle = ParticleBody.back),
-                      child: Text(tr('Orqa')),
-                    ),
-                    TextButton.icon(
-                      onPressed: () => _rotate(1),
-                      icon: const Icon(Icons.threesixty, size: 18),
-                      label: Text(tr("O'g'irish")),
-                    ),
-                  ]),
+                  const SizedBox(height: AppSpace.sm),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
+                    child: Row(children: [
+                      Expanded(
+                        child: AppSegmented<int>(
+                          segments: [
+                            AppSegment(value: 0, label: tr('Old')),
+                            AppSegment(value: 1, label: tr('Orqa')),
+                          ],
+                          selected: _angle >= 3 && _angle <= 5 ? 1 : 0,
+                          onChanged: (v) => setState(
+                              () => _angle = v == 1 ? ParticleBody.back : ParticleBody.front),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpace.sm),
+                      IconButton(
+                        tooltip: tr("O'g'irish"),
+                        constraints: const BoxConstraints.tightFor(
+                            width: kTouchTarget, height: kTouchTarget),
+                        onPressed: () => _rotate(1),
+                        icon: const Icon(Icons.threesixty, color: Colors.white),
+                      ),
+                    ]),
+                  ),
                 ]),
               ),
-              const SizedBox(height: AppSpace.lg),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                for (final back in [false, true])
-                  BodyMap(
-                    back: back,
-                    primary: m,
-                    secondary: fresh,
-                    onTap: _select,
-                    height: 280,
-                    accent: AppColors.accent,
-                  ),
-              ]),
               if (fresh.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: AppSpace.sm),
@@ -175,6 +182,12 @@ class _ExercisesAdminScreenState extends State<ExercisesAdminScreen> {
                   ),
                 ),
               const SizedBox(height: AppSpace.md),
+              if (m == null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpace.sm),
+                  child: Text(tr('Mushakni tanlang'),
+                      style: t.bodyMedium?.copyWith(color: AppColors.textMuted)),
+                ),
               Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.sm, children: [
                 for (final g in muscles)
                   ChoiceChip(
@@ -184,10 +197,7 @@ class _ExercisesAdminScreenState extends State<ExercisesAdminScreen> {
                   ),
               ]),
               const SizedBox(height: AppSpace.xl),
-              if (m == null)
-                Text(tr('Hali mushak tanlanmagan.'),
-                    style: t.bodyMedium?.copyWith(color: AppColors.textMuted))
-              else ...[
+              if (m != null) ...[
                 SectionHeader(
                   tr(muscleById(m)!.name),
                   eyebrow: trf('{0} ta mashq', [all.length]),

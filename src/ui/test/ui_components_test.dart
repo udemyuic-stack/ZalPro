@@ -59,7 +59,30 @@ void main() {
   testWidgets('ErrorState compact qayta urinishda onRetry chaqiradi', (t) async {
     var n = 0;
     await t.pumpWidget(_host(ErrorState(compact: true, onRetry: () => n++)));
+    await t.pumpAndSettle();
     await t.tap(find.byType(BentoTile));
     expect(n, 1);
+  });
+
+  testWidgets('Reveal ekran tashqarisidagi blokni skroll qilganda ochadi', (t) async {
+    await t.pumpWidget(_host(const Column(children: [
+      SizedBox(height: 1000),
+      Reveal(child: Text('pastda')),
+      SizedBox(height: 400),
+    ])));
+    await t.pump();
+    Opacity op() => t.widget<Opacity>(find.ancestor(of: find.text('pastda'), matching: find.byType(Opacity)).first);
+    expect(op().opacity, 0);
+    await t.drag(find.byType(SingleChildScrollView), const Offset(0, -700));
+    await t.pumpAndSettle();
+    expect(op().opacity, 1);
+  });
+
+  testWidgets('reduce motion: Reveal darhol ko\'rinadi', (t) async {
+    await t.pumpWidget(_host(const Reveal(child: Text('tepada')), reduce: true));
+    await t.pump();
+    await t.pump();
+    final op = t.widget<Opacity>(find.ancestor(of: find.text('tepada'), matching: find.byType(Opacity)).first);
+    expect(op.opacity, 1);
   });
 }

@@ -176,7 +176,7 @@ class _StaffScreenState extends State<StaffScreen> {
                         MaterialPageRoute(builder: (_) => TrainerStatsScreen(owner: owner)),
                       ),
                       child: Row(children: [
-                        IconBadge(Icons.leaderboard_outlined, color: AppColors.accent, size: 38),
+                        IconBadge(Icons.leaderboard_outlined, color: AppColors.violet, size: 38),
                         const SizedBox(width: AppSpace.md),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -202,7 +202,7 @@ class _StaffScreenState extends State<StaffScreen> {
                             builder: (_) => const MemberAnalyticsScreen(isOwner: true)),
                       ),
                       child: Row(children: [
-                        IconBadge(Icons.groups_outlined, color: AppColors.accent, size: 38),
+                        IconBadge(Icons.groups_outlined, color: AppColors.sky, size: 38),
                         const SizedBox(width: AppSpace.md),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -227,7 +227,7 @@ class _StaffScreenState extends State<StaffScreen> {
                         MaterialPageRoute(builder: (_) => const ShopAnalyticsScreen()),
                       ),
                       child: Row(children: [
-                        IconBadge(Icons.insights_outlined, color: AppColors.accent, size: 38),
+                        IconBadge(Icons.insights_outlined, color: AppColors.coral, size: 38),
                         const SizedBox(width: AppSpace.md),
                         Expanded(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -448,6 +448,7 @@ class _StaffScreenState extends State<StaffScreen> {
   Future<void> _gymSheet({Gym? gym}) async {
     final name = TextEditingController(text: gym?.name);
     final address = TextEditingController(text: gym?.address);
+    final mapUrl = TextEditingController(text: gym?.mapUrl);
     // ro'yxatda yo'q tuman qo'lda yozilgan bo'lsa — shu maydonda turadi
     final otherDistrict = TextEditingController();
     final gymForm = GlobalKey<FormState>();
@@ -470,7 +471,6 @@ class _StaffScreenState extends State<StaffScreen> {
         builder: (ctx, setS) => SingleChildScrollView(
           child: Form(
             key: gymForm,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -534,6 +534,7 @@ class _StaffScreenState extends State<StaffScreen> {
                     const SizedBox(height: AppSpace.md),
                     TextFormField(
                       controller: otherDistrict,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       maxLength: InputLimits.region,
                       buildCounter: InputRules.counterAtEighty,
                       validator: InputRules.required(InputLimits.region),
@@ -549,6 +550,7 @@ class _StaffScreenState extends State<StaffScreen> {
                   // 4 — nomi va ko'chasi
                   TextFormField(
                     controller: name,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     maxLength: InputLimits.gymName,
                     buildCounter: InputRules.counterAtEighty,
                     validator: InputRules.required(
@@ -564,6 +566,7 @@ class _StaffScreenState extends State<StaffScreen> {
                   const SizedBox(height: AppSpace.md),
                   TextFormField(
                     controller: address,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     maxLength: InputLimits.address,
                     buildCounter: InputRules.counterAtEighty,
                     validator: InputRules.optional(InputLimits.address),
@@ -571,6 +574,17 @@ class _StaffScreenState extends State<StaffScreen> {
                     decoration: InputDecoration(
                       labelText: tr("Ko'cha, uy (ixtiyoriy)"),
                       hintText: tr('Bunyodkor 12'),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpace.md),
+                  TextFormField(
+                    controller: mapUrl,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    keyboardType: TextInputType.url,
+                    validator: InputRules.mapUrl,
+                    decoration: InputDecoration(
+                      labelText: tr('Xarita havolasi (ixtiyoriy)'),
+                      hintText: 'https://maps.app.goo.gl/...',
                     ),
                   ),
                   const SizedBox(height: AppSpace.lg),
@@ -611,6 +625,7 @@ class _StaffScreenState extends State<StaffScreen> {
         region: region ?? '',
         district: d,
         address: address.text.trim(),
+        mapUrl: mapUrl.text.trim(),
       ));
       if (mounted) {
         setState(() => _gymId = id);

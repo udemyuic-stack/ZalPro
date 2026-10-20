@@ -30,6 +30,11 @@ class _StudentProgramTabState extends State<StudentProgramTab> {
         (tr('Hamma mushaklar'), [for (final m in muscles) m.id])
       ];
     }
+    if (isEveryDay(u.gymDays)) {
+      return [
+        (tr(everyDayLabel), [for (final g in workoutMuscles) ...g])
+      ];
+    }
     final days = [...u.gymDays]..sort();
     return [
       for (var i = 0; i < days.length; i++)

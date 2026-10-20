@@ -13,3 +13,4 @@ class Gym(Base):
     country: Mapped[str] = mapped_column(Text, default="", server_default="")
     region: Mapped[str] = mapped_column(Text, default="", server_default="")
     district: Mapped[str] = mapped_column(Text, default="", server_default="")
+    map_url: Mapped[str] = mapped_column(Text, default="", server_default="")

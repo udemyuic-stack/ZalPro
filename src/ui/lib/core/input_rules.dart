@@ -18,6 +18,7 @@ class InputLimits {
   static const variantCount = 30;
   static const gymName = 60;
   static const address = 200;
+  static const mapUrl = 500;
   static const region = 60;
   static const message = 2000;
   static const planNote = 5000;
@@ -118,6 +119,18 @@ class InputRules {
 
   static String? optionalText(String? v, int max) {
     return length((v ?? '').trim()) > max ? trf("Eng ko'pi {0} belgi", [max]) : null;
+  }
+
+  static String? mapUrl(String? v) {
+    final text = (v ?? '').trim();
+    if (text.isEmpty) return null;
+    if (length(text) > InputLimits.mapUrl) return trf("Eng ko'pi {0} belgi", [InputLimits.mapUrl]);
+    final uri = Uri.tryParse(text);
+    final ok = uri != null &&
+        (uri.scheme == 'http' || uri.scheme == 'https') &&
+        uri.host.isNotEmpty &&
+        !text.contains(RegExp(r'\s'));
+    return ok ? null : tr("To'g'ri havola kiriting (https://...)");
   }
 
   static String? password(String? v, {required bool strict}) {

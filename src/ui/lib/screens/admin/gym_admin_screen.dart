@@ -186,6 +186,9 @@ class _ClientGymTile extends StatelessWidget {
           if (showWeek && validGymDays(days)) ...[
             const SizedBox(height: AppSpace.sm),
             Wrap(spacing: 6, runSpacing: 6, children: [
+              if (isEveryDay(days))
+                Pill(text: tr('Har kunlik'), color: AppColors.accent)
+              else
               for (final d in days)
                 Pill(
                   text:
@@ -227,7 +230,7 @@ class _ClientGymTile extends StatelessWidget {
                     ),
                     const SizedBox(width: AppSpace.sm),
                     OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(minimumSize: const Size(0, 40)),
+                      style: OutlinedButton.styleFrom(minimumSize: const Size(0, 48)),
                       onPressed: isHome || wrote ? () => _toggleHome(context, isHome) : null,
                       icon: Icon(isHome ? Icons.close : Icons.home_outlined, size: 18),
                       label: Text(isHome ? tr('Bekor') : tr('Uyda mashq')),
@@ -257,7 +260,7 @@ class _ClientGymTile extends StatelessWidget {
                     ),
                     const SizedBox(width: AppSpace.sm),
                     OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(minimumSize: const Size(0, 40)),
+                      style: OutlinedButton.styleFrom(minimumSize: const Size(0, 48)),
                       onPressed: () => _toggleAttendance(context, present),
                       icon: Icon(present ? Icons.close : Icons.check, size: 18),
                       label: Text(present ? tr('Bekor') : tr('Keldi')),

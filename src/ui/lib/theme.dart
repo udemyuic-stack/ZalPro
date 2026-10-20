@@ -27,7 +27,7 @@ class AppColors {
     return Color(light ? lightValue : dark);
   }
 
-  static Color get bg => _p(0xFF121216, 0xFFF4F4F7, emerald: 0xFF0A1115, amber: 0xFF120F0C);
+  static Color get bg => _p(0xFF121216, 0xFFEFF1FA, emerald: 0xFF0A1115, amber: 0xFF120F0C);
   static Color get bgDeep => _p(0xFF0E0E12, 0xFFECECF1, emerald: 0xFF070C0F, amber: 0xFF0C0A08);
   static Color get card => _p(0xFF1A1A20, 0xFFFFFFFF, emerald: 0xFF121F26, amber: 0xFF1C1712);
   static Color get cardHigh => _p(0xFF24242C, 0xFFF0F0F4, emerald: 0xFF1B2D36, amber: 0xFF2A2319);
@@ -48,6 +48,11 @@ class AppColors {
   static Color get successText => _c(0xFF4ADE80, 0xFF166534);
   static Color get warning => _c(0xFFFBBF24, 0xFFB45309);
   static Color get danger => _c(0xFFFB7185, 0xFFD3173D);
+  static Color get violet => const Color(0xFF8B5CF6);
+  static Color get sky => const Color(0xFF38BDF8);
+  static Color get coral => const Color(0xFFFB7185);
+  static Color get gold => const Color(0xFFFBBF24);
+  static Color get mint => const Color(0xFF34D399);
   static Color get water => _c(0xFF38BDF8, 0xFF0369A1);
   static Color get protein => _c(0xFFA78BFA, 0xFF7C3AED);
   static Color get hairline => _c(0x1AFFFFFF, 0x1F141418);
@@ -83,10 +88,10 @@ class AppSpace {
 }
 
 class AppRadius {
-  static const sm = 8.0;
-  static const md = 10.0;
-  static const lg = 12.0;
-  static const xl = 16.0;
+  static const sm = 12.0;
+  static const md = 16.0;
+  static const lg = 22.0;
+  static const xl = 28.0;
   static const pill = 999.0;
 }
 
@@ -189,8 +194,8 @@ class AppTheme {
           foregroundColor: AppColors.onAccentFill,
           disabledBackgroundColor: AppColors.cardHigh,
           disabledForegroundColor: AppColors.textFaint,
-          minimumSize: const Size(64, kTouchTarget + 4),
-          shape: RoundedRectangleBorder(borderRadius: r),
+          minimumSize: const Size(64, kTouchTarget),
+          shape: const StadiumBorder(),
           textStyle: const TextStyle(
             fontFamily: appFontFamily,
             fontSize: 15.5,
@@ -204,7 +209,7 @@ class AppTheme {
           foregroundColor: AppColors.text,
           minimumSize: const Size(64, kTouchTarget),
           side: BorderSide(color: AppColors.hairlineStrong),
-          shape: RoundedRectangleBorder(borderRadius: r),
+          shape: const StadiumBorder(),
           textStyle: const TextStyle(
               fontFamily: appFontFamily, fontSize: 15.5, fontWeight: FontWeight.w600),
         ),
@@ -213,10 +218,18 @@ class AppTheme {
         style: TextButton.styleFrom(
           foregroundColor: AppColors.accent,
           minimumSize: const Size(56, kTouchTarget),
-          shape: RoundedRectangleBorder(borderRadius: r),
+          shape: const StadiumBorder(),
           textStyle: const TextStyle(fontFamily: appFontFamily, fontWeight: FontWeight.w600),
         ),
       ),
+      pageTransitionsTheme: const PageTransitionsTheme(builders: {
+        TargetPlatform.android: _RisePageTransitions(),
+        TargetPlatform.iOS: _RisePageTransitions(),
+        TargetPlatform.linux: _RisePageTransitions(),
+        TargetPlatform.macOS: _RisePageTransitions(),
+        TargetPlatform.windows: _RisePageTransitions(),
+        TargetPlatform.fuchsia: _RisePageTransitions(),
+      }),
       navigationBarTheme: NavigationBarThemeData(
         height: 74,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
@@ -224,9 +237,7 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         indicatorColor: AppColors.accent.withValues(alpha: 0.14),
-        indicatorShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-        ),
+        indicatorShape: const StadiumBorder(),
         iconTheme: WidgetStateProperty.resolveWith(
           (st) => IconThemeData(
             size: 23,
@@ -413,4 +424,30 @@ class AppTheme {
         bodyColor: AppColors.text,
         displayColor: AppColors.text,
       );
+}
+
+class _RisePageTransitions extends PageTransitionsBuilder {
+  const _RisePageTransitions();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    final curve = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic, reverseCurve: Curves.easeInCubic);
+    final out = CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeOut);
+    return FadeTransition(
+      opacity: curve,
+      child: SlideTransition(
+        position: Tween(begin: const Offset(0, 0.06), end: Offset.zero).animate(curve),
+        child: ScaleTransition(
+          scale: Tween(begin: 1.0, end: 0.97).animate(out),
+          child: child,
+        ),
+      ),
+    );
+  }
 }

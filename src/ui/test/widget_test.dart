@@ -1419,6 +1419,16 @@ void main() {
       expect(weekdayOfMuscle(const [], 'back'), isNull);
     });
 
+    test('har kunlik variant', () {
+      expect(validGymDays(everyDays), isTrue);
+      expect(isEveryDay(everyDays.reversed.toList()), isTrue);
+      expect(isEveryDay(evenDays), isFalse);
+      expect(musclesFor(everyDays, DateTime.monday), containsAll(['chest', 'quads', 'triceps']));
+      expect(workoutFor(everyDays, DateTime.sunday), everyDayLabel);
+      expect(weekdayOfMuscle(everyDays, 'back'), DateTime.monday);
+      expect(validGymDays(const [1, 2, 3]), isFalse);
+    });
+
     Future<void> open(WidgetTester t,
         {required List<int> days, required int weekday, bool home = false}) async {
       t.view.physicalSize = const Size(420, 6000);

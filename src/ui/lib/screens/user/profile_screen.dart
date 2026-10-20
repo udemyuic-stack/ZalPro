@@ -5,6 +5,7 @@ import '../../models/models.dart';
 import '../../services/db.dart';
 import '../../theme.dart';
 import '../../widgets/change_password.dart';
+import '../../widgets/game_widgets.dart';
 import '../../widgets/lang_picker.dart';
 import '../../widgets/settings_sheet.dart';
 import '../../widgets/subscription_card.dart';
@@ -89,6 +90,10 @@ class ProfileScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              if (user.role == 'user') ...[
+                GameLevelCard(user: user),
+                const SizedBox(height: 10),
+              ],
               Row(children: [
                 Expanded(
                   child: StatTile(

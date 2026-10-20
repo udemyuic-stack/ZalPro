@@ -45,7 +45,6 @@ Future<TextEditingController> _composer(WidgetTester t) async {
         controller: c,
         onSend: () {},
         onAttach: () {},
-        onRecord: () {},
       ),
     ),
   ));

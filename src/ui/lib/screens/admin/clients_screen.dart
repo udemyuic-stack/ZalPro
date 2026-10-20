@@ -94,7 +94,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                   MaterialPageRoute(builder: (_) => const MemberAnalyticsScreen(isOwner: false)),
                 ),
                 child: Row(children: [
-                  IconBadge(Icons.groups_outlined, color: AppColors.accent, size: 38),
+                  IconBadge(Icons.groups_outlined, color: AppColors.violet, size: 38),
                   const SizedBox(width: AppSpace.md),
                   Expanded(
                     child:

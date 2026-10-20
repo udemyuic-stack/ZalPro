@@ -20,10 +20,13 @@ import 'support/fake_api.dart';
 
 const _sizes = <String, Size>{
   '360x740': Size(360, 740),
-  '390x844': Size(390, 844)
+  '390x844': Size(390, 844),
+  '412x915': Size(412, 915)
 };
 
 const _themes = <String, bool>{'light': true, 'dark': false};
+
+const _scales = <double>[1.0, 1.3];
 
 Map<String, dynamic> _userJson(String id, String name,
         {String role = 'user'}) =>
@@ -244,8 +247,10 @@ void main() {
 
   for (final size in _sizes.entries) {
     for (final theme in _themes.entries) {
+     for (final scale in _scales) {
       for (final screen in _screens) {
-        testWidgets('${screen.name} @ ${size.key} / ${theme.key}',
+        testWidgets(
+            '${screen.name} @ ${size.key} / ${theme.key}${scale == 1.0 ? '' : ' / x$scale'}',
             (tester) async {
           tester.view.physicalSize = size.value;
           tester.view.devicePixelRatio = 1;
@@ -258,6 +263,9 @@ void main() {
             ],
             child: MaterialApp(
               theme: AppTheme.dark(),
+              builder: (c, w) => MediaQuery(
+                  data: MediaQuery.of(c).copyWith(textScaler: TextScaler.linear(scale)),
+                  child: w!),
               home: Scaffold(body: screen.build()),
             ),
           ));
@@ -284,12 +292,13 @@ void main() {
           expect(errors, isEmpty, reason: 'render errors: $errors');
           expect(find.byType(ErrorState), findsNothing);
           final targets = _targets(tester);
-          expect(targets.checked, greaterThan(0));
+          if (scale == 1.0) expect(targets.checked, greaterThan(0));
           expect(targets.small, isEmpty);
 
           await _dispose(tester);
         });
       }
+     }
     }
   }
 }

@@ -65,7 +65,7 @@ void paletteTests() {
   test('yorug' 'da palitra e\'tiborga olinmaydi', () {
     AppColors.light = true;
     AppColors.palette = AppPalette.emerald;
-    expect(AppColors.bg, const Color(0xFFF4F4F7));
+    expect(AppColors.bg, const Color(0xFFEFF1FA));
     AppColors.palette = AppPalette.graphite;
     AppColors.light = false;
   });

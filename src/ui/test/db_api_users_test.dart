@@ -131,7 +131,7 @@ void main() {
     expect(id, 'g9');
     expect(last().method, 'POST');
     expect(last().path, '/v1/gyms');
-    expect(last().data, {'name': 'N', 'country': '', 'region': 'R', 'district': '', 'address': ''});
+    expect(last().data, {'name': 'N', 'country': '', 'region': 'R', 'district': '', 'address': '', 'map_url': ''});
     expect(touched, contains('gyms'));
     respond = (o) async => jsonBody({'id': 'g1', 'name': 'N'}, 200);
     expect(await api.saveGym(const Gym(id: 'g1', name: 'N')), 'g1');

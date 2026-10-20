@@ -109,7 +109,8 @@ class _SubscriptionTile extends StatelessWidget {
     final expired = Subscription.isExpired(exp);
     final status = switch (Subscription.urgencyOf(exp)) {
       SubscriptionUrgency.none => Pill(text: tr("Abonement yo'q"), color: AppColors.textMuted),
-      SubscriptionUrgency.expired => Pill(text: tr("Muddati o'tdi"), color: AppColors.danger),
+      SubscriptionUrgency.expired =>
+        Pill(text: trf("{0} kun o'tdi", [-daysLeft]), color: AppColors.danger),
       SubscriptionUrgency.soon =>
         Pill(text: trf('{0} kun qoldi', [daysLeft]), color: AppColors.warning),
       SubscriptionUrgency.ok =>
@@ -119,28 +120,23 @@ class _SubscriptionTile extends StatelessWidget {
     return BentoTile(
       onTap: () => addSubscriptionSheet(context, u),
       padding: const EdgeInsets.all(AppSpace.md),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Row(children: [
-          UserAvatar(name: name),
-          const SizedBox(width: AppSpace.md),
-          Expanded(
-            child: Text(name, style: t.titleMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
+      child: Row(children: [
+        UserAvatar(name: name),
+        const SizedBox(width: AppSpace.md),
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(name, style: t.titleMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
+            const SizedBox(height: AppSpace.xs),
+            status,
+          ]),
+        ),
+        if (expiringSoon || expired)
+          IconButton(
+            constraints: const BoxConstraints.tightFor(width: kTouchTarget, height: kTouchTarget),
+            tooltip: tr('Eslatma yubor'),
+            onPressed: () => _sendReminder(context, daysLeft),
+            icon: Icon(Icons.notifications_active_outlined, color: AppColors.textMuted),
           ),
-          const SizedBox(width: AppSpace.sm),
-          status,
-        ]),
-        if (expiringSoon || expired) ...[
-          const SizedBox(height: AppSpace.sm),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(minimumSize: const Size(0, kTouchTarget)),
-              onPressed: () => _sendReminder(context, daysLeft),
-              icon: const Icon(Icons.notifications_active_outlined, size: 18),
-              label: Text(tr('Eslatma yubor')),
-            ),
-          ),
-        ],
       ]),
     );
   }

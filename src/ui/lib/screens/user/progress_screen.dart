@@ -99,21 +99,16 @@ class ProgressScreen extends StatelessWidget {
         final lastLog = (all == null || all.isEmpty) ? null : all.last;
         // O'lchov muddati kelganda tugma urg'uli; kelmaguncha — o'chiq, necha kun qolgani yoziladi
         final due = WeightLog.canAdd(lastLog);
-        final left = WeightLog.daysLeft(lastLog);
         return Scaffold(
           appBar: readOnly ? null : AppBar(title: Text(tr('Progress'))),
-          floatingActionButton: readOnly
+          floatingActionButton: readOnly || !due
               ? null
               : FloatingActionButton.extended(
-                  // ma'lumot yuklanmaguncha o'chirilgan — aks holda haftalik
-                  // tekshiruv lastLog'siz o'tkazib yuborilardi
                   onPressed: snap.hasData ? () => addWeightSheet(context, user, lastLog) : null,
-                  backgroundColor: due ? AppColors.accent : AppColors.card,
-                  foregroundColor: due ? AppColors.onAccent : AppColors.textMuted,
-                  icon: Icon(due ? Icons.add : Icons.lock_clock_outlined),
-                  label: Text(due
-                      ? tr('Vazn kiritish')
-                      : (left == 1 ? tr('Vazn: ertaga') : trf('Vazn: {0} kundan keyin', [left]))),
+                  backgroundColor: AppColors.accent,
+                  foregroundColor: AppColors.onAccent,
+                  icon: const Icon(Icons.add),
+                  label: Text(tr('Vazn kiritish')),
                 ),
           body: Builder(
             builder: (context) {
@@ -188,7 +183,19 @@ class ProgressScreen extends StatelessWidget {
                         padding: const EdgeInsets.only(left: AppSpace.sm, bottom: AppSpace.lg),
                         child: Eyebrow(tr('Vazn dinamikasi'), color: s.onSurfaceVariant),
                       ),
-                      SizedBox(
+                      if (logs.length < 2)
+                        SizedBox(
+                          height: 120,
+                          child: Center(
+                            child: Text(
+                              tr("Grafik uchun kamida 2 ta o'lchov kerak"),
+                              textAlign: TextAlign.center,
+                              style: t.bodyMedium?.copyWith(color: s.onSurfaceVariant),
+                            ),
+                          ),
+                        )
+                      else
+                        SizedBox(
                         height: 220,
                         child: LineChart(LineChartData(
                           minY: minY,
@@ -372,8 +379,7 @@ class _ChangePanel extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpace.xl),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Eyebrow(tr("Umumiy o'zgarish"), color: AppColors.textFaint),
-          const Spacer(),
+          Expanded(child: Eyebrow(tr("Umumiy o'zgarish"), color: AppColors.textFaint)),
           Icon(
             diff == 0
                 ? Icons.trending_flat_rounded
@@ -417,14 +423,13 @@ class _HistoryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = Theme.of(context).colorScheme;
     final d = prev == null ? null : log.weight - prev!.weight;
     return ListTile(
       title: Text(trf('{0} kg', [fmtNum(log.weight)]),
           style: const TextStyle(fontWeight: FontWeight.w600)),
       subtitle: Text(DateFormat('dd.MM.yyyy, HH:mm').format(log.date)),
       trailing: d == null
-          ? Pill(text: tr('Start'), color: s.outline)
+          ? null
           : Pill(
               text: '${d > 0 ? '+' : ''}${d.toStringAsFixed(1)}',
               color: d <= 0 ? AppColors.success : AppColors.warning,

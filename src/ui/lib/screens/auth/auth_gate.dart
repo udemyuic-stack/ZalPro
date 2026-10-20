@@ -32,7 +32,7 @@ class AuthGate extends ConsumerWidget {
           error: (e, _) => _ErrorView(message: apiErrorText(e)),
           data: (u) {
             if (u == null) return const _Splash();
-            ScreenGuard.set(!u.isAdmin && !u.isBarmen);
+            ScreenGuard.set(false);
             if (u.isAdmin) return const AdminHome();
             if (u.isBarmen) return const BarmenHome();
             final trainers = ref.watch(trainerDirectoryProvider).value ?? const [];

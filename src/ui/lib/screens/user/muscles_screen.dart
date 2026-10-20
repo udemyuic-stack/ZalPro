@@ -382,7 +382,6 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                       style: FilledButton.styleFrom(
                         backgroundColor: _brandFill,
                         foregroundColor: _white,
-                        shape: const StadiumBorder(),
                         minimumSize: const Size(double.infinity, 54),
                         textStyle: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.4),
@@ -421,7 +420,6 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                     style: FilledButton.styleFrom(
                       backgroundColor: _brandFill,
                       foregroundColor: _white,
-                      shape: const StadiumBorder(),
                       minimumSize: const Size(0, kTouchTarget),
                       padding: const EdgeInsets.symmetric(horizontal: 18),
                       textStyle: const TextStyle(
@@ -631,7 +629,6 @@ class _ExerciseRow extends StatelessWidget {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: done! ? _brand : _white,
                       side: BorderSide(color: done! ? _brand : _ash),
-                      shape: const StadiumBorder(),
                       minimumSize: const Size(0, kTouchTarget),
                     ),
                     onPressed: onDone,

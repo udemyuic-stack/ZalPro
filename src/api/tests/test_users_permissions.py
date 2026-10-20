@@ -316,7 +316,7 @@ async def test_user_can_patch_own_profile_field(
     assert getattr(stored, field) == value
 
 
-@pytest.mark.parametrize("days", [[2, 4, 6], [1, 3, 5]])
+@pytest.mark.parametrize("days", [[2, 4, 6], [1, 3, 5], [1, 2, 3, 4, 5, 6, 7]])
 async def test_user_can_patch_allowed_gym_days(
     client: AsyncClient,
     student: User,

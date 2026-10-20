@@ -5,6 +5,7 @@ import 'package:dio/dio.dart' show CancelToken;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../models/announcement.dart';
+import '../models/game.dart';
 import '../models/leaderboard.dart';
 import '../models/member_analytics.dart';
 import '../models/shop_analytics.dart';
@@ -18,6 +19,7 @@ import '../models/scan_result.dart';
 import '../models/subscription.dart';
 import 'api/analytics_api.dart';
 import 'api/announcements_api.dart';
+import 'api/game_api.dart';
 import 'api/leaderboard_api.dart';
 import 'api/api_instance.dart';
 import 'api/billing_api.dart';
@@ -82,6 +84,7 @@ class Db {
   static final _checkin = CheckinApi(apiClient);
   static final _announcements = AnnouncementsApi(apiClient);
   static final _leaderboard = LeaderboardApi(apiClient);
+  static final _game = GameApi(apiClient);
   static final _analytics = AnalyticsApi(apiClient);
   static final _plans = <String, SharedStream<Plan?>>{};
 
@@ -528,6 +531,18 @@ class Db {
 
   static Stream<Leaderboard> leaderboard() => _leaderboard.leaderboard();
 
+  static Future<GameCatalog> gameCatalog() => _game.catalog();
+
+  static Stream<GameMe> gameMe() => _game.me();
+
+  static Stream<GameChallenges> gameChallenges() => _game.challenges();
+
+  static Stream<GameLeaderboard> gameLeaderboard({String period = 'week', String? exercise}) =>
+      _game.leaderboard(period: period, exercise: exercise);
+
+  static Future<GameSessionResult> submitGameSession(GameSessionDraft draft) =>
+      _game.submit(draft);
+
   static Future<ShopAnalytics> shopAnalytics(DateTime from, DateTime to) =>
       _analytics.shop(from, to);
 
@@ -540,6 +555,9 @@ class Db {
 
   static Future<void> setLeaderboardVisible(String uid, bool visible) =>
       _users.setLeaderboardVisible(uid, visible);
+
+  static Future<void> setGameEnabled(String uid, bool enabled) =>
+      _users.setGameEnabled(uid, enabled);
 
   static Future<String> checkinToken() => _checkin.checkinToken();
 

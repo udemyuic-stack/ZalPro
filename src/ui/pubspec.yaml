@@ -44,6 +44,7 @@ flutter:
   assets:
     - assets/foods/
     - assets/brand/
+    - assets/game/
     - assets/credits.txt
   fonts:
     - family: Inter

@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../../core/input_rules.dart';
 import '../../l10n/tr.dart';
@@ -13,6 +16,7 @@ import '../../services/voice_recorder.dart';
 import '../../widgets/chat_attach_sheet.dart';
 import '../../widgets/chat_media_bubble.dart';
 import '../../widgets/ui.dart';
+import '../../widgets/voice_record_sheet.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatUid; // chat egasi (user id)
@@ -64,7 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _attach() async => _queue(await pickChatAttachment(context));
 
-  Future<void> _record() async => _queue(await pickChatVoice(context));
+  Future<void> _voice(VoiceClip clip) async => _queue(chatVoiceAttachment(clip));
 
   Future<void> _queue(ChatAttachment? picked) async {
     if (picked == null || !mounted) return;
@@ -219,7 +223,7 @@ class _ChatScreenState extends State<ChatScreen> {
             },
           ),
         ),
-        ChatComposer(controller: _c, onSend: _send, onAttach: _attach, onRecord: _record),
+        ChatComposer(controller: _c, onSend: _send, onAttach: _attach, onVoice: _voice),
       ]),
     );
   }
@@ -376,27 +380,234 @@ class _BubbleShell extends StatelessWidget {
   }
 }
 
-class ChatComposer extends StatelessWidget {
+class ChatComposer extends StatefulWidget {
   final TextEditingController controller;
   final VoidCallback onSend;
   final VoidCallback onAttach;
-  final VoidCallback onRecord;
+  final Future<void> Function(VoiceClip clip)? onVoice;
+  final VoiceRecorder Function()? recorderBuilder;
   const ChatComposer({
     super.key,
     required this.controller,
     required this.onSend,
     required this.onAttach,
-    required this.onRecord,
+    this.onVoice,
+    this.recorderBuilder,
   });
+
+  @override
+  State<ChatComposer> createState() => _ChatComposerState();
+}
+
+enum _VoicePhase { idle, recording, locked }
+
+class _ChatComposerState extends State<ChatComposer> {
+  static const _cancelDx = 100.0;
+  static const _lockDy = 80.0;
+
+  _VoicePhase _phase = _VoicePhase.idle;
+  VoiceRecorder? _recorder;
+  Timer? _ticker;
+  bool _holding = false;
+  bool _starting = false;
+
+  bool get _active => _phase != _VoicePhase.idle;
+
+  Future<void> _begin() async {
+    if (_starting || _active || widget.onVoice == null) return;
+    _starting = true;
+    _holding = true;
+    final recorder = (widget.recorderBuilder ?? RecordVoiceRecorder.new)();
+    bool ok;
+    try {
+      ok = await recorder.start();
+    } catch (_) {
+      ok = false;
+    }
+    _starting = false;
+    if (!mounted) {
+      await recorder.cancel();
+      await recorder.dispose();
+      return;
+    }
+    if (!ok) {
+      _holding = false;
+      await recorder.dispose();
+      if (mounted) {
+        showSnack(context, tr('Mikrofon ruxsati berilmagan. Sozlamalardan ruxsat bering'));
+      }
+      return;
+    }
+    _recorder = recorder;
+    HapticFeedback.mediumImpact();
+    setState(() => _phase = _VoicePhase.recording);
+    _ticker = Timer.periodic(const Duration(milliseconds: 200), (_) => _tick());
+    if (!_holding) await _finish(send: true);
+  }
+
+  Future<void> _tick() async {
+    final r = _recorder;
+    if (!mounted || r == null || !_active) return;
+    if (r.elapsed.inMilliseconds >= ChatMessage.maxAudioMs) {
+      await _finish(send: true);
+      return;
+    }
+    setState(() {});
+  }
+
+  void _move(LongPressMoveUpdateDetails d) {
+    if (_phase != _VoicePhase.recording) return;
+    final o = d.offsetFromOrigin;
+    if (o.dx <= -_cancelDx) {
+      HapticFeedback.lightImpact();
+      _finish(send: false);
+    } else if (-o.dy >= _lockDy) {
+      HapticFeedback.lightImpact();
+      setState(() => _phase = _VoicePhase.locked);
+    }
+  }
+
+  void _release() {
+    _holding = false;
+    if (_phase == _VoicePhase.recording) _finish(send: true);
+  }
+
+  Future<void> _finish({required bool send}) async {
+    final recorder = _recorder;
+    if (recorder == null) return;
+    _recorder = null;
+    _ticker?.cancel();
+    setState(() => _phase = _VoicePhase.idle);
+    if (!send) {
+      await recorder.cancel();
+      await recorder.dispose();
+      return;
+    }
+    VoiceClip? clip;
+    try {
+      clip = await recorder.stop();
+    } catch (_) {
+      clip = null;
+    }
+    await recorder.dispose();
+    if (!mounted) {
+      if (clip != null) await deleteVoiceFile(clip.path);
+      return;
+    }
+    if (clip == null || clip.durationMs < minVoiceMs) {
+      if (clip != null) await deleteVoiceFile(clip.path);
+      if (mounted) showSnack(context, tr('Yozuv juda qisqa'));
+      return;
+    }
+    await widget.onVoice?.call(clip);
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    final r = _recorder;
+    if (r != null) {
+      unawaited(r.cancel().whenComplete(r.dispose));
+    }
+    super.dispose();
+  }
+
+  Widget _micButton(ColorScheme s) {
+    return GestureDetector(
+      key: const Key('composer-mic'),
+      behavior: HitTestBehavior.opaque,
+      onTap: () => showSnack(context, tr('Yozish uchun mikrofonni bosib turing')),
+      onLongPressStart: (_) => _begin(),
+      onLongPressMoveUpdate: _move,
+      onLongPressEnd: (_) => _release(),
+      onLongPressCancel: _release,
+      child: _actionIcon(s, _active ? Icons.mic : Icons.mic_none, scale: _active ? 1.25 : 1),
+    );
+  }
+
+  Widget _actionIcon(ColorScheme s, IconData icon, {double scale = 1}) {
+    return Transform.scale(
+      scale: scale,
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: AppColors.accent,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
+        child: Icon(icon, color: AppColors.onAccent),
+      ),
+    );
+  }
+
+  Widget _recordingBar(ColorScheme s) {
+    final t = Theme.of(context).textTheme;
+    final locked = _phase == _VoicePhase.locked;
+    final elapsed = _recorder?.elapsed ?? Duration.zero;
+    return Row(children: [
+      if (locked)
+        IconButton(
+          key: const Key('voice-discard'),
+          tooltip: tr("O'chirish"),
+          style: IconButton.styleFrom(minimumSize: const Size(48, 48)),
+          onPressed: () => _finish(send: false),
+          icon: Icon(Icons.delete_outline, color: AppColors.danger),
+        )
+      else
+        const SizedBox(width: AppSpace.sm),
+      Icon(Icons.fiber_manual_record, color: AppColors.danger, size: 14),
+      const SizedBox(width: AppSpace.sm),
+      Text(formatVoiceTime(elapsed), key: const Key('voice-timer'), style: t.titleMedium),
+      const SizedBox(width: AppSpace.md),
+      Expanded(
+        child: Text(
+          locked ? tr('Yozilmoqda') : tr('Chapga — bekor, tepaga — qulf'),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+        ),
+      ),
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
     final s = Theme.of(context).colorScheme;
-    final canRecord = voiceRecordSupported(isWeb: kIsWeb, platform: defaultTargetPlatform);
+    final canRecord = widget.onVoice != null &&
+        voiceRecordSupported(isWeb: kIsWeb, platform: defaultTargetPlatform);
     OutlineInputBorder pill([Color? c]) => OutlineInputBorder(
           borderRadius: BorderRadius.circular(28),
           borderSide: c == null ? BorderSide.none : BorderSide(color: c, width: 1.5),
         );
+    final field = Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+      IconButton(
+        tooltip: tr('Rasm yoki video'),
+        style: IconButton.styleFrom(minimumSize: const Size(48, 48)),
+        onPressed: widget.onAttach,
+        icon: const Icon(Icons.attach_file_outlined),
+      ),
+      const SizedBox(width: 4),
+      Expanded(
+        child: TextField(
+          controller: widget.controller,
+          minLines: 1,
+          maxLines: 4,
+          maxLength: InputLimits.message,
+          buildCounter: InputRules.counterAtEighty,
+          textCapitalization: TextCapitalization.sentences,
+          textInputAction: TextInputAction.send,
+          onSubmitted: (_) => widget.onSend(),
+          decoration: InputDecoration(
+            hintText: tr('Xabar yozing...'),
+            fillColor: s.surfaceContainerHighest.withValues(alpha: 0.6),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+            border: pill(),
+            enabledBorder: pill(),
+            focusedBorder: pill(s.primary),
+          ),
+        ),
+      ),
+    ]);
     return Material(
       color: Theme.of(context).cardTheme.color,
       child: SafeArea(
@@ -404,40 +615,33 @@ class ChatComposer extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
           child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-            IconButton(
-              tooltip: tr('Rasm yoki video'),
-              style: IconButton.styleFrom(minimumSize: const Size(48, 48)),
-              onPressed: onAttach,
-              icon: const Icon(Icons.attach_file_outlined),
-            ),
-            const SizedBox(width: 4),
             Expanded(
-              child: TextField(
-                controller: controller,
-                minLines: 1,
-                maxLines: 4,
-                maxLength: InputLimits.message,
-                buildCounter: InputRules.counterAtEighty,
-                textCapitalization: TextCapitalization.sentences,
-                textInputAction: TextInputAction.send,
-                onSubmitted: (_) => onSend(),
-                decoration: InputDecoration(
-                  hintText: tr('Xabar yozing...'),
-                  fillColor: s.surfaceContainerHighest.withValues(alpha: 0.6),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                  border: pill(),
-                  enabledBorder: pill(),
-                  focusedBorder: pill(s.primary),
-                ),
-              ),
+              child: _active ? SizedBox(height: 48, child: _recordingBar(s)) : field,
             ),
             const SizedBox(width: 8),
             ValueListenableBuilder<TextEditingValue>(
-              valueListenable: controller,
+              valueListenable: widget.controller,
               builder: (context, v, child) {
                 final empty = v.text.trim().isEmpty;
+                if (_phase == _VoicePhase.locked) {
+                  return IconButton.filled(
+                    key: const Key('voice-send'),
+                    tooltip: tr('Yuborish'),
+                    style: IconButton.styleFrom(
+                      minimumSize: const Size(48, 48),
+                      backgroundColor: AppColors.accent,
+                      foregroundColor: AppColors.onAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.md),
+                      ),
+                    ),
+                    onPressed: () => _finish(send: true),
+                    icon: const Icon(Icons.arrow_upward_rounded),
+                  );
+                }
+                if ((empty && canRecord) || _active) return _micButton(s);
                 return IconButton.filled(
-                  tooltip: empty && canRecord ? tr('Ovozli xabar') : tr('Yuborish'),
+                  tooltip: tr('Yuborish'),
                   style: IconButton.styleFrom(
                     minimumSize: const Size(48, 48),
                     backgroundColor: AppColors.accent,
@@ -447,8 +651,8 @@ class ChatComposer extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppRadius.md),
                     ),
                   ),
-                  onPressed: empty ? (canRecord ? onRecord : null) : onSend,
-                  icon: Icon(empty && canRecord ? Icons.mic_none : Icons.arrow_upward_rounded),
+                  onPressed: empty ? null : widget.onSend,
+                  icon: const Icon(Icons.arrow_upward_rounded),
                 );
               },
             ),

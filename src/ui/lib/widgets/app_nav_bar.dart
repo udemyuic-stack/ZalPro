@@ -85,7 +85,7 @@ class AppNavBar extends StatelessWidget {
           for (var i = 0; i < shown; i++)
             NavigationDestination(
               icon: items[i].icon,
-              selectedIcon: items[i].selectedIcon,
+              selectedIcon: PopIn(child: items[i].selectedIcon ?? items[i].icon),
               label: items[i].label,
               tooltip: '',
             ),
@@ -103,14 +103,39 @@ class _GlassBar extends StatelessWidget {
   const _GlassBar({required this.child});
 
   @override
-  Widget build(BuildContext context) => ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: AppColors.hairline))),
-            child: child,
+  Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(AppRadius.xl + 8);
+    return SafeArea(
+      top: false,
+      minimum: const EdgeInsets.only(bottom: AppSpace.sm),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(AppSpace.md, 0, AppSpace.md, 0),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: radius,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: AppColors.light ? 0.10 : 0.35),
+                blurRadius: 24,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: radius,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: radius,
+                  border: Border.all(color: AppColors.hairline),
+                ),
+                child: child,
+              ),
+            ),
           ),
         ),
-      );
+      ),
+    );
+  }
 }

@@ -98,6 +98,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             supportedLocales: const [Locale('uz'), Locale('ru'), Locale('en')],
             localizationsDelegates: GlobalMaterialLocalizations.delegates,
             debugShowCheckedModeBanner: false,
+            scrollBehavior: const MaterialScrollBehavior().copyWith(physics: const BouncingScrollPhysics()),
             theme: AppTheme.current(),
             darkTheme: AppTheme.current(),
             themeMode: light ? ThemeMode.light : ThemeMode.dark,

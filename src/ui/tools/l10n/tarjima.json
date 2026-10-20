@@ -1,84 +1,4 @@
 {
- "Rang": {
-  "ru": "Цвет",
-  "en": "Color"
- },
- "Grafit": {
-  "ru": "Графит",
-  "en": "Graphite"
- },
- "Grafit Tungi": {
-  "ru": "Графит Ночь",
-  "en": "Graphite Night"
- },
- "Kvars Kunduzgi": {
-  "ru": "Кварц День",
-  "en": "Quartz Day"
- },
- "Kiber Zumrad": {
-  "ru": "Кибер Изумруд",
-  "en": "Cyber Emerald"
- },
- "Tungi Oltin": {
-  "ru": "Ночное Золото",
-  "en": "Midnight Gold"
- },
- "Kunduzgi": {
-  "ru": "Дневная",
-  "en": "Daylight"
- },
- "Energiya": {
-  "ru": "Энергия",
-  "en": "Energy"
- },
- "VIP klub": {
-  "ru": "VIP клуб",
-  "en": "VIP club"
- },
- "Qorong'i grafit fon, yorqin qizil urg'u": {
-  "ru": "Тёмный графитовый фон, яркий красный акцент",
-  "en": "Dark graphite background, vivid red accent"
- },
- "Yorug' va toza kvars fon, qirollik qizil urg'u": {
-  "ru": "Светлый чистый кварцевый фон, королевский красный акцент",
-  "en": "Light clean quartz background, royal red accent"
- },
- "To'q slanets fon, baquvvat neon zumrad urg'u": {
-  "ru": "Тёмный сланцевый фон, мощный неоново-изумрудный акцент",
-  "en": "Deep slate background, bold neon emerald accent"
- },
- "Obsidian fon, VIP qirollik oltin urg'u": {
-  "ru": "Обсидиановый фон, VIP золотой акцент",
-  "en": "Obsidian background, VIP royal gold accent"
- },
- "Dizayn mavzulari": {
-  "ru": "Темы оформления",
-  "en": "Design themes"
- },
- "Aura Fit uchun 4 ta rang palitrasi": {
-  "ru": "4 цветовые палитры для Aura Fit",
-  "en": "4 colour palettes for Aura Fit"
- },
- "Tugmalar, kartalar, chiziqlar va fon ranglari tanlangan mavzuga darhol o'zgaradi.": {
-  "ru": "Цвета кнопок, карточек, линий и фона сразу меняются под выбранную тему.",
-  "en": "Button, card, line and background colours change to the chosen theme instantly."
- },
- "Telefon sozlamasiga ergashish": {
-  "ru": "Следовать настройке телефона",
-  "en": "Follow phone setting"
- },
- "Telefon qorong'i bo'lsa tanlangan rang, yorug' bo'lsa Kvars": {
-  "ru": "Если телефон тёмный — выбранный цвет, если светлый — Кварц",
-  "en": "Chosen colour when the phone is dark, Quartz when it is light"
- },
- "Zumrad": {
-  "ru": "Изумруд",
-  "en": "Emerald"
- },
- "Oltin": {
-  "ru": "Золото",
-  "en": "Gold"
- },
  "\n\nUnga biriktirilgan {0} ta shogird trenersiz qoladi.": {
   "ru": "\n\nЕго ученики ({0}) останутся без тренера.",
   "en": "\n\nTheir {0} clients will have no trainer."
@@ -151,9 +71,17 @@
   "ru": "«{0}» и его продукты будут убраны.",
   "en": "“{0}” and its foods will be removed."
  },
+ "+{0} coin": {
+  "ru": "+{0} монет",
+  "en": "+{0} coins"
+ },
  "1 kun": {
   "ru": "1 день",
   "en": "1 day"
+ },
+ "1-versiya (grammli)": {
+  "ru": "Версия 1 (в граммах)",
+  "en": "Version 1 (in grams)"
  },
  "100 g da {0} kkal": {
   "ru": "{0} ккал на 100 г",
@@ -166,6 +94,10 @@
  "2-nonushta": {
   "ru": "2-й завтрак",
   "en": "Second breakfast"
+ },
+ "2-versiya (tanlovli)": {
+  "ru": "Версия 2 (на выбор)",
+  "en": "Version 2 (choose your own)"
  },
  "3 × 1 daqiqa": {
   "ru": "3 × 1 минута",
@@ -183,6 +115,10 @@
   "ru": "3 × 40–60 секунд",
   "en": "3 × 40–60 sec"
  },
+ "3-versiya (maslahatlar)": {
+  "ru": "Версия 3 (советы)",
+  "en": "Version 3 (tips)"
+ },
  "30 kun": {
   "ru": "30 дней",
   "en": "30 days"
@@ -191,9 +127,17 @@
   "ru": "За 30 дней: {0}",
   "en": "Last 30 days: {0}"
  },
+ "60 / 65 / 75 kg (2-versiya)": {
+  "ru": "60 / 65 / 75 кг (версия 2)",
+  "en": "60 / 65 / 75 kg (version 2)"
+ },
  "7 kun": {
   "ru": "7 дней",
   "en": "7 days"
+ },
+ "80-90 kg (asosiy)": {
+  "ru": "80–90 кг (основной)",
+  "en": "80–90 kg (main)"
  },
  "A'zolar tahlili": {
   "ru": "Анализ участников",
@@ -255,6 +199,14 @@
   "ru": "Абонемент — {0}",
   "en": "Membership — {0}"
  },
+ "Afsona": {
+  "ru": "Легенда",
+  "en": "Legend"
+ },
+ "Ajoyib mashq!": {
+  "ru": "Отличная тренировка!",
+  "en": "Great workout!"
+ },
  "Akkaunt o'chirildi": {
   "ru": "Аккаунт удалён",
   "en": "Account deleted"
@@ -302,6 +254,10 @@
  "Almashtirish": {
   "ru": "Сменить",
   "en": "Change"
+ },
+ "Alp": {
+  "ru": "Атлет",
+  "en": "Titan"
  },
  "Amal kutilmoqda": {
   "ru": "Требует действия",
@@ -411,6 +367,10 @@
   "ru": "Аудио — записать голос",
   "en": "Audio — record voice"
  },
+ "Aura Fit uchun 4 ta rang palitrasi": {
+  "ru": "4 цветовые палитры для Aura Fit",
+  "en": "4 colour palettes for Aura Fit"
+ },
  "Aura Fit zal shablonidan boshlang yoki yangi reja tuzing.": {
   "ru": "Начните с шаблона зала Aura Fit или составьте новый план.",
   "en": "Start from a Aura Fit gym template or build a new plan."
@@ -510,6 +470,10 @@
  "Baliqchi": {
   "ru": "Балыкчи",
   "en": "Balykchi"
+ },
+ "Ball": {
+  "ru": "Баллы",
+  "en": "Points"
  },
  "Ball tarkibi": {
   "ru": "Из чего складывается балл",
@@ -871,6 +835,18 @@
   "ru": "Скопировать на другие дни",
   "en": "Copy to other days"
  },
+ "Boshqa mashq": {
+  "ru": "Другое упражнение",
+  "en": "Other exercise"
+ },
+ "Boshqa o'lcham": {
+  "ru": "Другой размер",
+  "en": "Other size"
+ },
+ "Boshqa rang": {
+  "ru": "Другой цвет",
+  "en": "Other color"
+ },
  "Boshqasi": {
   "ru": "Другое",
   "en": "Change"
@@ -1155,6 +1131,18 @@
   "ru": "Ср",
   "en": "Wed"
  },
+ "Challenj yo'li": {
+  "ru": "Путь челленджей",
+  "en": "Challenge path"
+ },
+ "Challenjlar": {
+  "ru": "Челленджи",
+  "en": "Challenges"
+ },
+ "Chapga — bekor, tepaga — qulf": {
+  "ru": "Влево — отмена, вверх — блокировка",
+  "en": "Left — cancel, up — lock"
+ },
  "Chat": {
   "ru": "Чат",
   "en": "Chat"
@@ -1215,6 +1203,10 @@
   "ru": "Чуст",
   "en": "Chust"
  },
+ "Coin": {
+  "ru": "Монеты",
+  "en": "Coins"
+ },
  "Dam olish": {
   "ru": "Отдых",
   "en": "Rest"
@@ -1230,6 +1222,10 @@
  "Dang'ara": {
   "ru": "Дангара",
   "en": "Dangara"
+ },
+ "Daraja": {
+  "ru": "Уровень",
+  "en": "Level"
  },
  "Daraja (shogird ko'rmaydi)": {
   "ru": "Уровень (ученик не видит)",
@@ -1259,6 +1255,10 @@
   "ru": "Денау",
   "en": "Denau"
  },
+ "Dizayn mavzulari": {
+  "ru": "Темы оформления",
+  "en": "Design themes"
+ },
  "Do'kon": {
   "ru": "Магазин",
   "en": "Shop"
@@ -1274,6 +1274,10 @@
  "Do'kon hozircha bo'sh": {
   "ru": "Магазин пока пуст",
   "en": "The shop is empty for now"
+ },
+ "Do'kon katalogi uchun ma'lumotlarni kiriting": {
+  "ru": "Введите данные для каталога магазина",
+  "en": "Enter details for the shop catalog"
  },
  "Do'kon tahlili": {
   "ru": "Анализ магазина",
@@ -1331,6 +1335,10 @@
   "ru": "Элликкала",
   "en": "Ellikkala"
  },
+ "Energiya": {
+  "ru": "Энергия",
+  "en": "Energy"
+ },
  "Eng ko'p sotilgan": {
   "ru": "Самые продаваемые",
   "en": "Top sellers"
@@ -1346,6 +1354,10 @@
  "Eng ko'pi {0} ta bo'lishi mumkin": {
   "ru": "Не более {0} шт.",
   "en": "At most {0} allowed"
+ },
+ "Eng yuqori daraja": {
+  "ru": "Максимальный уровень",
+  "en": "Max level"
  },
  "Erkak": {
   "ru": "Мужчина",
@@ -1523,6 +1535,18 @@
   "ru": "Мясо (нежирное, варёное или тушёное на соевом масле)",
   "en": "Meat (lean, boiled or stewed in soybean oil)"
  },
+ "Grafik uchun kamida 2 ta o'lchov kerak": {
+  "ru": "Для графика нужно минимум 2 замера",
+  "en": "At least 2 measurements are needed for the chart"
+ },
+ "Grafit": {
+  "ru": "Графит",
+  "en": "Graphite"
+ },
+ "Grafit Tungi": {
+  "ru": "Графит Ночь",
+  "en": "Graphite Night"
+ },
  "Grechka (quruq vazni)": {
   "ru": "Гречка (сухой вес)",
   "en": "Buckwheat (dry weight)"
@@ -1554,6 +1578,10 @@
  "Ha": {
   "ru": "Да",
   "en": "Yes"
+ },
+ "Hafta": {
+  "ru": "Неделя",
+  "en": "Week"
  },
  "Hafta kunlari bo'yicha": {
   "ru": "По дням недели",
@@ -1607,9 +1635,9 @@
   "ru": "Тренировки 3 дня в неделю",
   "en": "Training 3 days a week"
  },
- "Haftasiga 3 kun. Mashg'ulotlar kunlar tartibida: 1) {0}, 2) {1}, 3) {2}.": {
-  "ru": "3 дня в неделю. Тренировки по порядку дней: 1) {0}, 2) {1}, 3) {2}.",
-  "en": "3 days a week. Workouts follow the day order: 1) {0}, 2) {1}, 3) {2}."
+ "Haftasiga 3 kun yoki har kun. 3 kunda mashg'ulotlar tartibida: 1) {0}, 2) {1}, 3) {2}. Har kunlik variantda har kuni hamma guruh ishlaydi.": {
+  "ru": "3 дня в неделю или каждый день. При 3 днях тренировки по порядку: 1) {0}, 2) {1}, 3) {2}. При ежедневном варианте каждый день работают все группы.",
+  "en": "3 days a week or every day. With 3 days workouts follow the order: 1) {0}, 2) {1}, 3) {2}. In the every-day option all groups are trained daily."
  },
  "Haftasiga kelish (shogirdga)": {
   "ru": "Визитов в неделю (на ученика)",
@@ -1630,6 +1658,10 @@
  "Hali mahal yo'q. Pastdagi \"Mahal qo'shish\" tugmasini bosing.": {
   "ru": "Приёмов пищи пока нет. Нажмите «Добавить приём пищи» внизу.",
   "en": "No meals yet. Tap “Add meal” below."
+ },
+ "Hali mashq yo'q. Birinchi sessiyadan keyin rekordlar shu yerda chiqadi.": {
+  "ru": "Пока нет тренировок. После первой сессии здесь появятся рекорды.",
+  "en": "No workouts yet. Records will appear here after your first session."
  },
  "Hali mijoz yo'q": {
   "ru": "Клиентов пока нет",
@@ -1666,6 +1698,10 @@
  "Hamirli ovqatlar": {
   "ru": "Мучные блюда",
   "en": "Dough-based dishes"
+ },
+ "Hamma challenjlar tugadi!": {
+  "ru": "Все челленджи пройдены!",
+  "en": "All challenges complete!"
  },
  "Hamma kunga": {
   "ru": "На все дни",
@@ -1715,6 +1751,14 @@
   "ru": "Отдельное меню на каждый день",
   "en": "Separate menu for each day"
  },
+ "Har kuni — hamma guruh": {
+  "ru": "Каждый день — все группы",
+  "en": "Every day — all groups"
+ },
+ "Har kunlik": {
+  "ru": "Каждый день",
+  "en": "Every day"
+ },
  "Har mahalda ro'yxatdagi mahsulotlardan birini tanlab almashtirsa bo'ladi.\nShokolad — shakari kam bo'lsin.\nKechki go'shtni kungaboqar yog'ida pishirsa ham bo'ladi.\nYotishdan oldin: meva va qaynagan (iliq) suvga yarimta limon siqib ichiladi.\nNonushtada suli bo'tqasi o'rniga guruch / grechka / makaron / manniy bo'tqasi ham bo'ladi. 2-nonushta va poldnikda protein kokteyl yoki kefir/yogurt — birini tanlang.\nPorsiyalar taxminiy (~2700 kkal, ~200 g oqsil) — mijozga qarab o'zgartiring.": {
   "ru": "В каждом приёме пищи можно выбрать и заменить один из продуктов списка.\nШоколад — с низким содержанием сахара.\nМясо на ужин можно готовить и на подсолнечном масле.\nПеред сном: фрукт и тёплая кипячёная вода с соком половины лимона.\nНа завтрак вместо овсяной каши можно рис / гречку / макароны / манную кашу. На 2-й завтрак и полдник — протеиновый коктейль или кефир/йогурт, выберите одно.\nПорции примерные (~2700 ккал, ~200 г белка) — меняйте под клиента.",
   "en": "In each meal you can pick and swap one of the listed foods.\nChocolate should be low in sugar.\nThe dinner meat can also be cooked in sunflower oil.\nBefore bed: fruit and warm boiled water with half a lemon squeezed in.\nFor breakfast, rice / buckwheat / pasta / semolina porridge can replace oatmeal. For the second breakfast and afternoon snack, a protein shake or kefir/yogurt — choose one.\nPortions are approximate (~2700 kcal, ~200 g protein) — adjust for the client."
@@ -1722,6 +1766,10 @@
  "Har mushak uchun shu shogird qiladigan mashqlarni tanlang. O'zgartirmaguningizcha tanlov turadi. Tanlanmagan mushakda — \"Boshlovchi\" mashqlar.": {
   "ru": "Выберите упражнения этого ученика для каждой мышцы. Выбор действует, пока вы его не измените. Где не выбрано — упражнения уровня «Начинающий».",
   "en": "Choose this student's exercises for each muscle. The choice stays until you change it. Where nothing is chosen — beginner-level exercises."
+ },
+ "Havaskor": {
+  "ru": "Любитель",
+  "en": "Amateur"
  },
  "Havola http:// yoki https:// bilan boshlanishi kerak": {
   "ru": "Ссылка должна начинаться с http:// или https://",
@@ -1734,6 +1782,10 @@
  "Havolani nusxalash": {
   "ru": "Скопировать ссылку",
   "en": "Copy link"
+ },
+ "Havolani ochib bo'lmadi": {
+  "ru": "Не удалось открыть ссылку",
+  "en": "Couldn't open the link"
  },
  "Havolani ochib bo'lmadi — nusxalab brauzerda oching": {
   "ru": "Не удалось открыть ссылку — скопируйте и откройте в браузере",
@@ -2011,6 +2063,10 @@
   "ru": "Камера",
   "en": "Camera"
  },
+ "Kamera bilan mashq qiling: takrorlar shu yerda chiqadi": {
+  "ru": "Тренируйтесь с камерой: повторы появятся здесь",
+  "en": "Train with the camera: reps will show up here"
+ },
  "Kamera ishlamayapti. Kodni qo'lda kiriting": {
   "ru": "Камера не работает. Введите код вручную",
   "en": "The camera isn't working. Enter the code manually"
@@ -2026,6 +2082,10 @@
  "Kamera ruxsati berilmagan. Sozlamalardan ruxsat bering yoki kodni qo'lda kiriting": {
   "ru": "Нет доступа к камере. Разрешите его в настройках или введите код вручную",
   "en": "Camera access isn't allowed. Allow it in Settings or enter the code manually"
+ },
+ "Kamera takrorlarni to'liq ko'rmadi yoki tezlik g'ayrioddiy edi. Coin berilmadi.": {
+  "ru": "Камера не видела повторы полностью или темп был необычным. Монеты не начислены.",
+  "en": "The camera did not see the reps fully or the pace was unusual. No coins awarded."
  },
  "Kameraga ruxsat berilmagan": {
   "ru": "Нет доступа к камере",
@@ -2163,6 +2223,10 @@
   "ru": "Следующая: {0} — {1}",
   "en": "Next: {0} — {1}"
  },
+ "Kiber Zumrad": {
+  "ru": "Кибер Изумруд",
+  "en": "Cyber Emerald"
+ },
  "Kim bergani yozilmagan": {
   "ru": "Не указано, кто выдал",
   "en": "Not recorded who handed it over"
@@ -2259,6 +2323,14 @@
   "ru": "Креатин",
   "en": "Creatine"
  },
+ "Kun": {
+  "ru": "День",
+  "en": "Day"
+ },
+ "Kunduzgi": {
+  "ru": "Дневная",
+  "en": "Daylight"
+ },
  "Kuniga eng ko'pi {0} ta mahal bo'lishi mumkin": {
   "ru": "В день не более {0} приёмов пищи",
   "en": "At most {0} meals per day"
@@ -2295,6 +2367,10 @@
   "ru": "Лягте, сведя лопатки; опускайте штангу к середине груди.",
   "en": "Lie with shoulder blades squeezed; lower the bar to mid-chest."
  },
+ "Kutilayotgan sof foyda: {0}{1} {2} ({3}% marja)": {
+  "ru": "Ожидаемая чистая прибыль: {0}{1} {2} (маржа {3}%)",
+  "en": "Expected net profit: {0}{1} {2} ({3}% margin)"
+ },
  "Kutilmoqda": {
   "ru": "Ожидает",
   "en": "Pending"
@@ -2302,6 +2378,10 @@
  "Kutmoqda": {
   "ru": "Ждут",
   "en": "Waiting"
+ },
+ "Kvars Kunduzgi": {
+  "ru": "Кварц День",
+  "en": "Quartz Day"
  },
  "L-Arginin": {
   "ru": "L-аргинин",
@@ -2687,6 +2767,10 @@
   "ru": "Нажмите на мышцу — увидите упражнения для неё",
   "en": "Tap a muscle to see exercises for it"
  },
+ "Mushakni tanlang": {
+  "ru": "Выберите мышцу",
+  "en": "Select a muscle"
+ },
  "Muzrabot": {
   "ru": "Музрабат",
   "en": "Muzrabat"
@@ -2851,6 +2935,10 @@
   "ru": "Удалить",
   "en": "Delete"
  },
+ "O'chirsangiz daraja, coin va reyting ko'rinmaydi. Natijangiz saqlanadi.": {
+  "ru": "Если выключить, уровень, монеты и рейтинг скроются. Ваши результаты сохранятся.",
+  "en": "If you turn it off, level, coins and ranking are hidden. Your results are kept."
+ },
  "O'g'irish": {
   "ru": "Перенести",
   "en": "Move"
@@ -2903,9 +2991,25 @@
   "ru": "Разгибание ног сидя",
   "en": "Leg extension"
  },
+ "O'tirib-turish": {
+  "ru": "Приседания",
+  "en": "Squats"
+ },
  "O'tkazib yuborish": {
   "ru": "Пропустить",
   "en": "Skip"
+ },
+ "O'yin markazi": {
+  "ru": "Игровой центр",
+  "en": "Game hub"
+ },
+ "O'yin rejimi": {
+  "ru": "Игровой режим",
+  "en": "Game mode"
+ },
+ "O'yin rejimini yoqish": {
+  "ru": "Включить игровой режим",
+  "en": "Turn on game mode"
  },
  "O'zbekiston": {
   "ru": "Узбекистан",
@@ -2938,6 +3042,10 @@
  "ORQA": {
   "ru": "СЗАДИ",
   "en": "BACK"
+ },
+ "Obsidian fon, VIP qirollik oltin urg'u": {
+  "ru": "Обсидиановый фон, VIP золотой акцент",
+  "en": "Obsidian background, VIP royal gold accent"
  },
  "Obuna": {
   "ru": "Абонемент",
@@ -3019,6 +3127,10 @@
   "ru": "Алтыарык",
   "en": "Altyaryk"
  },
+ "Oltin": {
+  "ru": "Золото",
+  "en": "Gold"
+ },
  "Oltinko'l": {
   "ru": "Алтынкуль",
   "en": "Altynkul"
@@ -3026,6 +3138,10 @@
  "Oltinsoy": {
   "ru": "Алтынсай",
   "en": "Altynsay"
+ },
+ "Ombor zaxirasi": {
+  "ru": "Складской запас",
+  "en": "Stock"
  },
  "Omborda tovar yetarli emas": {
   "ru": "Недостаточно товара на складе",
@@ -3147,6 +3263,10 @@
   "ru": "Последние {0} дн.",
   "en": "Last {0} days"
  },
+ "Oy": {
+  "ru": "Месяц",
+  "en": "Month"
+ },
  "Oyiga bir marta bir xil joyda, bir xil yorug'likda rasm oling — o'zgarish tarozidan ko'ra rasmda yaxshiroq ko'rinadi. Rasmni faqat siz va treneringiz ko'radi.": {
   "ru": "Раз в месяц делайте фото в одном месте при одинаковом свете — изменения на фото видны лучше, чем на весах. Фото видите только вы и ваш тренер.",
   "en": "Once a month take a photo in the same spot and lighting — changes show better in photos than on the scale. Only you and your trainer can see them."
@@ -3166,6 +3286,10 @@
  "Oyoq uchida, past sakrang.": {
   "ru": "На носках, невысокие прыжки.",
   "en": "Stay on the toes, keep the jumps low."
+ },
+ "Oyoqlar": {
+  "ru": "Ноги",
+  "en": "Legs"
  },
  "Oyoqni orqaga ko'tarish (blokda)": {
   "ru": "Отведение ноги назад (на блоке)",
@@ -3319,6 +3443,10 @@
   "ru": "Полдник",
   "en": "Afternoon snack"
  },
+ "Polvon": {
+  "ru": "Богатырь",
+  "en": "Strongman"
+ },
  "Pomidor": {
   "ru": "Помидор",
   "en": "Tomato"
@@ -3330,6 +3458,10 @@
  "Pop": {
   "ru": "Пап",
   "en": "Pap"
+ },
+ "Press": {
+  "ru": "Пресс",
+  "en": "Sit-ups"
  },
  "Professional": {
   "ru": "Профессионал",
@@ -3511,6 +3643,10 @@
   "ru": "Кизирик",
   "en": "Kizirik"
  },
+ "Qo'llar": {
+  "ru": "Руки",
+  "en": "Arms"
+ },
  "Qo'lning oldi (biceps)": {
   "ru": "Бицепс",
   "en": "Biceps"
@@ -3603,6 +3739,10 @@
   "ru": "Тёмное",
   "en": "Dark"
  },
+ "Qorong'i grafit fon, yorqin qizil urg'u": {
+  "ru": "Тёмный графитовый фон, яркий красный акцент",
+  "en": "Dark graphite background, vivid red accent"
+ },
  "Qorovulbozor": {
   "ru": "Караулбазар",
   "en": "Karaulbazar"
@@ -3626,6 +3766,10 @@
  "Quyichirchiq": {
   "ru": "Куйичирчик",
   "en": "Quyi Chirchik"
+ },
+ "Rang": {
+  "ru": "Цвет",
+  "en": "Color"
  },
  "Ranglar (ixtiyoriy)": {
   "ru": "Цвета (необязательно)",
@@ -3987,6 +4131,14 @@
   "ru": "Вторник",
   "en": "Tuesday"
  },
+ "Sessiya hisoblanmadi": {
+  "ru": "Сессия не засчитана",
+  "en": "Session not counted"
+ },
+ "Sessiyalar": {
+  "ru": "Сессии",
+  "en": "Sessions"
+ },
  "Sh": {
   "ru": "Сб",
   "en": "Sat"
@@ -4034,6 +4186,10 @@
  "Shaxsiy ovqatlanish rejasi uchun 'Trener' bo'limidan trener tanlang.": {
   "ru": "Для личного плана питания выберите тренера в разделе «Тренер».",
   "en": "Choose a trainer in the Trainer tab to get a personal meal plan."
+ },
+ "Shaxsiy rekordlar": {
+  "ru": "Личные рекорды",
+  "en": "Personal records"
  },
  "Shayxontohur": {
   "ru": "Шайхантахур",
@@ -4295,6 +4451,10 @@
   "ru": "Настройки (оформление, уведомления)",
   "en": "Settings (appearance, notifications)"
  },
+ "Sportchi": {
+  "ru": "Спортсмен",
+  "en": "Athlete"
+ },
  "Squat takrorlarini kamera sanaydi": {
   "ru": "Камера считает повторения приседаний",
   "en": "The camera counts your squat reps"
@@ -4314,6 +4474,10 @@
  "Start": {
   "ru": "Старт",
   "en": "Start"
+ },
+ "Streak": {
+  "ru": "Серия",
+  "en": "Streak"
  },
  "Suhbatni boshlang": {
   "ru": "Начните разговор",
@@ -4366,6 +4530,10 @@
  "Tahrirlash": {
   "ru": "Изменить",
   "en": "Edit"
+ },
+ "Takror": {
+  "ru": "Повторы",
+  "en": "Reps"
  },
  "Takror sanagich": {
   "ru": "Счётчик повторений",
@@ -4491,6 +4659,10 @@
   "ru": "Как в телефоне",
   "en": "System"
  },
+ "Telefon qorong'i bo'lsa tanlangan rang, yorug' bo'lsa Kvars": {
+  "ru": "Если телефон тёмный — выбранный цвет, если светлый — Кварц",
+  "en": "Chosen colour when the phone is dark, Quartz when it is light"
+ },
  "Telefon raqam": {
   "ru": "Номер телефона",
   "en": "Phone number"
@@ -4510,6 +4682,10 @@
  "Telefon sozlamalarida Aura Fit uchun kamerani yoqing": {
   "ru": "Включите камеру для Aura Fit в настройках телефона",
   "en": "Enable the camera for Aura Fit in phone settings"
+ },
+ "Telefon sozlamasiga ergashish": {
+  "ru": "Следовать настройке телефона",
+  "en": "Follow phone setting"
  },
  "Telefon: {0}": {
   "ru": "Телефон: {0}",
@@ -4583,6 +4759,10 @@
   "ru": "В самый раз",
   "en": "Just right"
  },
+ "To'g'ri havola kiriting (https://...)": {
+  "ru": "Введите корректную ссылку (https://...)",
+  "en": "Enter a valid link (https://...)"
+ },
  "To'g'ri ovqatlanish —": {
   "ru": "Правильное питание —",
   "en": "Eating right is"
@@ -4635,6 +4815,10 @@
   "ru": "Оплаты показываются по залу. Главный админ должен прикрепить вас к залу.",
   "en": "Payments are shown per gym. The head admin needs to assign you to a gym."
  },
+ "To'q slanets fon, baquvvat neon zumrad urg'u": {
+  "ru": "Тёмный сланцевый фон, мощный неоново-изумрудный акцент",
+  "en": "Deep slate background, bold neon emerald accent"
+ },
  "To'raqo'rg'on": {
   "ru": "Туракурган",
   "en": "Turakurgan"
@@ -4686,6 +4870,10 @@
  "Tovarlar": {
   "ru": "Товары",
   "en": "Products"
+ },
+ "Tovarni katalogga saqlash": {
+  "ru": "Сохранить товар в каталог",
+  "en": "Save product to catalog"
  },
  "Tovarni o'chirish": {
   "ru": "Удалить товар",
@@ -4907,6 +5095,10 @@
   "ru": "Закончился",
   "en": "Sold out"
  },
+ "Tugmalar, kartalar, chiziqlar va fon ranglari tanlangan mavzuga darhol o'zgaradi.": {
+  "ru": "Цвета кнопок, карточек, линий и фона сразу меняются под выбранную тему.",
+  "en": "Button, card, line and background colours change to the chosen theme instantly."
+ },
  "Tuman": {
   "ru": "Район",
   "en": "District"
@@ -4915,9 +5107,17 @@
   "ru": "Название района",
   "en": "District name"
  },
+ "Tungi Oltin": {
+  "ru": "Ночное Золото",
+  "en": "Midnight Gold"
+ },
  "Tuproqqal'a": {
   "ru": "Тупроккала",
   "en": "Tuprakkala"
+ },
+ "Turnik": {
+  "ru": "Подтягивания",
+  "en": "Pull-ups"
  },
  "Turnikda osilib turish": {
   "ru": "Вис на турнике",
@@ -5046,6 +5246,10 @@
  "VIDEO": {
   "ru": "ВИДЕО",
   "en": "VIDEO"
+ },
+ "VIP klub": {
+  "ru": "VIP клуб",
+  "en": "VIP club"
  },
  "Vaqt: {0}": {
   "ru": "Время: {0}",
@@ -5251,6 +5455,14 @@
   "ru": "Вабкент",
   "en": "Vabkent"
  },
+ "Vypad": {
+  "ru": "Выпады",
+  "en": "Lunges"
+ },
+ "XP": {
+  "ru": "XP",
+  "en": "XP"
+ },
  "Xabar eng ko'pi {0} belgi bo'lishi mumkin": {
   "ru": "Сообщение не длиннее {0} символов",
   "en": "A message can be at most {0} characters"
@@ -5258,6 +5470,10 @@
  "Xabar yozing...": {
   "ru": "Напишите сообщение...",
   "en": "Type a message..."
+ },
+ "Xarita havolasi (ixtiyoriy)": {
+  "ru": "Ссылка на карту (необязательно)",
+  "en": "Map link (optional)"
  },
  "Xatirchi": {
   "ru": "Хатырчи",
@@ -5347,6 +5563,10 @@
   "ru": "Новый аккаунт бармена",
   "en": "New bar staff account"
  },
+ "Yangi boshlovchi": {
+  "ru": "Новичок",
+  "en": "Beginner"
+ },
  "Yangi buyurtma": {
   "ru": "Новый заказ",
   "en": "New order"
@@ -5354,6 +5574,10 @@
  "Yangi buyurtma yo'q": {
   "ru": "Новых заказов нет",
   "en": "No new orders"
+ },
+ "Yangi daraja: {0}": {
+  "ru": "Новый уровень: {0}",
+  "en": "New level: {0}"
  },
  "Yangi e'lon": {
   "ru": "Новое объявление",
@@ -5403,6 +5627,10 @@
   "ru": "Назначен новый план",
   "en": "New plan assigned"
  },
+ "Yangi rekord!": {
+  "ru": "Новый рекорд!",
+  "en": "New record!"
+ },
  "Yangi salat": {
   "ru": "Свежий салат",
   "en": "Fresh salad"
@@ -5414,6 +5642,10 @@
  "Yangi tovar": {
   "ru": "Новый товар",
   "en": "New product"
+ },
+ "Yangi tovar qo'shish": {
+  "ru": "Добавить новый товар",
+  "en": "Add new product"
  },
  "Yangi trener": {
   "ru": "Новый тренер",
@@ -5519,6 +5751,14 @@
   "ru": "Тяните плечи к ушам, вверху задержитесь на 1 секунду.",
   "en": "Pull the shoulders to the ears, hold 1 second at the top."
  },
+ "Yil": {
+  "ru": "Год",
+  "en": "Year"
+ },
+ "Yo'nalish": {
+  "ru": "Маршрут",
+  "en": "Directions"
+ },
  "Yog'": {
   "ru": "Жиры",
   "en": "Fat"
@@ -5555,6 +5795,10 @@
   "ru": "Светлое",
   "en": "Light"
  },
+ "Yorug' va toza kvars fon, qirollik qizil urg'u": {
+  "ru": "Светлый чистый кварцевый фон, королевский красный акцент",
+  "en": "Light clean quartz background, royal red accent"
+ },
  "Yosh": {
   "ru": "Возраст",
   "en": "Age"
@@ -5570,6 +5814,14 @@
  "Yotishdan oldin": {
   "ru": "Перед сном",
   "en": "Before bed"
+ },
+ "Yozilmoqda": {
+  "ru": "Идёт запись",
+  "en": "Recording"
+ },
+ "Yozish uchun mikrofonni bosib turing": {
+  "ru": "Удерживайте микрофон для записи",
+  "en": "Hold the microphone to record"
  },
  "Yozuv 5 daqiqaga yetdi": {
   "ru": "Запись достигла 5 минут",
@@ -5730,6 +5982,10 @@
  "Zomin": {
   "ru": "Заамин",
   "en": "Zaamin"
+ },
+ "Zumrad": {
+  "ru": "Изумруд",
+  "en": "Emerald"
  },
  "aprel": {
   "ru": "апреля",
@@ -5923,6 +6179,14 @@
   "ru": "{0} (копия)",
   "en": "{0} (copy)"
  },
+ "{0} / {1}": {
+  "ru": "{0} / {1}",
+  "en": "{0} / {1}"
+ },
+ "{0} / {1} XP": {
+  "ru": "{0} / {1} XP",
+  "en": "{0} / {1} XP"
+ },
  "{0} / {1} bajarildi": {
   "ru": "Выполнено {0} / {1}",
   "en": "{0} / {1} done"
@@ -5931,9 +6195,29 @@
   "ru": "Осталось {0} / {1}",
   "en": "{0} / {1} left"
  },
+ "{0} XP": {
+  "ru": "{0} XP",
+  "en": "{0} XP"
+ },
+ "{0} XP qoldi": {
+  "ru": "Осталось {0} XP",
+  "en": "{0} XP left"
+ },
  "{0} ball": {
   "ru": "{0} б.",
   "en": "{0} pts"
+ },
+ "{0} challenj": {
+  "ru": "Челлендж {0}",
+  "en": "Challenge {0}"
+ },
+ "{0} challenj bajarildi!": {
+  "ru": "{0}-й челлендж выполнен!",
+  "en": "Challenge {0} complete!"
+ },
+ "{0} coin": {
+  "ru": "{0} монет",
+  "en": "{0} coins"
  },
  "{0} dan katta, {1} gacha kiriting": {
   "ru": "Введите число больше {0} и не более {1}",
@@ -6019,9 +6303,21 @@
   "ru": "{0} ккал • {1} г белка",
   "en": "{0} kcal • {1} g protein"
  },
+ "{0} kuchaydi": {
+  "ru": "{0}: мышцы стали сильнее",
+  "en": "{0} got stronger"
+ },
  "{0} kun": {
   "ru": "{0} дн.",
   "en": "{0} days"
+ },
+ "{0} kun ketma-ket": {
+  "ru": "{0} дн. подряд",
+  "en": "{0}-day streak"
+ },
+ "{0} kun o'tdi": {
+  "ru": "просрочено на {0} дн.",
+  "en": "{0} days overdue"
  },
  "{0} kun qoldi": {
   "ru": "осталось {0} дн.",
@@ -6034,6 +6330,10 @@
  "{0} kundan keyin tugaydi": {
   "ru": "закончится через {0} дн.",
   "en": "expires in {0} days"
+ },
+ "{0} kunlik streak: +{1} coin": {
+  "ru": "Серия {0} дн.: +{1} монет",
+  "en": "{0}-day streak: +{1} coins"
  },
  "{0} mahal": {
   "ru": "приёмов пищи: {0}",
@@ -6175,6 +6475,10 @@
   "ru": "Тренеров без зала: {0} — нажмите на тренера и выберите «Прикрепить к залу».",
   "en": "{0} trainers have no gym — tap one and choose “Assign to gym”."
  },
+ "{0} takror": {
+  "ru": "{0} повт.",
+  "en": "{0} reps"
+ },
  "{0} trener paneliga kira oladi: reja tuzadi, mahsulot qo’shadi, shogirdlar bilan yozishadi.": {
   "ru": "{0} сможет войти в панель тренера: составлять планы, добавлять продукты, переписываться с учениками.",
   "en": "{0} will be able to use the trainer panel: build plans, add foods, chat with clients."
@@ -6182,6 +6486,10 @@
  "{0} trener paneliga kiradi: reja tuzadi, shogird qabul qiladi.": {
   "ru": "{0} получит доступ к панели тренера: составляет планы, принимает учеников.",
   "en": "{0} gets access to the trainer panel: builds plans, accepts clients."
+ },
+ "{0} uchun {1} XP kerak": {
+  "ru": "До «{0}» нужно {1} XP",
+  "en": "{1} XP to {0}"
  },
  "{0} vaqti o'tdi": {
   "ru": "Время {0} прошло",
@@ -6243,6 +6551,10 @@
   "ru": "{0}, {1} {2}",
   "en": "{0}, {2} {1}"
  },
+ "{0}-daraja": {
+  "ru": "{0}-й уровень",
+  "en": "Level {0}"
+ },
  "{0}: \"{1}\" × {2} bekor qilinsinmi?": {
   "ru": "{0}: отменить «{1}» × {2}?",
   "en": "{0}: cancel “{1}” × {2}?"
@@ -6262,6 +6574,14 @@
  "{0}: {1}": {
   "ru": "{0}: {1}",
   "en": "{0}: {1}"
+ },
+ "{0}: {1} marta": {
+  "ru": "{0}: {1} раз",
+  "en": "{0}: {1} times"
+ },
+ "{0}: {1} takror": {
+  "ru": "{0}: {1} повт.",
+  "en": "{0}: {1} reps"
  },
  "{0}{1} (minimum {2})": {
   "ru": "{0}{1} (минимум {2})",
@@ -6314,25 +6634,5 @@
  "🛒 Buyurtma: {0} × {1} — {2}": {
   "ru": "🛒 Заказ: {0} × {1} — {2}",
   "en": "🛒 Order: {0} × {1} — {2}"
- },
- "3-versiya (maslahatlar)": {
-  "ru": "Версия 3 (советы)",
-  "en": "Version 3 (tips)"
- },
- "1-versiya (grammli)": {
-  "ru": "Версия 1 (в граммах)",
-  "en": "Version 1 (in grams)"
- },
- "2-versiya (tanlovli)": {
-  "ru": "Версия 2 (на выбор)",
-  "en": "Version 2 (choose your own)"
- },
- "60 / 65 / 75 kg (2-versiya)": {
-  "ru": "60 / 65 / 75 кг (версия 2)",
-  "en": "60 / 65 / 75 kg (version 2)"
- },
- "80-90 kg (asosiy)": {
-  "ru": "80–90 кг (основной)",
-  "en": "80–90 kg (main)"
  }
 }

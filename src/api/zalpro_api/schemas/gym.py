@@ -9,6 +9,7 @@ class GymIn(StrictModel):
     country: str = Field(default="", max_length=60)
     region: str = Field(default="", max_length=60)
     district: str = Field(default="", max_length=60)
+    map_url: str = Field(default="", max_length=500, pattern=r"^(https?://\S+)?$")
 
 
 class GymOut(OutModel):
@@ -18,3 +19,4 @@ class GymOut(OutModel):
     country: str
     region: str
     district: str
+    map_url: str

@@ -162,6 +162,13 @@ class UsersApi extends ApiService {
         [..._userTags(uid), 'leaderboard'],
       );
 
+  Future<void> setGameEnabled(String uid, bool enabled) => write(
+        'PUT',
+        '/v1/users/me/game',
+        {'enabled': enabled},
+        [..._userTags(uid), 'leaderboard', 'game'],
+      );
+
   Future<void> setGymDays(String uid, List<int> days) => write(
         'PATCH',
         '/v1/users/$uid',

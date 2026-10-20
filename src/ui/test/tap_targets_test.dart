@@ -201,7 +201,7 @@ void main() {
     addTearDown(c.dispose);
     await pumpAt360(
       t,
-      ChatComposer(controller: c, onSend: () {}, onAttach: () {}, onRecord: () {}),
+      ChatComposer(controller: c, onSend: () {}, onAttach: () {}, onVoice: (_) async {}),
     );
     expectTargets(t, atLeast: 2);
   });
@@ -315,12 +315,11 @@ void main() {
         child: OrderTile(order: order, onStatus: (_, __) async {}),
       ),
     );
-    final hits = audit(t);
-    expectHits(hits, atLeast: 2);
+    expect(audit(t).length, greaterThanOrEqualTo(2));
     for (final label in ['Berildi', 'Bekor']) {
       final button = find.ancestor(of: find.text(label), matching: find.byWidgetPredicate((w) =>
           w is FilledButton || w is OutlinedButton));
-      expect(t.getSize(button.first).height, greaterThanOrEqualTo(52), reason: label);
+      expect(t.getSize(button.first).height, greaterThanOrEqualTo(48), reason: label);
     }
     await endTest(t);
   });

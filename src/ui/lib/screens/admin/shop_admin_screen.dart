@@ -8,6 +8,7 @@ import '../../services/db.dart';
 import '../../theme.dart';
 import '../../widgets/lazy_stack.dart';
 import '../../widgets/product_image.dart';
+import '../../widgets/product_form_parts.dart';
 import '../../widgets/product_photos.dart';
 import '../../widgets/ui.dart';
 
@@ -216,20 +217,28 @@ class OrderTile extends StatelessWidget {
           Row(children: [
             Expanded(
               child: FilledButton.icon(
-                style: FilledButton.styleFrom(minimumSize: const Size(0, kTouchTarget)),
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size(0, 48),
+                  textStyle: t.labelLarge,
+                ),
                 onPressed: () => onStatus(o, orderGiven),
-                icon: const Icon(Icons.check, size: 18),
+                icon: const Icon(Icons.check, size: 16),
                 label: Text(tr('Berildi')),
               ),
             ),
-            const SizedBox(width: AppSpace.xl),
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size(0, kTouchTarget),
-                foregroundColor: AppColors.danger,
+            const SizedBox(width: AppSpace.md),
+            Expanded(
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(0, 48),
+                  textStyle: t.labelLarge,
+                  foregroundColor: AppColors.danger,
+                  side: BorderSide(color: AppColors.danger.withValues(alpha: 0.5)),
+                ),
+                onPressed: () => onStatus(o, orderCanceled),
+                icon: const Icon(Icons.close, size: 16),
+                label: Text(tr('Bekor')),
               ),
-              onPressed: () => onStatus(o, orderCanceled),
-              child: Text(tr('Bekor')),
             ),
           ]),
         ],
@@ -390,25 +399,26 @@ Future<void> editProduct(BuildContext context, [Product? p]) async {
               ),
               const SizedBox(width: AppSpace.md),
               Expanded(
-                child: Text(p == null ? tr("Yangi tovar") : tr('Tovarni tahrirlash'),
-                    style: Theme.of(ctx).textTheme.titleLarge),
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(p == null ? tr("Yangi tovar qo'shish") : tr('Tovarni tahrirlash'),
+                      style: Theme.of(ctx).textTheme.titleLarge),
+                  Text(tr("Do'kon katalogi uchun ma'lumotlarni kiriting"),
+                      style: TextStyle(color: AppColors.textMuted, fontSize: 12.5)),
+                ]),
+              ),
+              IconButton(
+                tooltip: tr('Yopish'),
+                constraints:
+                    const BoxConstraints.tightFor(width: kTouchTarget, height: kTouchTarget),
+                onPressed: () => Navigator.pop(ctx),
+                icon: const Icon(Icons.close),
               ),
             ]),
             const SizedBox(height: AppSpace.lg),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Wrap(spacing: AppSpace.sm, children: [
-                for (final c in shopCategories)
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(minHeight: kTouchTarget),
-                    child: ChoiceChip(
-                      selected: category == c,
-                      onSelected: (_) => setS(() => category = c),
-                      avatar: Icon(shopIcon(c), size: 16),
-                      label: Text(c),
-                    ),
-                  ),
-              ]),
+            CategoryGrid(
+              categories: shopCategories,
+              selected: category,
+              onSelected: (c) => setS(() => category = c),
             ),
             const SizedBox(height: AppSpace.md),
             TextFormField(
@@ -496,16 +506,7 @@ Future<void> editProduct(BuildContext context, [Product? p]) async {
                 decoration: InputDecoration(labelText: tr('Tan narxi (ixtiyoriy)')),
               ),
             ]),
-            if (n(costPrice) > 0) ...[
-              const SizedBox(height: AppSpace.xs),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  trf('Foyda: {0} {1}', [fmtSum(n(price) - n(costPrice)), currencyLabel(currency)]),
-                  style: TextStyle(color: AppColors.textMuted, fontSize: 12.5),
-                ),
-              ),
-            ],
+            ProfitBanner(price: n(price), cost: n(costPrice), currency: currency),
             const SizedBox(height: AppSpace.sm),
             Align(
               alignment: Alignment.centerLeft,
@@ -524,35 +525,34 @@ Future<void> editProduct(BuildContext context, [Product? p]) async {
             const SizedBox(height: AppSpace.md),
             ProductPhotos(product: p, onCover: (url) => setS(() => cover = url)),
             const SizedBox(height: AppSpace.md),
-            TextFormField(
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(tr("O'lchamlar (ixtiyoriy)"), style: Theme.of(ctx).textTheme.titleSmall),
+            ),
+            const SizedBox(height: AppSpace.sm),
+            ChipPicker(
               controller: sizes,
-              validator: InputRules.variantsText,
-              onChanged: (_) => setS(() {}),
-              decoration: InputDecoration(
-                labelText: tr("O'lchamlar (ixtiyoriy)"),
-                hintText: 'XL, XXL, 3XL, 4XL',
-                helperText: tr("Vergul bilan. Yozilsa — shogird buyurtmada o'lchamni tanlaydi"),
-              ),
+              presets: sizePresets,
+              upper: true,
+              addLabel: tr("Boshqa o'lcham"),
+              onChanged: () => setS(() {}),
             ),
             const SizedBox(height: AppSpace.md),
-            TextFormField(
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(tr('Ranglar (ixtiyoriy)'), style: Theme.of(ctx).textTheme.titleSmall),
+            ),
+            const SizedBox(height: AppSpace.sm),
+            ChipPicker(
               controller: colors,
-              validator: InputRules.variantsText,
-              decoration: InputDecoration(
-                labelText: tr('Ranglar (ixtiyoriy)'),
-                hintText: tr('sariq, kulrang, yashil'),
-                helperText: tr('Vergul bilan. Yozilsa — shogird buyurtmada rangni tanlaydi'),
-              ),
+              presets: colorPresets.keys.toList(),
+              dotOf: (v) => colorPresets[v],
+              addLabel: tr('Boshqa rang'),
+              onChanged: () => setS(() {}),
             ),
             const SizedBox(height: AppSpace.md),
             if (InputRules.splitVariants(sizes.text).isEmpty)
-              TextFormField(
-                controller: stock,
-                keyboardType: TextInputType.number,
-                inputFormatters: InputRules.digitsMax(10),
-                validator: InputRules.intRange(0, InputLimits.maxInt, required: false),
-                decoration: InputDecoration(labelText: tr('Qoldiq'), suffixText: 'dona'),
-              )
+              QtyStepper(controller: stock, onChanged: () => setS(() {}))
             else
               Align(
                 alignment: Alignment.centerLeft,
@@ -593,7 +593,7 @@ Future<void> editProduct(BuildContext context, [Product? p]) async {
                 onPressed: () {
                   if (InputRules.validateAndFocus(productForm)) Navigator.pop(ctx, true);
                 },
-                child: Text(tr('Saqlash')),
+                child: Text(tr('Tovarni katalogga saqlash')),
               ),
             ),
             const SizedBox(height: AppSpace.sm),

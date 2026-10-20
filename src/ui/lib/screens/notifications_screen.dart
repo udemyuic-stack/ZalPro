@@ -183,7 +183,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final t = Theme.of(context).textTheme;
     return FeedBuilder(
       user: widget.user,
       builder: (context, items) {
@@ -204,8 +203,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.xxl),
             children: [
-              Text(tr('Eslatmalar'), style: t.headlineSmall),
-              const SizedBox(height: 2),
               Text(
                 tr('Ilovadagi hamma bildirishnoma shu yerda saqlanadi'),
                 style: TextStyle(color: AppColors.textMuted, fontSize: 12.5),

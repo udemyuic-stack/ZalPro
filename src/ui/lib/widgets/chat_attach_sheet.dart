@@ -75,14 +75,16 @@ Future<ChatAttachment?> pickChatVoice(
 }) async {
   final clip = await showVoiceRecordSheet(context, recorderBuilder: recorderBuilder);
   if (clip == null) return null;
-  return ChatAttachment(
-    kind: ChatMessage.mediaAudio,
-    contentType: ChatMessage.audioContentType,
-    size: clip.size,
-    file: XFile(clip.path),
-    durationMs: clip.durationMs,
-  );
+  return chatVoiceAttachment(clip);
 }
+
+ChatAttachment chatVoiceAttachment(VoiceClip clip) => ChatAttachment(
+      kind: ChatMessage.mediaAudio,
+      contentType: ChatMessage.audioContentType,
+      size: clip.size,
+      file: XFile(clip.path),
+      durationMs: clip.durationMs,
+    );
 
 Future<ChatAttachment?> _video(BuildContext context) async {
   final file = await ImagePicker().pickVideo(source: ImageSource.gallery);

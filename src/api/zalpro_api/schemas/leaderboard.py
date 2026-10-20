@@ -25,3 +25,7 @@ class LeaderboardOut(OutModel):
 
 class LeaderboardVisibility(StrictModel):
     visible: bool = Field(strict=True)
+
+
+class GameToggle(StrictModel):
+    enabled: bool = Field(strict=True)
