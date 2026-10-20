@@ -61,7 +61,7 @@ class _ExtraFoodPickerState extends State<_ExtraFoodPicker> {
                 ]),
               ),
               TextButton(
-                  onPressed: () => setState(() => _food = null), child: Text(tr('Boshqasi'))),
+                  onPressed: () => setState(() => _food = null), child: Text(tr('Boshqasini tanlash'))),
             ]),
             const SizedBox(height: AppSpace.lg),
             Text(tr('Qancha yedingiz?'), style: t.bodyMedium?.copyWith(color: AppColors.textMuted)),
@@ -200,7 +200,7 @@ class ExtrasToday extends StatelessWidget {
     try {
       await Db.addExtra(uid, day, e);
     } catch (err) {
-      if (context.mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(err)]));
+      if (context.mounted) showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(err)]));
     }
   }
 

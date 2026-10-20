@@ -288,7 +288,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
             Padding(
               padding: const EdgeInsets.only(top: AppSpace.sm, left: 4),
               child: Text(
-                tr("Tez — ovqat tez hazm bo'lib, tez-tez qorin ochadi. Sekin — ovqat sekin hazm "
+                tr("Tez — ovqat tez hazm bo'ladi, tez-tez och qolasiz. Sekin — ovqat sekin hazm "
                     "bo'ladi, kuniga 2 mahal yeb ham yuraverasiz. Bilmasangiz — «Sekin»ni tanlang."),
                 style: t.bodySmall?.copyWith(color: s.onSurfaceVariant, height: 1.4),
               ),

@@ -113,7 +113,7 @@ class InputRules {
 
   static String? requiredText(String? v, int max, {String? emptyMessage}) {
     final text = (v ?? '').trim();
-    if (text.isEmpty) return emptyMessage ?? tr('Kiriting');
+    if (text.isEmpty) return emptyMessage ?? tr("Maydonni to'ldiring");
     return length(text) > max ? trf("Eng ko'pi {0} belgi", [max]) : null;
   }
 
@@ -145,7 +145,7 @@ class InputRules {
 
   static String? intInRange(String? v, int min, int max, {bool required = true}) {
     final text = (v ?? '').trim();
-    if (text.isEmpty) return required ? tr('Kiriting') : null;
+    if (text.isEmpty) return required ? tr("Maydonni to'ldiring") : null;
     final n = int.tryParse(text);
     if (n == null) return tr('Butun son kiriting');
     if (n < min || n > max) return trf('{0} dan {1} gacha kiriting', [min, max]);
@@ -160,7 +160,7 @@ class InputRules {
     bool minExclusive = false,
   }) {
     final text = (v ?? '').trim();
-    if (text.isEmpty) return required ? tr('Kiriting') : null;
+    if (text.isEmpty) return required ? tr("Maydonni to'ldiring") : null;
     final n = parseDecimal(text);
     if (n == null || n.isNaN || n.isInfinite) return tr("To'g'ri son kiriting");
     final belowMin = minExclusive ? n <= min : n < min;

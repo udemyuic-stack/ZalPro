@@ -193,7 +193,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
                           color: AppColors.protein,
                           title: tr("Do'kon tushumi"),
                           value: MonthlyReport.money(r.shopSums),
-                          subtitle: trf('{0} ta buyurtma berildi', [r.ordersCount]),
+                          subtitle: trf('{0} ta buyurtma topshirildi', [r.ordersCount]),
                         ),
                         const SizedBox(height: AppSpace.md),
                         _Card(

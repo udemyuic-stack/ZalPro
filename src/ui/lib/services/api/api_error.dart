@@ -104,7 +104,7 @@ String apiErrorText(Object error) {
     case 'insufficient_stock':
       return tr("Omborda tovar yetarli emas");
     case 'product_missing':
-      return tr("Tovar topilmadi, buyurtmani bera olmaysiz");
+      return tr("Tovar topilmadi, buyurtmani topshirib bo'lmaydi");
     case 'invalid_status_transition':
       return tr("Buyurtma holatini o'zgartirib bo'lmaydi");
     case 'product_inactive':
@@ -116,7 +116,7 @@ String apiErrorText(Object error) {
     case 'video_too_large':
       return tr('Video 100 MB dan katta');
     case 'video_type_unsupported':
-      return tr("Video turi qo'llanmaydi (mp4, mov, webm)");
+      return tr("Video turi qo'llab-quvvatlanmaydi (mp4, mov, webm)");
     case 'video_not_uploaded':
       return tr('Video serverga yetib bormagan. Qayta yuklang');
     case 'chat_video_too_large':

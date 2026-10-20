@@ -189,6 +189,6 @@ void main() {
     const a = ApiException(code: 'invalid_status_transition', message: 'x', status: 409);
     const b = ApiException(code: 'product_missing', message: 'x', status: 409);
     expect(apiErrorText(a), "Buyurtma holatini o'zgartirib bo'lmaydi");
-    expect(apiErrorText(b), "Tovar topilmadi, buyurtmani bera olmaysiz");
+    expect(apiErrorText(b), "Tovar topilmadi, buyurtmani topshirib bo'lmaydi");
   });
 }

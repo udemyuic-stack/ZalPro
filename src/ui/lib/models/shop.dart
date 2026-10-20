@@ -314,7 +314,7 @@ class ShopOrder {
   bool get isGiven => status == orderGiven;
 
   String get statusLabel => switch (status) {
-        orderGiven => tr('Berildi'),
+        orderGiven => tr('Topshirildi'),
         orderCanceled => tr('Bekor qilindi'),
         _ => tr('Kutilmoqda'),
       };

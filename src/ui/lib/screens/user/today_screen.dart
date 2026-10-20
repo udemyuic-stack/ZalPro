@@ -501,7 +501,7 @@ class _WaterCardState extends State<WaterCard> {
       setState(() {
         if (mine == _seq) _optimistic = null;
       });
-      showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+      showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
     } finally {
       if (mounted) setState(() => _inflight--);
     }

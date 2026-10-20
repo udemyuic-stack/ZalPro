@@ -35,7 +35,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text(tr('Challenjlar'))),
+        appBar: AppBar(title: Text(tr('Vazifalar'))),
         body: StreamBuilder<GameChallenges>(
           stream: _stream,
           builder: (context, snap) {
@@ -102,12 +102,12 @@ class _Body extends StatelessWidget {
               Icon(Icons.emoji_events_outlined, color: AppColors.gold),
               const SizedBox(width: AppSpace.md),
               Expanded(
-                child: Text(tr('Hamma challenjlar tugadi!'), style: t.titleMedium),
+                child: Text(tr('Barcha vazifalar bajarildi!'), style: t.titleMedium),
               ),
             ]),
           ),
         const SizedBox(height: AppSpace.lg),
-        SectionHeader(tr('Challenj yo\'li')),
+        SectionHeader(tr("Vazifalar yo'li")),
         for (var i = 0; i < data.steps.length; i++)
           FadeInUp(
             index: i < 6 ? i : 6,
@@ -152,7 +152,7 @@ class _CurrentCard extends StatelessWidget {
           const SizedBox(width: AppSpace.md),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(trf('{0} challenj', [step.index + 1]),
+              Text(trf('{0}-vazifa', [step.index + 1]),
                   style: t.labelMedium?.copyWith(color: AppColors.textMuted)),
               _FocusReveal(
                 child: Text(
@@ -208,7 +208,7 @@ class _StepRow extends StatelessWidget {
         Expanded(
           child: Text(
             step.locked
-                ? trf('{0} challenj', [step.index + 1])
+                ? trf('{0}-vazifa', [step.index + 1])
                 : trf('{0}: {1} marta', [gameExerciseName(step.exercise), step.target]),
             style: t.titleMedium?.copyWith(color: muted),
             maxLines: 2,

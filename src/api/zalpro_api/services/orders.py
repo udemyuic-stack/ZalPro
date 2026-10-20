@@ -129,7 +129,7 @@ async def take_stock(session: AsyncSession, order: Order) -> int:
         .execution_options(populate_existing=True)
     )
     if product is None:
-        raise conflict("product_missing", "Tovar topilmadi, buyurtmani bera olmaysiz")
+        raise conflict("product_missing", "Tovar topilmadi, buyurtmani topshirib bo'lmaydi")
     if product.sizes:
         available = product.size_stock.get(order.size, 0)
         if available < order.qty:

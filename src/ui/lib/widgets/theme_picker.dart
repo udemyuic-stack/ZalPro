@@ -54,7 +54,7 @@ ThemeChoice? selectedThemeChoice() {
 String currentThemeTitle() {
   final c = selectedThemeChoice();
   if (AppSettings.themeMode.value == ThemeMode.system || c == null) {
-    return tr('Telefon');
+    return tr('Tizim');
   }
   return tr(c.title);
 }
@@ -120,7 +120,7 @@ class ThemePicker extends StatelessWidget {
               contentPadding: EdgeInsets.zero,
               value: mode == ThemeMode.system,
               onChanged: _follow,
-              title: Text(tr('Telefon sozlamasiga ergashish')),
+              title: Text(tr('Tizim sozlamasiga ergashish')),
               subtitle: Text(
                   tr("Telefon qorong'i bo'lsa tanlangan rang, yorug' bo'lsa Kvars"),
                   style: t.bodySmall?.copyWith(color: AppColors.textMuted)),

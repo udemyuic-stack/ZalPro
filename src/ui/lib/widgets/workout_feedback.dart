@@ -9,7 +9,7 @@ const feedbackValues = [1, 2, 3];
 
 String feedbackLabel(int value) => switch (value) {
       1 => tr('Oson'),
-      2 => tr("To'g'ri"),
+      2 => tr("O'rta"),
       _ => tr('Qiyin'),
     };
 

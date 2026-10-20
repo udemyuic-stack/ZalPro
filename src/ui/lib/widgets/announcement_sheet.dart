@@ -123,7 +123,7 @@ class _AnnouncementManagerState extends State<AnnouncementManager> {
       } else if (err is ApiException && err.status == 403) {
         return;
       } else {
-        showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(err)]));
+        showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(err)]));
       }
     }
   }
@@ -133,7 +133,7 @@ class _AnnouncementManagerState extends State<AnnouncementManager> {
       await Db.removeAnnouncement(a.id);
       if (mounted) setState(() => _serverFull = false);
     } catch (err) {
-      if (mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(err)]));
+      if (mounted) showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(err)]));
     }
   }
 
