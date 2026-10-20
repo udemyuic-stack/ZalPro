@@ -146,7 +146,7 @@ class _CheckinQrBodyState extends ConsumerState<CheckinQrBody> {
           ),
         if (widget.showSubscription && me != null) ...[
           const SizedBox(height: AppSpace.lg),
-          MySubscriptionCard(uid: me.id),
+          MySubscriptionCard(uid: me.id, canBuy: false),
         ],
         const SizedBox(height: AppSpace.sm),
       ]),

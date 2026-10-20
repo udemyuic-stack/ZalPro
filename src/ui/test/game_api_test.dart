@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kotta_qani_diet/models/game.dart';
 import 'package:kotta_qani_diet/services/api/api_client.dart';
+import 'package:kotta_qani_diet/services/api/api_error.dart';
 import 'package:kotta_qani_diet/services/api/game_api.dart';
 import 'package:kotta_qani_diet/services/api/poll_stream.dart';
 import 'package:kotta_qani_diet/services/api/session_store.dart';
@@ -94,6 +95,24 @@ void main() {
     expect(last().path, '/v1/game/sessions');
     expect(r.flagged, isTrue);
     expect(r.totalXp, 40);
+  });
+
+  test('submit: bo\'sh javob ApiException beradi', () async {
+    final draft = GameSessionDraft(
+      id: 'abc',
+      exercise: 'squat',
+      reps: 20,
+      durationS: 40,
+      visibilityPct: 95,
+      startedAt: DateTime.utc(2026, 10, 20),
+    );
+    respond = (o) async => jsonBody({}, 201);
+    await expectLater(
+      api.submit(draft),
+      throwsA(isA<ApiException>().having((e) => e.code, 'code', 'empty_response')),
+    );
+    respond = (o) async => ResponseBody.fromString('', 204);
+    await expectLater(api.submit(draft), throwsA(isA<ApiException>()));
   });
 
   test('leaderboard: period va exercise so\'rovga o\'tadi', () async {

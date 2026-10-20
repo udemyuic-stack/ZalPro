@@ -63,7 +63,7 @@ class ChatAudioBubble extends StatelessWidget {
                   const SizedBox(height: AppSpace.xs),
                   Text(
                     failed
-                        ? tr("Ijro bo'lmadi")
+                        ? tr("Ijro etib bo'lmadi")
                         : playing || position > Duration.zero
                             ? '${formatVoiceTime(position)} / ${formatVoiceTime(total)}'
                             : formatVoiceTime(total),

@@ -54,7 +54,7 @@ Future<ChatAttachment?> pickChatAttachment(
         return await pickChatVoice(context, recorderBuilder: recorderBuilder);
     }
   } catch (e) {
-    if (context.mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+    if (context.mounted) showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
     return null;
   }
 }
@@ -92,7 +92,7 @@ Future<ChatAttachment?> _video(BuildContext context) async {
   final type =
       Exercise.videoContentType(file.name, file.mimeType) ?? Exercise.videoContentType(file.path);
   if (type == null) {
-    if (context.mounted) showSnack(context, tr("Video turi qo'llanmaydi (mp4, mov, webm)"));
+    if (context.mounted) showSnack(context, tr("Video turi qo'llab-quvvatlanmaydi (mp4, mov, webm)"));
     return null;
   }
   final size = await file.length();

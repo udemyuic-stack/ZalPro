@@ -442,7 +442,7 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                           fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 0.4),
                     ),
                     onPressed: () => _rotate(1),
-                    child: Text(tr("O'g'irish")),
+                    child: Text(tr('Aylantirish')),
                   ),
                 ]),
                 const SizedBox(height: 18),

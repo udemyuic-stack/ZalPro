@@ -79,7 +79,7 @@ Future<void> addWeightSheet(BuildContext context, AppUser user, WeightLog? lastL
     await Db.addWeight(user.id, w);
     if (context.mounted) showSnack(context, trf('Saqlandi: {0} kg', [fmtNum(w)]));
   } catch (e) {
-    if (context.mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+    if (context.mounted) showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
   }
 }
 

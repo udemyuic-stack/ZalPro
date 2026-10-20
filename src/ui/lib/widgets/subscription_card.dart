@@ -4,6 +4,7 @@ import '../models/shop.dart';
 import '../models/subscription.dart';
 import '../services/db.dart';
 import '../theme.dart';
+import 'buy_subscription_sheet.dart';
 import 'ui.dart';
 
 /// Abonement holati: "12 kun qoldi" / "Bugun tugaydi" / "Muddati o'tdi" / "Abonement yo'q"
@@ -18,10 +19,25 @@ Pill subscriptionPill(DateTime? exp) {
 }
 
 /// Mijozning o'z abonementi (Profil ekrani): oxirgi to'lov va oldingi to'lovlar.
-/// Faqat ko'rsatadi — abonementni trener yoki bosh admin qo'shadi.
+/// [canBuy] — ilova ichida Payme/Click orqali sotib olish/yangilash tugmasi; abonementni
+/// trener yoki bosh admin ham qo'sha oladi.
 class MySubscriptionCard extends StatelessWidget {
   final String uid;
-  const MySubscriptionCard({super.key, required this.uid});
+  final bool canBuy;
+  const MySubscriptionCard({super.key, required this.uid, this.canBuy = true});
+
+  Widget _buyButton(BuildContext context, {required bool renew}) => Padding(
+        padding: const EdgeInsets.only(top: AppSpace.md),
+        child: SizedBox(
+          width: double.infinity,
+          child: FilledButton.icon(
+            key: const ValueKey('buy-subscription'),
+            onPressed: () => showBuySubscription(context, uid),
+            icon: const Icon(Icons.payments_outlined),
+            label: Text(renew ? tr('Obunani yangilash') : tr('Obunani sotib olish')),
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -35,16 +51,23 @@ class MySubscriptionCard extends StatelessWidget {
         if (list.isEmpty) {
           return BentoTile(
             padding: const EdgeInsets.all(AppSpace.md),
-            child: Row(children: [
-              IconBadge(Icons.event_repeat_outlined, color: AppColors.textMuted, size: 40),
-              const SizedBox(width: AppSpace.md),
-              Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(tr("Abonement yo'q"), style: t.titleSmall),
-                  const SizedBox(height: 2),
-                  Text(tr("To'lov zalda qilinadi, abonementni trener belgilaydi."), style: muted),
-                ]),
-              ),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                IconBadge(Icons.event_repeat_outlined, color: AppColors.textMuted, size: 40),
+                const SizedBox(width: AppSpace.md),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(tr("Abonement yo'q"), style: t.titleSmall),
+                    const SizedBox(height: 2),
+                    Text(
+                        canBuy
+                            ? tr("Ilovada sotib oling yoki zalda to'lang.")
+                            : tr("To'lov zalda qilinadi, abonementni trener belgilaydi."),
+                        style: muted),
+                  ]),
+                ),
+              ]),
+              if (canBuy) _buyButton(context, renew: false),
             ]),
           );
         }
@@ -92,6 +115,7 @@ class MySubscriptionCard extends StatelessWidget {
                   ),
                 ),
             ],
+            if (canBuy) _buyButton(context, renew: true),
           ]),
         );
       },

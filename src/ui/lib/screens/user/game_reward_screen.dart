@@ -152,7 +152,7 @@ class GameRewardScreen extends StatelessWidget {
                                         Expanded(
                                           child: Text(
                                             trf(
-                                                '{0} kunlik streak: +{1} coin',
+                                                '{0} kun ketma-ket: +{1} coin',
                                                 [
                                                   result.streakDays,
                                                   result.streakBonus
@@ -244,8 +244,8 @@ class _ChallengeCard extends StatelessWidget {
     final t = Theme.of(context).textTheme;
     final done = challenge.completed;
     final title = done
-        ? trf('{0} challenj bajarildi!', [challenge.step])
-        : trf('{0} challenj', [challenge.step]);
+        ? trf('{0}-vazifa bajarildi!', [challenge.step])
+        : trf('{0}-vazifa', [challenge.step]);
     final subtitle = done
         ? trf('{0} kuchaydi', [_muscleName(challenge.muscle)])
         : trf('{0} / {1}', [challenge.progress, challenge.target]);

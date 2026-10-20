@@ -162,7 +162,7 @@ class _ExercisesAdminScreenState extends State<ExercisesAdminScreen> {
                       ),
                       const SizedBox(width: AppSpace.sm),
                       IconButton(
-                        tooltip: tr("O'g'irish"),
+                        tooltip: tr('Aylantirish'),
                         constraints: const BoxConstraints.tightFor(
                             width: kTouchTarget, height: kTouchTarget),
                         onPressed: () => _rotate(1),
@@ -212,7 +212,7 @@ class _ExercisesAdminScreenState extends State<ExercisesAdminScreen> {
                   for (final (k, label) in <(String?, String)>[
                     (null, tr('Hammasi')),
                     for (final l in levels.entries) (l.key, tr(l.value)),
-                    ('', tr('Belgisiz')),
+                    ('', tr('Darajasiz')),
                   ])
                     ChoiceChip(
                       label: Text(
@@ -444,7 +444,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
     }
     if (Exercise.videoContentType(file.name, file.mimeType) == null &&
         Exercise.videoContentType(file.path) == null) {
-      return setState(() => _error = tr("Video turi qo'llanmaydi (mp4, mov, webm)"));
+      return setState(() => _error = tr("Video turi qo'llab-quvvatlanmaydi (mp4, mov, webm)"));
     }
     if (_id.isEmpty) {
       return setState(() {
@@ -659,7 +659,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
             Wrap(spacing: AppSpace.sm, runSpacing: AppSpace.xs, children: [
               for (final (k, label) in <(String, String)>[
                 for (final l in levels.entries) (l.key, tr(l.value)),
-                ('', tr('Belgisiz')),
+                ('', tr('Darajasiz')),
               ])
                 ChoiceChip(
                     label: Text(label),
@@ -676,7 +676,7 @@ class _ExerciseFormState extends State<ExerciseForm> {
             TextField(
               controller: _sets,
               maxLength: 40,
-              decoration: InputDecoration(labelText: tr('Yondashuv × takror'), hintText: '4 × 10'),
+              decoration: InputDecoration(labelText: tr('Set × takror'), hintText: '4 × 10'),
             ),
             TextField(
               controller: _tip,

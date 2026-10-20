@@ -9,6 +9,7 @@ from zalpro_api.models.gym import Gym
 from zalpro_api.models.membership import Membership
 from zalpro_api.models.message import Message
 from zalpro_api.models.order import Order
+from zalpro_api.models.payment_order import PaymentOrder
 from zalpro_api.models.photo import Photo
 from zalpro_api.models.plan import Plan
 from zalpro_api.models.product import Product
@@ -37,6 +38,7 @@ __all__ = [
     "Membership",
     "Message",
     "Order",
+    "PaymentOrder",
     "Photo",
     "Plan",
     "Product",

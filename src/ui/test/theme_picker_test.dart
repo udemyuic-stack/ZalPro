@@ -94,7 +94,7 @@ void main() {
     expect(tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
         isTrue);
     expect(find.byIcon(Icons.check_circle), findsNothing);
-    expect(currentThemeChoice().title, 'Telefon');
+    expect(currentThemeChoice().title, 'Tizim');
 
     await tester.tap(find.byType(SwitchListTile));
     await tester.pumpAndSettle();

@@ -112,7 +112,7 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (e) {
       if (item.cancelled || !mounted) return;
       setState(() => item.failed = true);
-      showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+      showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
     }
   }
 
@@ -144,7 +144,7 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (e) {
       if (!mounted) return;
       if (_c.text.isEmpty) _c.text = t;
-      showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+      showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
     }
   }
 
@@ -582,7 +582,7 @@ class _ChatComposerState extends State<ChatComposer> {
       const SizedBox(width: AppSpace.md),
       Expanded(
         child: Text(
-          locked ? tr('Yozilmoqda') : tr('Chapga — bekor, tepaga — qulf'),
+          locked ? tr('Yozib olinmoqda') : tr('Chapga — bekor, tepaga — qulf'),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: t.bodySmall?.copyWith(color: AppColors.textMuted),

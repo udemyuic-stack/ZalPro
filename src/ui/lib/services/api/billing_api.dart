@@ -1,6 +1,8 @@
 import '../../models/models.dart';
+import '../../models/payment.dart';
 import '../../models/streak.dart';
 import '../../models/subscription.dart';
+import 'api_error.dart';
 import 'api_service.dart';
 import 'json_helpers.dart';
 import 'poll_stream.dart';
@@ -47,6 +49,50 @@ class BillingApi extends ApiService {
       ['subscriptions', 'subscriptions:${client.id}', 'memberships', 'users', 'user:${client.id}'],
     );
   }
+
+  Future<PaymentOptions> paymentOptions() async =>
+      PaymentOptions.fromJson(await client.getJson('/v1/payments/options'));
+
+  /// Server narxni o'zi hisoblaydi — faqat muddat (oy) va to'lov tizimi yuboriladi.
+  Future<PaymentOrder> createPaymentOrder(int months, String provider) async {
+    final row = await client.request<Map<String, dynamic>>(
+      'POST',
+      '/v1/payments/orders',
+      data: {'months': months, 'provider': provider},
+    );
+    return PaymentOrder.fromJson(row ?? const {});
+  }
+
+  Future<PaymentOrder> paymentOrder(String id) async =>
+      PaymentOrder.fromJson(await client.getJson('/v1/payments/orders/$id'));
+
+  /// To'lov holatini [every] da so'raydi; `paid`/`canceled` bo'lganda yoki [timeout] dan keyin
+  /// tugaydi. Tarmoq uzilishlari o'tkazib yuboriladi (to'lov sahifasida internet bo'lmasligi mumkin).
+  /// To'langanda abonement va profil oqimlari yangilanadi.
+  Stream<PaymentOrder> watchPaymentOrder(
+    String uid,
+    String id, {
+    Duration every = const Duration(seconds: 3),
+    Duration timeout = const Duration(minutes: 15),
+  }) async* {
+    final clock = Stopwatch()..start();
+    while (clock.elapsed < timeout) {
+      try {
+        final order = await paymentOrder(id);
+        yield order;
+        if (order.isFinal) {
+          if (order.isPaid) refreshAfterPayment(uid);
+          return;
+        }
+      } on ApiException catch (e) {
+        if (!e.isNetwork) rethrow;
+      }
+      await Future<void>.delayed(every);
+    }
+  }
+
+  void refreshAfterPayment(String uid) => bus.touchAll(
+      ['subscriptions', 'subscriptions:$uid', 'memberships', 'users', 'user:$uid']);
 
   Stream<List<Membership>> memberships(AppUser me) {
     if (!me.isOwner && (me.gymId ?? '').isEmpty) return Stream.value(const <Membership>[]);

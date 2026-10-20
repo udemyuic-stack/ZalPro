@@ -32,3 +32,13 @@ services:
         sync: false
       - key: R2_BUCKET
         sync: false
+      - key: PAYME_MERCHANT_ID
+        sync: false
+      - key: PAYME_KEY
+        sync: false
+      - key: CLICK_SERVICE_ID
+        sync: false
+      - key: CLICK_MERCHANT_ID
+        sync: false
+      - key: CLICK_SECRET_KEY
+        sync: false

@@ -136,7 +136,7 @@ class _ClientGymTile extends StatelessWidget {
             context, isHome ? tr('Uyda mashq bekor qilindi') : tr('Bugun uyda mashq belgilandi'));
       }
     } catch (e) {
-      if (context.mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+      if (context.mounted) showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
     }
   }
 
@@ -148,7 +148,7 @@ class _ClientGymTile extends StatelessWidget {
             context, present ? tr('Davomat bekor qilindi') : tr('Bugun keldi deb belgilandi'));
       }
     } catch (e) {
-      if (context.mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+      if (context.mounted) showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
     }
   }
 

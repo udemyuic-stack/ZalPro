@@ -59,7 +59,7 @@ class ProgressPhotos extends StatelessWidget {
       await Db.addPhoto(uid, bytes, weight);
       if (context.mounted) showSnack(context, tr("Rasm qo'shildi"));
     } catch (e) {
-      if (context.mounted) showSnack(context, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+      if (context.mounted) showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
     }
   }
 
@@ -91,7 +91,7 @@ class ProgressPhotos extends StatelessWidget {
                       if (ctx.mounted) Navigator.pop(ctx);
                     } catch (e) {
                       if (ctx.mounted) {
-                        showSnack(ctx, trf("Bo'lmadi: {0}", [apiErrorText(e)]));
+                        showSnack(ctx, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
                       }
                     }
                   },
