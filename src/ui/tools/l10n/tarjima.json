@@ -6542,5 +6542,73 @@
  "O'rta daraja": {
   "ru": "Средний",
   "en": "Intermediate"
+ },
+ "Obunani sotib olish": {
+  "ru": "Купить абонемент",
+  "en": "Buy membership"
+ },
+ "Obunani yangilash": {
+  "ru": "Продлить абонемент",
+  "en": "Renew membership"
+ },
+ "Obuna muddatini tanlang": {
+  "ru": "Выберите срок абонемента",
+  "en": "Choose a membership term"
+ },
+ "To'lov usuli": {
+  "ru": "Способ оплаты",
+  "en": "Payment method"
+ },
+ "Payme orqali to'lash": {
+  "ru": "Оплатить через Payme",
+  "en": "Pay with Payme"
+ },
+ "Click orqali to'lash": {
+  "ru": "Оплатить через Click",
+  "en": "Pay with Click"
+ },
+ "Onlayn to'lov hozircha ulanmagan. To'lovni zalda qiling.": {
+  "ru": "Онлайн-оплата пока не подключена. Оплатите в зале.",
+  "en": "Online payment is not available yet. Please pay at the gym."
+ },
+ "Ilovada sotib oling yoki zalda to'lang.": {
+  "ru": "Купите в приложении или оплатите в зале.",
+  "en": "Buy in the app or pay at the gym."
+ },
+ "To'lov kutilmoqda…": {
+  "ru": "Ожидаем оплату…",
+  "en": "Waiting for payment…"
+ },
+ "To'lovni Payme yoki Click ilovasida yakunlang. Tasdiqlangach obuna o'zi faollashadi.": {
+  "ru": "Завершите оплату в Payme или Click. После подтверждения абонемент активируется сам.",
+  "en": "Finish the payment in Payme or Click. The membership activates automatically once it is confirmed."
+ },
+ "To'lov sahifasini qayta ochish": {
+  "ru": "Открыть страницу оплаты снова",
+  "en": "Reopen the payment page"
+ },
+ "To'lov sahifasini ochib bo'lmadi": {
+  "ru": "Не удалось открыть страницу оплаты",
+  "en": "Could not open the payment page"
+ },
+ "Holatni tekshirish": {
+  "ru": "Проверить статус",
+  "en": "Check status"
+ },
+ "Obuna faollashdi": {
+  "ru": "Абонемент активирован",
+  "en": "Membership activated"
+ },
+ "To'lov bekor qilindi": {
+  "ru": "Оплата отменена",
+  "en": "Payment canceled"
+ },
+ "To'lov tasdig'i hali kelmadi. Pul yechilgan bo'lsa, obuna bir necha daqiqada faollashadi.": {
+  "ru": "Подтверждение оплаты ещё не пришло. Если деньги списаны, абонемент активируется в течение нескольких минут.",
+  "en": "Payment confirmation has not arrived yet. If you were charged, the membership will activate within a few minutes."
+ },
+ "Amal qiladi: {0} gacha": {
+  "ru": "Действует до {0}",
+  "en": "Valid until {0}"
  }
 }

@@ -62,7 +62,8 @@ async def clean_database(app: Any) -> None:
     async with app.state.engine.begin() as connection:
         await connection.execute(
             text(
-                "TRUNCATE push_tokens, messages, photos, orders, products, reminders, attendance, "
+                "TRUNCATE push_tokens, messages, photos, orders, "
+                "payment_orders, products, reminders, attendance, "
                 "memberships, "
                 "subscriptions, "
                 "weights, days, exercises, plans, foods, refresh_tokens, trainers, users, gyms "

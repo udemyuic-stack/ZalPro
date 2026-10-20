@@ -103,9 +103,9 @@ async def upsert_membership(
     await session.execute(statement)
 
 
-async def add_subscription(
+async def apply_subscription(
     session: AsyncSession, client: User, body: SubscriptionIn, zone: ZoneInfo
-) -> SubscriptionOut:
+) -> Subscription:
     expires_at = compute_expiry(body.start_date, body.months, body.days, zone)
     subscription = Subscription(
         id=uuid.uuid4().hex,
@@ -122,6 +122,13 @@ async def add_subscription(
     client.subscription_expires_at = expires_at
     await session.flush()
     await upsert_membership(session, client, gym_id, body, expires_at)
+    return subscription
+
+
+async def add_subscription(
+    session: AsyncSession, client: User, body: SubscriptionIn, zone: ZoneInfo
+) -> SubscriptionOut:
+    subscription = await apply_subscription(session, client, body, zone)
     await session.commit()
     await session.refresh(subscription)
     return to_out(subscription, zone)

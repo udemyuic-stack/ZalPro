@@ -34,6 +34,14 @@ class Settings(BaseSettings):
     backup_prefix: str = "zalpro"
     min_app_build: int = Field(default=0, ge=0)
     app_download_url: str = ""
+    subscription_month_price: int = Field(default=500000, ge=1)
+    payment_return_url: str = ""
+    payme_merchant_id: str = ""
+    payme_key: str = ""
+    payme_checkout_url: str = "https://checkout.paycom.uz"
+    click_service_id: str = ""
+    click_merchant_id: str = ""
+    click_secret_key: str = ""
 
     @property
     def cors_origin_list(self) -> list[str]:
@@ -55,6 +63,14 @@ class Settings(BaseSettings):
                 self.backup_r2_bucket,
             )
         )
+
+    @property
+    def payme_configured(self) -> bool:
+        return bool(self.payme_merchant_id and self.payme_key)
+
+    @property
+    def click_configured(self) -> bool:
+        return bool(self.click_service_id and self.click_merchant_id and self.click_secret_key)
 
     @property
     def legacy_scrypt_configured(self) -> bool:

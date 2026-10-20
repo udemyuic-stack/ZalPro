@@ -12,6 +12,7 @@ import '../models/shop_analytics.dart';
 import '../models/gym.dart';
 import '../models/exercises.dart';
 import '../models/models.dart';
+import '../models/payment.dart';
 import '../models/shop.dart';
 import '../models/stats.dart';
 import '../models/photo.dart';
@@ -492,6 +493,22 @@ class Db {
   static Future<void> addSubscription(AppUser client, Subscription s) async {
     return _billing.addSubscription(client, s);
   }
+
+  // ---------- onlayn to'lov (Payme / Click) ----------
+  static Future<PaymentOptions> paymentOptions() => _billing.paymentOptions();
+
+  static Future<PaymentOrder> createPaymentOrder(int months, String provider) {
+    return _billing.createPaymentOrder(months, provider);
+  }
+
+  static Future<PaymentOrder> paymentOrder(String id) => _billing.paymentOrder(id);
+
+  /// To'lov holati oqimi: to'langanda yoki bekor bo'lganda tugaydi.
+  static Stream<PaymentOrder> watchPaymentOrder(String uid, String id) {
+    return _billing.watchPaymentOrder(uid, id);
+  }
+
+  static void refreshAfterPayment(String uid) => _billing.refreshAfterPayment(uid);
 
   /// Zal mijozlarining oxirgi to'lovlari: bosh admin — hammasi, trener va barmen — o'z zali
   /// (zalsiz xodim — bo'sh; qoidalar boshqa zalni bermaydi).
