@@ -65,6 +65,7 @@ async def clean_database(app: Any) -> None:
                 "TRUNCATE push_tokens, messages, photos, orders, "
                 "payment_orders, products, reminders, attendance, "
                 "memberships, "
+                "streak_freezes, exercise_sets, "
                 "subscriptions, "
                 "weights, days, exercises, plans, foods, refresh_tokens, trainers, users, gyms "
                 "RESTART IDENTITY CASCADE"

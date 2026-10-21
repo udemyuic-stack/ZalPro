@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/tr.dart';
 import '../../models/gym.dart';
 import '../../models/models.dart';
+import '../../models/streak.dart';
 import '../../services/api/api_error.dart';
 import '../../services/db.dart';
 import '../../theme.dart';
@@ -152,6 +153,24 @@ class _ClientGymTile extends StatelessWidget {
     }
   }
 
+  Future<void> _freezeLastWeek(BuildContext context) async {
+    final week = previousWeekKey(todayKey());
+    if (week == null) return;
+    final ok = await confirm(
+      context,
+      title: tr('O\'tgan haftani muzlatish'),
+      message: trf('{0} haftasi ketma-ketlikni buzmaydi. Oyiga 2 martagacha.', [week]),
+      ok: tr('Muzlatish'),
+    );
+    if (!ok || !context.mounted) return;
+    try {
+      await Db.freezeWeek(client.id, week);
+      if (context.mounted) showSnack(context, tr('Hafta muzlatildi'));
+    } catch (e) {
+      if (context.mounted) showSnack(context, trf('Amalga oshmadi: {0}', [apiErrorText(e)]));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
@@ -268,6 +287,16 @@ class _ClientGymTile extends StatelessWidget {
                   ]),
                 );
               },
+            ),
+          if (!showWeek)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                style: TextButton.styleFrom(minimumSize: const Size(0, kTouchTarget)),
+                onPressed: () => _freezeLastWeek(context),
+                icon: const Icon(Icons.ac_unit_outlined, size: 18),
+                label: Text(tr('O\'tgan haftani muzlatish')),
+              ),
             ),
         ]),
       ),

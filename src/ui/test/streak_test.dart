@@ -126,4 +126,29 @@ void main() {
     expect(p.done, 0);
     expect(streakWeeks(<String>{}, 'bad', mwf), 0);
   });
+
+  group('frozen weeks', () {
+    final present = days([
+      '2026-04-27',
+      '2026-04-29',
+      '2026-05-01',
+      '2026-05-11',
+      '2026-05-13',
+    ]);
+
+    test('missed week without freeze breaks the streak', () {
+      expect(streakWeeks(present, '2026-05-15', mwf), 0);
+    });
+
+    test('frozen week neither breaks nor adds to the streak', () {
+      final withCurrent = {...present, '2026-05-15'};
+      expect(streakWeeks(withCurrent, '2026-05-15', mwf), 1);
+      expect(streakWeeks(withCurrent, '2026-05-15', mwf, {'2026-05-04'}), 2);
+    });
+
+    test('previousWeekKey is the prior Monday', () {
+      expect(previousWeekKey('2026-05-13'), '2026-05-04');
+      expect(previousWeekKey('bad'), isNull);
+    });
+  });
 }

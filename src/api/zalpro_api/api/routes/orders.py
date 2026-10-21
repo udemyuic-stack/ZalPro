@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Query, Response
+from fastapi import APIRouter, Depends, Query, Response
 
 from zalpro_api.api.deps import CurrentUser, HubDep, OwnerUser, SessionDep, SettingsDep
 from zalpro_api.models import Order
@@ -8,6 +8,7 @@ from zalpro_api.schemas.order import OrderIn, OrderListQuery, OrderOut, OrderSta
 from zalpro_api.services import orders as orders_service
 from zalpro_api.services import permissions
 from zalpro_api.services.messages import publish_staged
+from zalpro_api.services.pagination import PageParams, page_params, set_next_cursor
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 
@@ -27,8 +28,22 @@ async def list_orders(
     actor: CurrentUser,
     session: SessionDep,
     settings: SettingsDep,
+    response: Response,
+    page: Annotated[PageParams | None, Depends(page_params)],
 ) -> list[Order]:
     permissions.requires_window(actor, query.from_, query.to)
+    if page is not None:
+        orders, cursor = await orders_service.list_orders_page(
+            session,
+            permissions.order_scope(actor),
+            query.from_,
+            query.to,
+            query.status,
+            settings.gym_timezone,
+            page,
+        )
+        set_next_cursor(response, cursor)
+        return orders
     return await orders_service.list_orders(
         session,
         permissions.order_scope(actor),

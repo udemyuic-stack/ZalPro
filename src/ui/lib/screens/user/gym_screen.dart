@@ -39,6 +39,8 @@ class _GymScreenState extends State<GymScreen> {
   /// Bugungi mashg'ulot holati (boshlangan, bajarilgan mashqlar)
   late final _progress = Db.workout(user.id, todayKey());
 
+  late final _history = Db.workoutDoneWeek(user.id);
+
   late final _gyms = Db.gyms();
 
   @override
@@ -89,6 +91,8 @@ class _GymScreenState extends State<GymScreen> {
         custom: _custom,
         program: user.program,
         progress: _progress,
+        history: _history,
+        setsUserId: user.id,
         onStart: () => Db.startWorkout(user.id, todayKey()),
         onDone: (key, done) => Db.toggleExercise(user.id, todayKey(), key, done),
         onFeedback: (rating) => Db.setWorkoutFeedback(user.id, todayKey(), rating),
@@ -167,27 +171,26 @@ class _GymScreenState extends State<GymScreen> {
               BentoTile(
                 padding: const EdgeInsets.all(AppSpace.md),
                 child: Row(children: [
-                  Expanded(
-                      child: Text(tr(everyDayLabel), style: t.titleMedium)),
+                  Expanded(child: Text(tr(everyDayLabel), style: t.titleMedium)),
                 ]),
               )
             else
-            for (final d in ([...days]..sort()))
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpace.sm),
-                child: BentoTile(
-                  padding: const EdgeInsets.all(AppSpace.md),
-                  child: Row(children: [
-                    SizedBox(
-                      width: 96,
-                      child: Text(tr(weekdayNames[d]!),
-                          style:
-                              t.titleMedium?.copyWith(color: d == today ? AppColors.accent : null)),
-                    ),
-                    Expanded(child: Text(workoutFor(days, d)!, style: t.bodyMedium)),
-                  ]),
+              for (final d in ([...days]..sort()))
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpace.sm),
+                  child: BentoTile(
+                    padding: const EdgeInsets.all(AppSpace.md),
+                    child: Row(children: [
+                      SizedBox(
+                        width: 96,
+                        child: Text(tr(weekdayNames[d]!),
+                            style: t.titleMedium
+                                ?.copyWith(color: d == today ? AppColors.accent : null)),
+                      ),
+                      Expanded(child: Text(workoutFor(days, d)!, style: t.bodyMedium)),
+                    ]),
+                  ),
                 ),
-              ),
           ],
           const SizedBox(height: AppSpace.xl),
           WorkoutFeedbackStrip(uid: user.id),
@@ -333,7 +336,6 @@ class _DaysPickerState extends State<_DaysPicker> {
   }
 }
 
-
 class _GymLocationTile extends StatelessWidget {
   final Stream<List<Gym>> stream;
   final String? gymId;
@@ -366,7 +368,8 @@ class _GymLocationTile extends StatelessWidget {
               const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(gym.name, style: t.titleMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  Text(gym.name,
+                      style: t.titleMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
                   if (gym.fullAddress.isNotEmpty)
                     Text(
                       gym.fullAddress,

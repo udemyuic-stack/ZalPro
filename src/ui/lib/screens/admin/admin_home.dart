@@ -6,6 +6,7 @@ import '../../services/db.dart';
 import '../../theme.dart';
 import '../../widgets/announcement_sheet.dart';
 import '../../widgets/app_nav_bar.dart';
+import '../../widgets/challenge_steps_sheet.dart';
 import '../../widgets/join_qr_sheet.dart';
 import '../../widgets/lazy_stack.dart';
 import '../../widgets/notification_sync.dart';
@@ -55,11 +56,13 @@ class _AdminHomeState extends ConsumerState<AdminHome> {
   Future<void> _showMore(AppUser me) async {
     final action = await showSheet<String>(
       context,
-      const AdminMoreSheet(),
+      AdminMoreSheet(isOwner: me.isOwner),
     );
     if (!mounted) return;
     if (action == 'ann') {
       showAnnouncementManager(context, me);
+    } else if (action == 'steps') {
+      showChallengeStepsManager(context);
     } else if (action == 'settings') {
       showSettings(context, student: false, onSignOut: _signOut);
     } else if (action == 'out') {
@@ -151,7 +154,8 @@ class _AdminHomeState extends ConsumerState<AdminHome> {
 }
 
 class AdminMoreSheet extends StatelessWidget {
-  const AdminMoreSheet({super.key});
+  final bool isOwner;
+  const AdminMoreSheet({super.key, this.isOwner = false});
 
   @override
   Widget build(BuildContext context) => Column(mainAxisSize: MainAxisSize.min, children: [
@@ -161,6 +165,14 @@ class AdminMoreSheet extends StatelessWidget {
           title: Text(tr("E'lonlar")),
           onTap: () => Navigator.pop(context, 'ann'),
         ),
+        if (isOwner)
+          ListTile(
+            key: const Key('more-challenge-steps'),
+            minTileHeight: kTouchTarget,
+            leading: const Icon(Icons.emoji_events_outlined),
+            title: Text(tr("Vazifalar yo'li")),
+            onTap: () => Navigator.pop(context, 'steps'),
+          ),
         ListTile(
           minTileHeight: kTouchTarget,
           leading: const Icon(Icons.settings_outlined),

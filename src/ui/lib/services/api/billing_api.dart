@@ -145,6 +145,19 @@ class BillingApi extends ApiService {
 
   Stream<Set<String>> attendanceRange(String uid) => _range(uid).stream;
 
+  Stream<Set<String>> streakFreezes(String uid) => poll(() async {
+        final now = _now();
+        final rows = await client.getList('/v1/users/$uid/streak-freezes', query: {
+          'from': historyFromKey(_day(now)),
+          'to': _day(now),
+        });
+        return {for (final row in jsonMaps(rows)) jsonString(row['week_start'])};
+      }, _attendance, {'streak-freezes:$uid'}, key: 'streak-freezes:$uid');
+
+  Future<void> freezeWeek(String uid, String weekStart) =>
+      write('POST', '/v1/users/$uid/streak-freezes', {'week_start': weekStart},
+          ['streak-freezes:$uid']);
+
   Future<void> markAttendance(String uid, String day, bool present) async {
     final row = await client.request<Map<String, dynamic>>(
       'PUT',

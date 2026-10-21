@@ -3,7 +3,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import func, select
+from sqlalchemy import func, literal, select, union_all
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from zalpro_api.models import Attendance, Day, User
@@ -61,32 +61,65 @@ async def standings(
     names = {row.id: row.name for row in members}
     if not names:
         return []
-    present: dict[str, set[datetime.date]] = defaultdict(set)
-    worked: dict[str, set[datetime.date]] = defaultdict(set)
-    attendance = await session.execute(
-        select(Attendance.user_id, Attendance.day).where(
+    marks = union_all(
+        select(
+            Attendance.user_id.label("user_id"),
+            Attendance.day.label("day"),
+            literal(1).label("present"),
+            literal(0).label("worked"),
+        ).where(
             Attendance.user_id.in_(names),
             Attendance.present.is_(True),
             Attendance.day.between(start, end),
-        )
-    )
-    for user_id, day in attendance.all():
-        present[user_id].add(day)
-    days = await session.execute(
-        select(Day.user_id, Day.day).where(
+        ),
+        select(
+            Day.user_id.label("user_id"),
+            Day.day.label("day"),
+            literal(0).label("present"),
+            literal(1).label("worked"),
+        ).where(
             Day.user_id.in_(names),
             Day.gym_started.is_(True),
             func.cardinality(Day.gym_done) >= MIN_WORKOUT_EXERCISES,
             Day.day.between(start, end),
+        ),
+    ).subquery()
+    per_day = (
+        select(
+            marks.c.user_id,
+            marks.c.day,
+            func.max(marks.c.present).label("present"),
+            func.max(marks.c.worked).label("worked"),
         )
+        .group_by(marks.c.user_id, marks.c.day)
+        .subquery()
     )
-    for user_id, day in days.all():
-        worked[user_id].add(day)
+    per_week = (
+        select(
+            per_day.c.user_id,
+            func.count().label("active"),
+            func.sum(per_day.c.present).label("present"),
+            func.sum(per_day.c.worked).label("worked"),
+        )
+        .group_by(per_day.c.user_id, func.date_trunc("week", per_day.c.day))
+        .subquery()
+    )
+    totals = await session.execute(
+        select(
+            per_week.c.user_id,
+            func.sum(per_week.c.active),
+            func.sum(per_week.c.present),
+            func.sum(per_week.c.worked),
+            func.count().filter(per_week.c.active >= WEEK_ACTIVE_DAYS),
+        ).group_by(per_week.c.user_id)
+    )
     result = []
-    for user_id, name in names.items():
-        points, active = score(present[user_id], worked[user_id])
+    for user_id, active, present, worked, bonus_weeks in totals.all():
+        points = (
+            POINTS_PRESENT * present + POINTS_WORKOUT * worked + POINTS_WEEK_BONUS * bonus_weeks
+        )
         if points > 0:
-            result.append(Standing(user_id, name, points, active))
+            result.append(Standing(user_id, names[user_id], points, active))
     result.sort(key=lambda s: (-s.points, -s.active_days, s.name.casefold(), s.user_id))
     return result
 

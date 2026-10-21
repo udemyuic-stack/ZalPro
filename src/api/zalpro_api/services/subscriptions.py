@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from zalpro_api.core.config import Settings
 from zalpro_api.models import Membership, Subscription, User
 from zalpro_api.schemas.subscription import SubscriptionIn, SubscriptionOut
+from zalpro_api.services import pagination
 
 PAID_AT = func.coalesce(Subscription.paid_date, Subscription.created_at, Subscription.start_date)
 MAX_MEMBERSHIP_NAME = 60
@@ -51,15 +52,35 @@ def to_out(subscription: Subscription, zone: ZoneInfo) -> SubscriptionOut:
     )
 
 
-async def list_user_subscriptions(
-    session: AsyncSession, user_id: str, zone: ZoneInfo
-) -> list[SubscriptionOut]:
-    statement = (
+SUBSCRIPTION_KEYS = (
+    pagination.Key(Subscription.start_date, "start_date", datetime, desc=True),
+    pagination.Key(Subscription.created_at, "created_at", datetime, desc=True),
+    pagination.Key(Subscription.id, "id", str),
+)
+
+
+def user_subscriptions_statement(user_id: str):
+    return (
         select(Subscription)
         .where(Subscription.user_id == user_id)
         .order_by(Subscription.start_date.desc(), Subscription.created_at.desc(), Subscription.id)
     )
+
+
+async def list_user_subscriptions(
+    session: AsyncSession, user_id: str, zone: ZoneInfo
+) -> list[SubscriptionOut]:
+    statement = user_subscriptions_statement(user_id)
     return [to_out(item, zone) for item in (await session.scalars(statement)).all()]
+
+
+async def list_user_subscriptions_page(
+    session: AsyncSession, user_id: str, zone: ZoneInfo, page: pagination.PageParams
+) -> tuple[list[SubscriptionOut], str | None]:
+    rows, cursor = await pagination.fetch_page(
+        session, user_subscriptions_statement(user_id), SUBSCRIPTION_KEYS, page
+    )
+    return [to_out(row[0], zone) for row in rows], cursor
 
 
 async def list_paid_between(

@@ -123,6 +123,20 @@ def ensure_can_read_user(actor: User, target: User) -> None:
         raise forbidden()
 
 
+def can_read_streak_freezes(actor: User, target: User) -> bool:
+    return can_read_user(actor, target) or (is_staff(actor) and gym_of(actor) == gym_of(target))
+
+
+def ensure_can_read_streak_freezes(actor: User, target: User) -> None:
+    if not can_read_streak_freezes(actor, target):
+        raise forbidden()
+
+
+def ensure_can_grant_streak_freeze(actor: User, target: User) -> None:
+    if not is_staff(actor) or gym_of(actor) != gym_of(target):
+        raise forbidden()
+
+
 def ensure_can_set_role(actor: User, target: User, role: str) -> None:
     ensure_owner(actor)
     if actor.id == target.id and role != target.role:

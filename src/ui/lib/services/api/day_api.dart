@@ -82,6 +82,19 @@ class DayApi extends ApiService {
         };
       }, _every, {'feedback:$uid'}, key: 'feedbackWeek:$uid');
 
+  Stream<Map<String, Set<String>>> doneWeek(String uid) => poll(() async {
+        final today = DateTime.now();
+        final from = DateTime(today.year, today.month, today.day - 6);
+        final rows = await client.getList('/v1/users/$uid/days', query: {
+          'from': _dayKey(from),
+          'to': _dayKey(today),
+        });
+        return {
+          for (final row in jsonMaps(rows))
+            jsonString(row['day']): jsonStrings(row['gym_done']).toSet(),
+        };
+      }, _every, {'day:$uid:${_dayKey(DateTime.now())}'}, key: 'doneWeek:$uid');
+
   Stream<int> water(String uid, String day) => _day(uid, day).map((d) => jsonInt(d['water']));
 
   Future<void> setWater(String uid, String day, int glasses) =>

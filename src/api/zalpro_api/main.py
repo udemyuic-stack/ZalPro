@@ -15,6 +15,7 @@ from zalpro_api.api.routes import (
     chat_ws,
     checkin,
     days,
+    exercise_sets,
     exercises,
     finance,
     foods,
@@ -32,6 +33,7 @@ from zalpro_api.api.routes import (
     ratings,
     reminders,
     stats,
+    streak_freezes,
     subscriptions,
     trainers,
     users,
@@ -44,6 +46,7 @@ from zalpro_api.db.session import create_engine, create_sessionmaker
 from zalpro_api.services.auto_reminders import AutoReminderWorker
 from zalpro_api.services.chat_hub import ChatHub
 from zalpro_api.services.login_throttle import LoginThrottle
+from zalpro_api.services.pagination import NEXT_CURSOR_HEADER
 from zalpro_api.services.storage import build_storage
 from zalpro_api.services.video_transcode import VideoWorker
 
@@ -96,6 +99,8 @@ def build_v1_router() -> APIRouter:
         photos,
         push_tokens,
         stats,
+        streak_freezes,
+        exercise_sets,
     ):
         router.include_router(module.router)
     return router
@@ -126,7 +131,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             allow_credentials=False,
             allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
             allow_headers=["Authorization", "Content-Type", "X-App-Version"],
-            expose_headers=["Retry-After"],
+            expose_headers=["Retry-After", NEXT_CURSOR_HEADER],
             max_age=600,
         )
     app.include_router(build_v1_router())

@@ -40,6 +40,12 @@ String historyFromKey(String today, {int weeks = historyWeeks}) {
   return dayKeyOf(_weekStart(d).subtract(Duration(days: 7 * (weeks - 1))));
 }
 
+String? previousWeekKey(String today) {
+  final d = _parseKey(today);
+  if (d == null) return null;
+  return dayKeyOf(_weekStart(d).subtract(const Duration(days: 7)));
+}
+
 WeekProgress _week(Set<String> present, DateTime start, int goal, int todayIndex) {
   final days = [
     for (var i = 0; i < 7; i++) present.contains(dayKeyOf(start.add(Duration(days: i)))),
@@ -61,7 +67,12 @@ WeekProgress weekProgress(Set<String> present, String today, List<int> gymDays) 
   return _week(present, _weekStart(d), goal, d.weekday - 1);
 }
 
-int streakWeeks(Set<String> present, String today, List<int> gymDays) {
+int streakWeeks(
+  Set<String> present,
+  String today,
+  List<int> gymDays, [
+  Set<String> frozen = const {},
+]) {
   final goal = weeklyGoal(gymDays);
   final d = _parseKey(today);
   if (d == null) return 0;
@@ -69,6 +80,7 @@ int streakWeeks(Set<String> present, String today, List<int> gymDays) {
   var streak = _week(present, current, goal, 0).reached ? 1 : 0;
   for (var i = 1; i <= _maxStreakWeeks; i++) {
     final start = current.subtract(Duration(days: 7 * i));
+    if (frozen.contains(dayKeyOf(start))) continue;
     if (!_week(present, start, goal, 0).reached) break;
     streak++;
   }

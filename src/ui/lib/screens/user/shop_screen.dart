@@ -141,6 +141,14 @@ class _ShopScreenState extends State<ShopScreen> {
                 onPressed: qty < max ? () => setS(() => qty++) : null,
               ),
             ]),
+            if (qty >= max) ...[
+              const SizedBox(height: AppSpace.xs),
+              Text(
+                avail > 20 ? trf('Bir martada maksimal: {0}', [20]) : trf('Qoldiq: {0}', [avail]),
+                textAlign: TextAlign.center,
+                style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+              ),
+            ],
             const SizedBox(height: AppSpace.md),
             Text(trf('Jami: {0}', [fmtMoney(p.price * qty, p.currency)]), style: t.titleLarge),
             const SizedBox(height: AppSpace.sm),

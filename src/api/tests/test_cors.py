@@ -63,7 +63,7 @@ async def test_actual_request_allowed_origin() -> None:
         response = await client.get("/openapi.json", headers={"Origin": ORIGIN})
     assert response.status_code == 200
     assert response.headers["access-control-allow-origin"] == ORIGIN
-    assert response.headers["access-control-expose-headers"] == "Retry-After"
+    assert response.headers["access-control-expose-headers"] == "Retry-After, X-Next-Cursor"
 
 
 async def test_actual_request_disallowed_origin() -> None:

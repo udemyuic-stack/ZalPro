@@ -8,7 +8,7 @@ from zalpro_api.core.errors import conflict, forbidden, not_found
 from zalpro_api.models import Announcement, User
 from zalpro_api.models.announcement import MAX_ACTIVE_PER_AUTHOR, MAX_LISTED
 from zalpro_api.schemas.announcement import AnnouncementIn, AnnouncementOut
-from zalpro_api.services import permissions
+from zalpro_api.services import pagination, permissions
 
 
 def active_filter(now: datetime):
@@ -38,19 +38,37 @@ def to_out(row: Announcement, author_name: str) -> AnnouncementOut:
     )
 
 
-async def list_active(session: AsyncSession, actor: User) -> list[AnnouncementOut]:
+ANNOUNCEMENT_KEYS = (
+    pagination.Key(Announcement.created_at, "created_at", datetime, desc=True),
+    pagination.Key(Announcement.id, "id", uuid.UUID, desc=True),
+)
+
+
+def active_statement(actor: User):
     statement = (
         select(Announcement, User.name)
         .join(User, User.id == Announcement.author_id)
         .where(active_filter(datetime.now(UTC)))
-        .order_by(Announcement.created_at.desc())
-        .limit(MAX_LISTED)
+        .order_by(Announcement.created_at.desc(), Announcement.id.desc())
     )
     scope = visibility_filter(actor)
     if scope is not None:
         statement = statement.where(scope)
-    rows = (await session.execute(statement)).all()
+    return statement
+
+
+async def list_active(session: AsyncSession, actor: User) -> list[AnnouncementOut]:
+    rows = (await session.execute(active_statement(actor).limit(MAX_LISTED))).all()
     return [to_out(row, name) for row, name in rows]
+
+
+async def list_active_page(
+    session: AsyncSession, actor: User, page: pagination.PageParams
+) -> tuple[list[AnnouncementOut], str | None]:
+    rows, cursor = await pagination.fetch_page(
+        session, active_statement(actor), ANNOUNCEMENT_KEYS, page, entity=lambda row: row[0]
+    )
+    return [to_out(row, name) for row, name in rows], cursor
 
 
 async def create(session: AsyncSession, actor: User, body: AnnouncementIn) -> AnnouncementOut:

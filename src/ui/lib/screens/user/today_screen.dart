@@ -937,12 +937,15 @@ class _WeekCard extends StatelessWidget {
     final today = todayKey();
     return StreamBuilder<Set<String>>(
       stream: Db.attendanceRange(user.id),
-      builder: (context, snap) {
+      builder: (context, snap) => StreamBuilder<Set<String>>(
+      stream: Db.streakFreezes(user.id),
+      builder: (context, freezeSnap) {
         final failed = snap.hasError && !snap.hasData;
         final ready = snap.hasData;
         final present = snap.data ?? const <String>{};
+        final frozen = freezeSnap.data ?? const <String>{};
         final week = weekProgress(present, today, user.gymDays);
-        final streak = ready ? streakWeeks(present, today, user.gymDays) : 0;
+        final streak = ready ? streakWeeks(present, today, user.gymDays, frozen) : 0;
         return BentoTile(
           padding: const EdgeInsets.all(AppSpace.lg),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -990,10 +993,19 @@ class _WeekCard extends StatelessWidget {
                   ),
                 ),
               ]),
+              if (frozen.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpace.xs),
+                  child: Text(
+                    trf('Muzlatilgan: {0} hafta', [frozen.length]),
+                    style: t.bodySmall?.copyWith(color: AppColors.textMuted),
+                  ),
+                ),
             ],
           ]),
         );
       },
+      ),
     );
   }
 }

@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from zalpro_api.core.errors import ApiError, conflict, not_found
 from zalpro_api.models import Order, Product, User
 from zalpro_api.schemas.order import OrderIn
-from zalpro_api.services import permissions, system_messages
+from zalpro_api.services import pagination, permissions, system_messages
 from zalpro_api.services.messages import stage_message
 from zalpro_api.services.reminders import window_bounds
 
@@ -60,6 +60,30 @@ async def create_order(session: AsyncSession, actor: User, body: OrderIn) -> Ord
     return order
 
 
+ORDER_KEYS = (
+    pagination.Key(Order.created_at, "created_at", datetime, desc=True),
+    pagination.Key(Order.id, "id", str, desc=True),
+)
+
+
+def orders_statement(
+    scope: permissions.OrderScope,
+    start: date | None,
+    end: date | None,
+    status: str | None,
+    timezone: str,
+):
+    statement = select(Order)
+    if start is not None and end is not None:
+        lower, upper = window_bounds(start, end, timezone)
+        statement = statement.where(Order.created_at >= lower, Order.created_at < upper)
+    if scope.column is not None:
+        statement = statement.where(getattr(Order, scope.column) == scope.value)
+    if status is not None:
+        statement = statement.where(Order.status == status)
+    return statement.order_by(Order.created_at.desc(), Order.id.desc())
+
+
 async def list_orders(
     session: AsyncSession,
     scope: permissions.OrderScope,
@@ -70,16 +94,24 @@ async def list_orders(
 ) -> list[Order]:
     if scope.empty:
         return []
-    statement = select(Order)
-    if start is not None and end is not None:
-        lower, upper = window_bounds(start, end, timezone)
-        statement = statement.where(Order.created_at >= lower, Order.created_at < upper)
-    if scope.column is not None:
-        statement = statement.where(getattr(Order, scope.column) == scope.value)
-    if status is not None:
-        statement = statement.where(Order.status == status)
-    statement = statement.order_by(Order.created_at.desc(), Order.id.desc())
+    statement = orders_statement(scope, start, end, status, timezone)
     return list((await session.scalars(statement)).all())
+
+
+async def list_orders_page(
+    session: AsyncSession,
+    scope: permissions.OrderScope,
+    start: date | None,
+    end: date | None,
+    status: str | None,
+    timezone: str,
+    page: pagination.PageParams,
+) -> tuple[list[Order], str | None]:
+    if scope.empty:
+        return [], None
+    statement = orders_statement(scope, start, end, status, timezone)
+    rows, cursor = await pagination.fetch_page(session, statement, ORDER_KEYS, page)
+    return [row[0] for row in rows], cursor
 
 
 async def get_order_or_404(session: AsyncSession, order_id: str) -> Order:

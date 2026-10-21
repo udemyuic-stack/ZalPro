@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from zalpro_api.core.errors import not_found
 from zalpro_api.models import Reminder, User
-from zalpro_api.services import system_messages
+from zalpro_api.services import pagination, system_messages
 from zalpro_api.services.messages import stage_message
 
 
@@ -36,6 +36,24 @@ async def create_reminder(
     return reminder
 
 
+REMINDER_KEYS = (
+    pagination.Key(Reminder.sent_at, "sent_at", datetime, desc=True),
+    pagination.Key(Reminder.id, "id", str, desc=True),
+)
+
+
+def reminders_statement(
+    trainer_scope: str | None, start: date | None, end: date | None, timezone: str
+):
+    statement = select(Reminder)
+    if start is not None and end is not None:
+        lower, upper = window_bounds(start, end, timezone)
+        statement = statement.where(Reminder.sent_at >= lower, Reminder.sent_at < upper)
+    if trainer_scope is not None:
+        statement = statement.where(Reminder.trainer_id == trainer_scope)
+    return statement.order_by(Reminder.sent_at.desc(), Reminder.id.desc())
+
+
 async def list_reminders(
     session: AsyncSession,
     trainer_scope: str | None,
@@ -43,14 +61,21 @@ async def list_reminders(
     end: date | None,
     timezone: str,
 ) -> list[Reminder]:
-    statement = select(Reminder)
-    if start is not None and end is not None:
-        lower, upper = window_bounds(start, end, timezone)
-        statement = statement.where(Reminder.sent_at >= lower, Reminder.sent_at < upper)
-    if trainer_scope is not None:
-        statement = statement.where(Reminder.trainer_id == trainer_scope)
-    statement = statement.order_by(Reminder.sent_at.desc(), Reminder.id.desc())
+    statement = reminders_statement(trainer_scope, start, end, timezone)
     return list((await session.scalars(statement)).all())
+
+
+async def list_reminders_page(
+    session: AsyncSession,
+    trainer_scope: str | None,
+    start: date | None,
+    end: date | None,
+    timezone: str,
+    page: pagination.PageParams,
+) -> tuple[list[Reminder], str | None]:
+    statement = reminders_statement(trainer_scope, start, end, timezone)
+    rows, cursor = await pagination.fetch_page(session, statement, REMINDER_KEYS, page)
+    return [row[0] for row in rows], cursor
 
 
 async def delete_reminder(session: AsyncSession, reminder_id: str) -> None:

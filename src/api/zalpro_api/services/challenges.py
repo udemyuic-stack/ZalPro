@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from zalpro_api.models import ChallengeStep as ChallengeStepRow
 from zalpro_api.models import CoinLedger, UserChallenge
 from zalpro_api.schemas.game import (
     ChallengeResultOut,
@@ -21,24 +22,13 @@ class ChallengeStep:
     muscle: str
 
 
-CHALLENGES = (
-    ChallengeStep("pullup", 20, 20, "arms"),
-    ChallengeStep("pushup", 10, 15, "chest"),
-    ChallengeStep("squat", 20, 15, "legs"),
-    ChallengeStep("pullup", 30, 30, "arms"),
-    ChallengeStep("pushup", 25, 30, "chest"),
-    ChallengeStep("squat", 50, 30, "legs"),
-    ChallengeStep("pullup", 50, 50, "arms"),
-    ChallengeStep("pushup", 50, 50, "chest"),
-    ChallengeStep("squat", 100, 50, "legs"),
-    ChallengeStep("pullup", 100, 100, "arms"),
-    ChallengeStep("pushup", 100, 100, "chest"),
-    ChallengeStep("squat", 200, 100, "legs"),
-)
+async def load_ladder(session: AsyncSession) -> list[ChallengeStep]:
+    rows = await session.scalars(select(ChallengeStepRow).order_by(ChallengeStepRow.position))
+    return [ChallengeStep(row.exercise, row.target, row.coins, row.muscle) for row in rows]
 
 
-def muscle_levels(step: int) -> MuscleLevelsOut:
-    done = CHALLENGES[: min(step, len(CHALLENGES))]
+def muscle_levels(ladder: list[ChallengeStep], step: int) -> MuscleLevelsOut:
+    done = ladder[: min(step, len(ladder))]
     return MuscleLevelsOut(
         arms=sum(1 for item in done if item.muscle == "arms"),
         chest=sum(1 for item in done if item.muscle == "chest"),
@@ -63,9 +53,10 @@ async def apply_session(
     session: AsyncSession, user_id: str, exercise: str, reps: int, session_id: str
 ) -> ChallengeResultOut | None:
     state = await lock_state(session, user_id)
-    if state.step >= len(CHALLENGES):
+    ladder = await load_ladder(session)
+    if state.step >= len(ladder):
         return None
-    current = CHALLENGES[state.step]
+    current = ladder[state.step]
     if current.exercise != exercise:
         return None
     index = state.step
@@ -87,19 +78,20 @@ async def apply_session(
         completed=completed,
         coins=current.coins if completed else 0,
         muscle=current.muscle,
-        finished=state.step >= len(CHALLENGES),
+        finished=state.step >= len(ladder),
     )
 
 
 async def read(session: AsyncSession, user_id: str) -> ChallengesOut:
+    ladder = await load_ladder(session)
     state = await session.get(UserChallenge, user_id)
     step = state.step if state else 0
     progress = state.progress if state else 0
     return ChallengesOut(
         step=step,
         progress=progress,
-        finished=step >= len(CHALLENGES),
-        muscles=muscle_levels(step),
+        finished=step >= len(ladder),
+        muscles=muscle_levels(ladder, step),
         steps=[
             ChallengeStepOut(
                 index=i,
@@ -109,6 +101,6 @@ async def read(session: AsyncSession, user_id: str) -> ChallengesOut:
                 muscle=item.muscle,
                 state="done" if i < step else "current" if i == step else "locked",
             )
-            for i, item in enumerate(CHALLENGES)
+            for i, item in enumerate(ladder)
         ],
     )

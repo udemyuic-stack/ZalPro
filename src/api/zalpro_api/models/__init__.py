@@ -1,9 +1,11 @@
 from zalpro_api.db.base import Base
 from zalpro_api.models.announcement import Announcement
 from zalpro_api.models.attendance import Attendance
+from zalpro_api.models.challenge_step import ChallengeStep
 from zalpro_api.models.coin_ledger import CoinLedger
 from zalpro_api.models.day import Day
 from zalpro_api.models.exercise import Exercise
+from zalpro_api.models.exercise_set import ExerciseSet
 from zalpro_api.models.food import Food
 from zalpro_api.models.gym import Gym
 from zalpro_api.models.membership import Membership
@@ -18,6 +20,7 @@ from zalpro_api.models.rating import Rating
 from zalpro_api.models.refresh_token import RefreshToken
 from zalpro_api.models.reminder import Reminder
 from zalpro_api.models.rep_session import RepSession
+from zalpro_api.models.streak_freeze import StreakFreeze
 from zalpro_api.models.subscription import Subscription
 from zalpro_api.models.trainer import Trainer
 from zalpro_api.models.user import ROLES, User
@@ -30,9 +33,11 @@ __all__ = [
     "ROLES",
     "Announcement",
     "Attendance",
+    "ChallengeStep",
     "CoinLedger",
     "Day",
     "Exercise",
+    "ExerciseSet",
     "Food",
     "Gym",
     "Membership",
@@ -47,6 +52,7 @@ __all__ = [
     "RefreshToken",
     "Reminder",
     "RepSession",
+    "StreakFreeze",
     "Subscription",
     "Trainer",
     "User",

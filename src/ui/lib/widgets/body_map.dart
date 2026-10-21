@@ -15,6 +15,9 @@ class BodyMap extends StatelessWidget {
 
   /// Yordamchi mushaklar (xiraroq rang)
   final Set<String> secondary;
+
+  /// Ishlagan mushaklar darajasi: 1 — xira, 2 — to'q
+  final Map<String, int> worked;
   final ValueChanged<String>? onTap;
   final double height;
   final Color? accent;
@@ -24,6 +27,7 @@ class BodyMap extends StatelessWidget {
     this.back = false,
     this.primary,
     this.secondary = const {},
+    this.worked = const {},
     this.onTap,
     this.height = 360,
     this.accent,
@@ -65,7 +69,13 @@ class BodyMap extends StatelessWidget {
     final width = height * _w / _h;
     final paint = CustomPaint(
       size: Size(width, height),
-      painter: _BodyPainter(back: back, primary: primary, secondary: secondary, accent: accent ?? AppColors.accent),
+      painter: _BodyPainter(
+        back: back,
+        primary: primary,
+        secondary: secondary,
+        worked: worked,
+        accent: accent ?? AppColors.accent,
+      ),
     );
     if (onTap == null) return paint;
     return GestureDetector(
@@ -111,11 +121,13 @@ class _BodyPainter extends CustomPainter {
   final bool back;
   final String? primary;
   final Set<String> secondary;
+  final Map<String, int> worked;
   final Color accent;
   _BodyPainter({
     required this.back,
     required this.primary,
     required this.secondary,
+    required this.worked,
     required this.accent,
   });
 
@@ -128,9 +140,9 @@ class _BodyPainter extends CustomPainter {
       final Color fill;
       if (s.muscle == null) {
         fill = base;
-      } else if (s.muscle == primary) {
+      } else if (s.muscle == primary || worked[s.muscle] == 2) {
         fill = accent;
-      } else if (secondary.contains(s.muscle)) {
+      } else if (secondary.contains(s.muscle) || worked[s.muscle] == 1) {
         fill = Color.lerp(muscle, accent, 0.45)!;
       } else {
         fill = muscle;
@@ -146,5 +158,9 @@ class _BodyPainter extends CustomPainter {
       old.primary != primary ||
       old.accent != accent ||
       old.secondary.length != secondary.length ||
-      !old.secondary.containsAll(secondary);
+      !old.secondary.containsAll(secondary) ||
+      !_sameLevels(old.worked, worked);
+
+  static bool _sameLevels(Map<String, int> a, Map<String, int> b) =>
+      a.length == b.length && a.entries.every((e) => b[e.key] == e.value);
 }

@@ -10,6 +10,7 @@ import '../models/leaderboard.dart';
 import '../models/member_analytics.dart';
 import '../models/shop_analytics.dart';
 import '../models/gym.dart';
+import '../models/exercise_set.dart';
 import '../models/exercises.dart';
 import '../models/models.dart';
 import '../models/payment.dart';
@@ -20,6 +21,7 @@ import '../models/scan_result.dart';
 import '../models/subscription.dart';
 import 'api/analytics_api.dart';
 import 'api/announcements_api.dart';
+import 'api/exercise_set_api.dart';
 import 'api/game_api.dart';
 import 'api/leaderboard_api.dart';
 import 'api/api_instance.dart';
@@ -86,6 +88,7 @@ class Db {
   static final _announcements = AnnouncementsApi(apiClient);
   static final _leaderboard = LeaderboardApi(apiClient);
   static final _game = GameApi(apiClient);
+  static final _exerciseSets = ExerciseSetApi(apiClient);
   static final _analytics = AnalyticsApi(apiClient);
   static final _plans = <String, SharedStream<Plan?>>{};
 
@@ -441,6 +444,10 @@ class Db {
     return _days.feedbackWeek(uid);
   }
 
+  static Stream<Map<String, Set<String>>> workoutDoneWeek(String uid) {
+    return _days.doneWeek(uid);
+  }
+
   static Stream<int> water(String uid, String day) {
     return _days.water(uid, day);
   }
@@ -525,6 +532,21 @@ class Db {
     return _billing.attendanceRange(uid);
   }
 
+  static Future<List<ExerciseSet>> exerciseSets(String uid, String day, String key) =>
+      _exerciseSets.sets(uid, day, key);
+
+  static Future<List<ExerciseSet>> previousExerciseSets(String uid, String key, String before) =>
+      _exerciseSets.previous(uid, key, before);
+
+  static Future<void> saveExerciseSets(
+          String uid, String day, String key, List<ExerciseSet> sets) =>
+      _exerciseSets.save(uid, day, key, sets);
+
+  static Stream<Set<String>> streakFreezes(String uid) => _billing.streakFreezes(uid);
+
+  static Future<void> freezeWeek(String uid, String weekStart) =>
+      _billing.freezeWeek(uid, weekStart);
+
   static Future<void> markAttendance(String uid, String day, bool present, String byId) {
     return _billing.markAttendance(uid, day, present);
   }
@@ -557,8 +579,34 @@ class Db {
   static Stream<GameLeaderboard> gameLeaderboard({String period = 'week', String? exercise}) =>
       _game.leaderboard(period: period, exercise: exercise);
 
-  static Future<GameSessionResult> submitGameSession(GameSessionDraft draft) =>
-      _game.submit(draft);
+  static Future<GameSessionResult> submitGameSession(GameSessionDraft draft) => _game.submit(draft);
+
+  static Future<List<ChallengeStepAdmin>> challengeSteps() => _game.challengeSteps();
+
+  static Future<void> addChallengeStep({
+    required String exercise,
+    required int target,
+    required int coins,
+    required String muscle,
+  }) =>
+      _game.addChallengeStep(exercise: exercise, target: target, coins: coins, muscle: muscle);
+
+  static Future<void> updateChallengeStep(
+    String id, {
+    required String exercise,
+    required int target,
+    required int coins,
+    required String muscle,
+  }) =>
+      _game.updateChallengeStep(
+        id,
+        exercise: exercise,
+        target: target,
+        coins: coins,
+        muscle: muscle,
+      );
+
+  static Future<void> removeChallengeStep(String id) => _game.removeChallengeStep(id);
 
   static Future<ShopAnalytics> shopAnalytics(DateTime from, DateTime to) =>
       _analytics.shop(from, to);

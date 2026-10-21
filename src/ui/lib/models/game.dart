@@ -120,6 +120,37 @@ class ChallengeStep {
       );
 }
 
+class ChallengeStepAdmin {
+  final String id;
+  final int position;
+  final String exercise;
+  final int target;
+  final int coins;
+  final String muscle;
+
+  const ChallengeStepAdmin({
+    required this.id,
+    required this.position,
+    required this.exercise,
+    required this.target,
+    required this.coins,
+    required this.muscle,
+  });
+
+  factory ChallengeStepAdmin.fromJson(Map<String, dynamic> j) => ChallengeStepAdmin(
+        id: jsonString(j['id']),
+        position: jsonInt(j['position']),
+        exercise: jsonString(j['exercise']),
+        target: jsonInt(j['target']),
+        coins: jsonInt(j['coins']),
+        muscle: jsonString(j['muscle']),
+      );
+}
+
+const challengeMuscles = ['arms', 'chest', 'legs'];
+const challengeTargetMax = 10000;
+const challengeCoinsMax = 100000;
+
 class MuscleLevels {
   final int arms;
   final int chest;

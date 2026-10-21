@@ -4,12 +4,15 @@ import 'package:video_player/video_player.dart';
 import '../../l10n/tr.dart';
 import '../../models/exercises.dart';
 import '../../models/gym.dart';
+import '../../models/muscle_load.dart';
+import '../../models/muscle_recovery.dart';
 import '../../services/api/api_error.dart';
 import '../../services/db.dart';
 import '../../services/notifications.dart';
 import '../../theme.dart';
 import '../../widgets/workout_feedback.dart';
 import '../../widgets/body_map.dart';
+import '../../widgets/exercise_sets_editor.dart';
 import '../../widgets/particle_body.dart';
 import '../../widgets/rest_timer.dart';
 import '../../widgets/ui.dart';
@@ -27,11 +30,15 @@ class MusclesScreen extends StatefulWidget {
 
   final Stream<WorkoutProgress>? progress;
 
+  final Stream<Map<String, Set<String>>>? history;
+
   final VoidCallback? onStart;
   final void Function(String key, bool done)? onDone;
   final void Function(int rating)? onFeedback;
 
   final int? weekday;
+
+  final String? setsUserId;
 
   const MusclesScreen({
     super.key,
@@ -41,10 +48,12 @@ class MusclesScreen extends StatefulWidget {
     this.custom,
     this.program = const {},
     this.progress,
+    this.history,
     this.onStart,
     this.onDone,
     this.onFeedback,
     this.weekday,
+    this.setsUserId,
   });
 
   @override
@@ -73,6 +82,15 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
 
   String? _open;
 
+  final _filled = <String, (Exercise, int)>{};
+
+  Map<String, int> get _worked => workedLevels(muscleScores(_filled.values));
+
+  void _onFilled(Exercise e, int sets) {
+    if (_filled[e.key]?.$2 == sets) return;
+    setState(() => _filled[e.key] = (e, sets));
+  }
+
   List<Exercise> _custom = const [];
 
   List<Exercise> _of(String id) => exercisesForStudent(id, _custom, widget.program);
@@ -81,6 +99,8 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
   Set<String> _done = {};
   int? _feedback;
   StreamSubscription<WorkoutProgress>? _sub;
+  StreamSubscription<Map<String, Set<String>>>? _histSub;
+  Map<String, Set<String>> _history = const {};
   String? _restKey;
   final RestTimerController _rest = RestTimerController(
     onFinished: restTimerAlert,
@@ -106,15 +126,24 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
         });
       }
     }, onError: (_) {});
+    _histSub = widget.history?.listen((h) {
+      if (mounted) setState(() => _history = h);
+    }, onError: (_) {});
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _sub?.cancel();
+    _histSub?.cancel();
     _rest.dispose();
     super.dispose();
   }
+
+  Map<String, String> get _muscleOfKey => {
+        for (final m in muscles)
+          for (final e in exercisesFor(m.id, _custom)) e.key: m.id,
+      };
 
   bool get _running => _gymToday && _started;
 
@@ -219,6 +248,8 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
             onTap: () => setState(() => _open = _open == e.name ? null : e.name),
             done: marking ? _done.contains(e.key) : null,
             onDone: marking ? () => _toggleDone(e) : null,
+            setsUserId: marking ? widget.setsUserId : null,
+            onFilledChanged: (n) => _onFilled(e, n),
           ),
       ]);
 
@@ -324,6 +355,10 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
       for (final e in _custom)
         if (e.isNew()) e.muscle,
     };
+
+    final now = DateTime.now();
+    final rec = muscleRecovery(_history, _muscleOfKey, now);
+    final week = weeklySets(_history, _muscleOfKey, now);
 
     return PopScope(
       canPop: false,
@@ -457,14 +492,16 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                     ),
                     padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
                     child: Center(
-                      child: ParticleBody(
-                        angle: _angle,
-                        selected: _running ? null : _muscle,
-                        today: plan,
-                        onTap: _select,
-                        onRotate: _rotate,
-                        width: wide < 380 ? 290 : 320,
-                        height: wide < 380 ? 520 : 574,
+                      child: RepaintBoundary(
+                        child: ParticleBody(
+                          angle: _angle,
+                          selected: _running ? null : _muscle,
+                          today: {...plan, ..._worked.keys},
+                          onTap: _select,
+                          onRotate: _rotate,
+                          width: wide < 380 ? 290 : 320,
+                          height: wide < 380 ? 520 : 574,
+                        ),
                       ),
                     ),
                   ),
@@ -515,33 +552,67 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                               ),
                               child: Center(
                                 widthFactor: 1,
-                                child: Text(
-                                  fresh.contains(m.id)
-                                      ? '${tr(m.name)} · ${tr('yangi')}'
-                                      : tr(m.name),
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: m.id == (_running ? active : _muscle)
-                                        ? FontWeight.w600
-                                        : FontWeight.w300,
-                                    color: m.id == (_running ? active : _muscle)
-                                        ? _white
-                                        : _running
-                                            ? (active == null ||
-                                                    _plan.indexOf(m.id) < _plan.indexOf(active)
-                                                ? _brand
-                                                : _ash)
-                                            : plan.contains(m.id)
-                                                ? _white
-                                                : _ash,
+                                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                  if (rec[m.id] case final r?) ...[
+                                    Icon(
+                                      r == Recovery.ready
+                                          ? Icons.check_circle_outline
+                                          : Icons.hourglass_bottom_outlined,
+                                      size: 16,
+                                      color: r == Recovery.ready ? AppColors.mint : AppColors.gold,
+                                    ),
+                                    const SizedBox(width: 6),
+                                  ],
+                                  Flexible(
+                                    child: Text(
+                                      fresh.contains(m.id)
+                                          ? '${tr(m.name)} · ${tr('yangi')}'
+                                          : tr(m.name),
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: m.id == (_running ? active : _muscle)
+                                            ? FontWeight.w600
+                                            : FontWeight.w300,
+                                        color: m.id == (_running ? active : _muscle)
+                                            ? _white
+                                            : _running
+                                                ? (active == null ||
+                                                        _plan.indexOf(m.id) < _plan.indexOf(active)
+                                                    ? _brand
+                                                    : _ash)
+                                                : plan.contains(m.id)
+                                                    ? _white
+                                                    : _ash,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  if ((week[m.id] ?? 0) > 0) ...[
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      '${week[m.id]}',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: AppColors.textMuted,
+                                        fontFeatures: tabular,
+                                      ),
+                                    ),
+                                  ],
+                                ]),
                               ),
                             ),
                           ),
                         ),
                       ),
                 ]),
+                if (rec.isNotEmpty) ...[
+                  const SizedBox(height: AppSpace.sm),
+                  Text(
+                    tr('Tiklanish taxminiy: soat belgisi dam olish, galochka tayyor'),
+                    style: TextStyle(fontSize: 13, height: 1.4, color: AppColors.textMuted),
+                  ),
+                ],
                 const SizedBox(height: 44),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
                   for (final back in [false, true])
@@ -550,6 +621,7 @@ class _MusclesScreenState extends State<MusclesScreen> with WidgetsBindingObserv
                         back: back,
                         primary: _running ? active : _muscle,
                         secondary: _running ? const {} : plan,
+                        worked: _worked,
                         onTap: _select,
                         height: wide < 380 ? 270 : 310,
                       ),
@@ -621,12 +693,16 @@ class _ExerciseRow extends StatelessWidget {
 
   final bool? done;
   final VoidCallback? onDone;
+  final String? setsUserId;
+  final ValueChanged<int>? onFilledChanged;
   const _ExerciseRow({
     required this.exercise,
     required this.open,
     required this.onTap,
     this.done,
     this.onDone,
+    this.setsUserId,
+    this.onFilledChanged,
   });
 
   @override
@@ -673,6 +749,15 @@ class _ExerciseRow extends StatelessWidget {
                     onPressed: onDone,
                     icon: Icon(done! ? Icons.check_circle : Icons.radio_button_unchecked, size: 18),
                     label: Text(done! ? tr('Bajarildi') : tr('Bajardim')),
+                  ),
+                ],
+                if (setsUserId != null) ...[
+                  const SizedBox(height: 10),
+                  ExerciseSetsEditor(
+                    key: ValueKey('sets-${e.key}'),
+                    userId: setsUserId!,
+                    exerciseKey: e.key,
+                    onFilledChanged: onFilledChanged,
                   ),
                 ],
                 if (also.isNotEmpty) ...[

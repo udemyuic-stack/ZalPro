@@ -1,6 +1,7 @@
 import '../../models/game.dart';
 import 'api_error.dart';
 import 'api_service.dart';
+import 'json_helpers.dart';
 
 class GameApi extends ApiService {
   GameApi(super.client, {super.bus, super.activity});
@@ -42,4 +43,39 @@ class GameApi extends ApiService {
     }
     return GameSessionResult.fromJson(json);
   }
+
+  Future<List<ChallengeStepAdmin>> challengeSteps() async {
+    final rows = await client.getList('/v1/game/challenge-steps');
+    return [for (final row in jsonMaps(rows)) ChallengeStepAdmin.fromJson(row)];
+  }
+
+  Future<void> addChallengeStep({
+    required String exercise,
+    required int target,
+    required int coins,
+    required String muscle,
+  }) =>
+      write(
+        'POST',
+        '/v1/game/challenge-steps',
+        {'exercise': exercise, 'target': target, 'coins': coins, 'muscle': muscle},
+        const [_tag],
+      );
+
+  Future<void> updateChallengeStep(
+    String id, {
+    required String exercise,
+    required int target,
+    required int coins,
+    required String muscle,
+  }) =>
+      write(
+        'PATCH',
+        '/v1/game/challenge-steps/${Uri.encodeComponent(id)}',
+        {'exercise': exercise, 'target': target, 'coins': coins, 'muscle': muscle},
+        const [_tag],
+      );
+
+  Future<void> removeChallengeStep(String id) =>
+      write('DELETE', '/v1/game/challenge-steps/${Uri.encodeComponent(id)}', null, const [_tag]);
 }

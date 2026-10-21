@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Literal, Protocol
 
 import aioboto3
+import boto3
 from boto3.s3.transfer import TransferConfig
 from botocore.exceptions import ClientError
 
@@ -72,23 +73,20 @@ class R2Storage:
             "aws_secret_access_key": settings.r2_secret_access_key,
             "region_name": "auto",
         }
+        self._signer = boto3.client("s3", **self._options)
 
     async def presign_put(self, key: str, size: int, expires: int) -> str:
-        async with self._session.client("s3", **self._options) as client:
-            return await client.generate_presigned_url(
-                "put_object",
-                Params={"Bucket": self._bucket, "Key": key, "ContentLength": size},
-                ExpiresIn=expires,
-            )
+        return self._signer.generate_presigned_url(
+            "put_object",
+            Params={"Bucket": self._bucket, "Key": key, "ContentLength": size},
+            ExpiresIn=expires,
+        )
 
     async def presign_get(self, key: str, expires: int, content_type: str | None = None) -> str:
         params = {"Bucket": self._bucket, "Key": key}
         if content_type is not None:
             params["ResponseContentType"] = content_type
-        async with self._session.client("s3", **self._options) as client:
-            return await client.generate_presigned_url(
-                "get_object", Params=params, ExpiresIn=expires
-            )
+        return self._signer.generate_presigned_url("get_object", Params=params, ExpiresIn=expires)
 
     async def head(self, key: str) -> int | None:
         async with self._session.client("s3", **self._options) as client:
